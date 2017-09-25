@@ -2,7 +2,7 @@
 PREFIX = arm-none-eabi-
 REMOVE_CMD = rm
 #start file
-STARTUP_C = Hw_startup.c
+STARTUP_C = Hw_StartUp.c
 #target file
 TARGET = main
 #build folder
@@ -18,16 +18,15 @@ EXTRAINCDIRS = ../LIB              \
 
 SRC_AP = ../Main/main.c
 
-SRC_HW = ../LIB_HW/$(STARTUP_C)    \
-         ../LIB_HW/Hw_Adc.c        \
-		 ../LIB_HW/Hw_Dma.c        \
-		 ../LIB_HW/Hw_Gpio.c       \
-		 ../LIB_HW/Hw_I2c.c        \
-		 ../LIB_HW/Hw_Pwm.c        \
-		 ../LIB_HW/Hw_Systick.c    \
-		 ../LIB_HW/Hw.c            \
-
-		 ../LIB_HW/Hw_Lib/Hw_Led.c \
+SRC_HW = ../LIB_HW/Hw_Core/$(STARTUP_C)    \
+         ../LIB_HW/Hw_Core/Hw_Adc.c        \
+		 ../LIB_HW/Hw_Core/Hw_Dma.c        \
+		 ../LIB_HW/Hw_Core/Hw_Gpio.c       \
+		 ../LIB_HW/Hw_Core/Hw_I2c.c        \
+		 ../LIB_HW/Hw_Core/Hw_Pwm.c        \
+		 ../LIB_HW/Hw_Core/Hw_Systick.c    \
+		 ../LIB_HW/Hw_Core/Hw.c            \
+		 ../LIB_HW/Hw_Lib/Hw_Led.c         \
 
 
 SRC_LB = ../LIB/Ld_Printf.c        \
@@ -59,4 +58,126 @@ CONLYFLAGS += -Wnested-externs
 CONLYFLAGS += -std=gnu99
 #이게 맞는지?
 LDFLAGS = -static -nostdlib -nostartfiles -Wl,-Map=$(TARGET).map,--cref,--gc-sections -L./ -lc  -lm  -lc -lgcc -T.//stm32f10x.ld
-ELF32_LDFLAGS = -Wl,-T,stm32f10x.ld
+#ELF32_LDFLAGS = -Wl,-T,stm32f10x.ld
+
+
+
+# Define Messages
+# English
+MSG_LOAD_FILE = Creating load file:
+MSG_EXTENDED_LISTING = Creating Extended Listing/Disassembly:
+MSG_SYMBOL_TABLE = Creating Symbol Table:
+MSG_LINKING = ---- Linking :
+MSG_CLEANING = Cleaning project:
+MSG_ASMFROMC = "Creating asm-File from C-Source:"
+
+# List of all source files.
+ALLSRC     =  $(SRC)
+# List of all source files without directory and file-extension.
+ALLSRCBASE = $(notdir $(basename $(ALLSRC)))
+
+# Define all object files.
+#ALLOBJ = $(addprefix $(OUTDIR)/, $(addsuffix .o, $(ALLSRCBASE)))
+ALLOBJ = $(addsuffix .o, $(ALLSRCBASE))
+
+
+# Default target.
+all: createdirs build
+
+elf: $(TARGET).elf
+lss: $(TARGET).lss 
+sym: $(TARGET).sym
+hex: $(TARGET).hex
+bin: $(TARGET).bin
+
+
+build: elf hex bin lss sym
+
+# Create output directories.
+createdirs:
+	-@md $(OUTDIR) >NUL 2>&1 || echo "" >NUL
+	-@md $(OUTDIR)\dep >NUL 2>&1 || echo "" >NUL
+
+# Create final output file (.hex) from ELF output file.
+%.hex: %.elf
+	@echo $(MSG_LOAD_FILE) $@
+	$(OBJCOPY) -O ihex $< $@
+	
+# Create final output file (.bin) from ELF output file.
+%.bin: %.elf
+	@echo $(MSG_LOAD_FILE) $@
+	$(OBJCOPY) -O binary $< $@
+
+# Create extended listing file/disassambly from ELF output file.
+# using objdump testing: option -C
+%.lss: %.elf
+	@echo $(MSG_EXTENDED_LISTING) $@
+	$(OBJDUMP) -h -S -C -r $< > $@
+#	$(OBJDUMP) -x -S $< > $@
+
+# Create a symbol table from ELF output file.
+%.sym: %.elf
+	@echo $(MSG_SYMBOL_TABLE) $@
+	$(OBJNM) -n $< > $@
+
+# Link: create ELF output file from object files.
+.SECONDARY : $(TARGET).elf
+.PRECIOUS : $(ALLOBJ)
+%.elf:  $(ALLOBJ)
+	@echo $(MSG_LINKING) $@
+	$(CC) $(THUMB) $(CFLAGS) $(ALLOBJ) --output $@ $(LDFLAGS)
+
+# Compile: create object files from C source files.
+define COMPILE_C_TEMPLATE
+$(notdir $(basename $(1))).o : $(1)
+	@echo $(MSG_COMPILING) $$< to $$@
+	$(CC) -c $(THUMB) $$(CFLAGS) $$(CONLYFLAGS) $$< -o $$@ 
+endef
+$(foreach src, $(SRC), $(eval $(call COMPILE_C_TEMPLATE, $(src)))) 
+
+
+# Compile: create assembler files from C source files. ARM/Thumb
+$(SRC:.c=.s) : %.s : %.c
+	@echo $(MSG_ASMFROMC) $< to $@
+	$(CC) $(THUMB) -S $(CFLAGS) $(CONLYFLAGS) $< -o $@
+
+###################################################################################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
+# Define all listing files (used for make clean).
+LSTFILES   = $(addsuffix .lst, $(ALLSRCBASE))
+# Define all depedency-files (used for make clean).
+DEPFILES   = $(addsuffix .o.d, $(ALLSRCBASE))
+
+
+# Target: clean project.
+clean: clean_list
+
+clean_list :
+	@echo $(MSG_CLEANING)
+	$(REMOVE) $(TARGET).map
+	$(REMOVE) $(TARGET).elf
+	$(REMOVE) $(TARGET).elf.d
+	$(REMOVE) $(TARGET).hex
+	$(REMOVE) $(TARGET).bin
+	$(REMOVE) $(TARGET).sym
+	$(REMOVE) $(TARGET).lss
+	$(REMOVE) $(ALLOBJ)
+	$(REMOVE) $(LSTFILES)
+	$(REMOVE) $(DEPFILES)
+	$(REMOVE) $(SRC:.c=.s)
+	$(REMOVE) start_stm32f10x.lst
+
+# Create object files directory
+##$(shell mkdir $(OBJDIR) 2>/dev/null)
+
+# Include the dependency files.
+#-include $(shell mkdir dep 2>/dev/null) $(wildcard dep/*)
+-include $(wildcard dep/*)
+
+# Listing of phony targets.
+.PHONY : all finish \
+build elf hex bin lss sym clean clean_list createdirs
+

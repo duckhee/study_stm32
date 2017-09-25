@@ -417,15 +417,6 @@ typedef struct
 #define  RCC_CFGR_SW_PLL                     ((uint32_t)0x00000002)        /*!< PLL selected as system clock */
 #define  RCC_CFGR_SWS                        ((uint32_t)0x0000000C)        /*!< SWS[1:0] bits (System Clock Switch Status) */
 
-/* functions */
-
-uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
-void USART_SendData(USART_TypeDef* USARTx, uint16_t Data);
-uint16_t USART_ReceiveData(USART_TypeDef* USARTx);
-FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG);
-void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks);
-void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct);
-void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct);
 
 /* interrupt handler functions */
 

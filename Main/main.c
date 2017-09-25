@@ -3,5 +3,6 @@
 
 int main()
 {
-    
+    Hw_Init();
+    Led_Test();
 }

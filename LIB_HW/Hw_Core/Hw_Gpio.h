@@ -19,6 +19,7 @@ GPIO_DEF void Gpio_B_Init(uint16_t pinNum, GPIOSpeed_TypeDef speedValE, GPIOMode
 GPIO_DEF void Gpio_C_Init(uint16_t pinNum, GPIOSpeed_TypeDef speedValE, GPIOMode_TypeDef modeE);
 GPIO_DEF void Gpio_D_Init(uint16_t pinNum, GPIOSpeed_TypeDef speedValE, GPIOMode_TypeDef modeE);
 
-uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
+GPIO_DEF uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
+GPIO_DEF void GPIO_Configuration(void);
 
 #endif

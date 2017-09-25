@@ -11,5 +11,6 @@
 #endif
 
 SYSTICK_DEF void Systick_Init();
+SYSTICK_DEF void Systick_Handler(void);
 
 #endif
