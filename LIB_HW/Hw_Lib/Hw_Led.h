@@ -11,13 +11,14 @@
 
 LED_DEF void Led_OnAll();
 LED_DEF void Led_OffAll();
-LED_DEF void Led_Mult();
 LED_DEF void Red_On();
 LED_DEF void Red_Off();
 LED_DEF void Yellow_On();
 LED_DEF void Yellow_Off();
 LED_DEF void Blue_On();
 LED_DEF void Blue_Off();
+LED_DEF void Led_Mult(uint32_t count);
+LED_DEF void Led_Test();
 
 
 #endif
