@@ -6,7 +6,7 @@
 KEY_DEF void Key_Test(void)
 {
     uint32_t i = 0;
-    Led_OnAll();
+    Led_OffAll();
 
     while(1)
     {

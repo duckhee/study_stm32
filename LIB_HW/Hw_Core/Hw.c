@@ -4,6 +4,10 @@
 
 HW_DEF void Hw_Init()
 {
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOA;
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOB;
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOC;
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOD;
     GPIO_InitTypeDef GPIO_InitStructure;
     
     /* Configure gpio as output : LED1, LED2, LED3 */
