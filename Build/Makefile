@@ -14,9 +14,12 @@ EXTRAINCDIRS = ../LIB              \
                ../LIB_HW           \
                ../LIB_HW/Hw_Core   \
 	           ../LIB_HW/Hw_Lib    \
+			   ../MENU             \
 	           ../Main
 
 SRC_AP = ../Main/main.c
+
+SRC_MENU = ../MENU
 
 SRC_HW = ../LIB_HW/Hw_Core/$(STARTUP_C)    \
          ../LIB_HW/Hw_Core/Hw_Adc.c        \
@@ -36,7 +39,7 @@ SRC_LB = ../LIB/Ld_Printf.c        \
          ../LIB/Util.c
 
 #source file 
-SRC = $(SRC_AP) $(SRC_LB) $(SRC_HW)
+SRC = $(SRC_AP) $(SRC_LB) $(SRC_HW) $(SRC_MENU)
 #thumb mode
 THUMB = -mthumb
 #include header

@@ -9,7 +9,7 @@
 #define ADC_DEF            extern
 #endif
 
-
+ADC_DEF void Adc_Init();
 
 
 #endif

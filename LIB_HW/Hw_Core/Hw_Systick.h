@@ -10,7 +10,7 @@
 #define SYSTICK_DEF        extern
 #endif
 
-SYSTICK_DEF void Systick_Init();
+SYSTICK_DEF void Systick_Init(void);
 SYSTICK_DEF void Systick_Handler(void);
 
 #endif
