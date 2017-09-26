@@ -24,9 +24,12 @@ SRC_HW = ../LIB_HW/Hw_Core/$(STARTUP_C)    \
 		 ../LIB_HW/Hw_Core/Hw_Gpio.c       \
 		 ../LIB_HW/Hw_Core/Hw_I2c.c        \
 		 ../LIB_HW/Hw_Core/Hw_Pwm.c        \
+		 ../LIB_HW/Hw_Core/Hw_Pll.c        \
 		 ../LIB_HW/Hw_Core/Hw_Systick.c    \
 		 ../LIB_HW/Hw_Core/Hw.c            \
 		 ../LIB_HW/Hw_Lib/Hw_Led.c         \
+		 ../LIB_HW/Hw_Lib/Hw_Key.c         \
+		 ../LIB_HW/Hw_Lib/Hw_Segment.c     \
 
 
 SRC_LB = ../LIB/Ld_Printf.c        \

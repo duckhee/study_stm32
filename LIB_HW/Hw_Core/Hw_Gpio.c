@@ -6,6 +6,7 @@
 
 GPIO_DEF void Gpio_A_Init(uint16_t pinNum, GPIOSpeed_TypeDef speedValE, GPIOMode_TypeDef modeE)
 {
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOA;
     uint32_t tmpVal = modeE << 2 | speedValE;
     uint32_t pinpos = 0x00;
     if((pinNum & 0xFF) != 0)
@@ -38,6 +39,7 @@ GPIO_DEF void Gpio_A_Init(uint16_t pinNum, GPIOSpeed_TypeDef speedValE, GPIOMode
 }
 GPIO_DEF void Gpio_B_Init(uint16_t pinNum, GPIOSpeed_TypeDef speedValE, GPIOMode_TypeDef modeE)
 {
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOB;
     uint32_t tmpVal = modeE << 2 | speedValE;
     uint32_t pinpos = 0x00;
     if((pinNum & 0xFF) != 0)
@@ -70,6 +72,7 @@ GPIO_DEF void Gpio_B_Init(uint16_t pinNum, GPIOSpeed_TypeDef speedValE, GPIOMode
 }
 GPIO_DEF void Gpio_C_Init(uint16_t pinNum, GPIOSpeed_TypeDef speedValE, GPIOMode_TypeDef modeE)
 {
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOC;
     uint32_t tmpVal = modeE << 2 | speedValE;
     uint32_t pinpos = 0x00;
     if((pinNum & 0xFF) != 0)
@@ -102,6 +105,7 @@ GPIO_DEF void Gpio_C_Init(uint16_t pinNum, GPIOSpeed_TypeDef speedValE, GPIOMode
 }
 GPIO_DEF void Gpio_D_Init(uint16_t pinNum, GPIOSpeed_TypeDef speedValE, GPIOMode_TypeDef modeE)
 {
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOD;
     uint32_t tmpVal = modeE << 2 | speedValE;
     uint32_t pinpos = 0x00;
     if((pinNum & 0xFF) != 0)
@@ -235,37 +239,37 @@ GPIO_DEF uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
 GPIO_DEF void GPIO_Configuration(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
-
-    // UART configuration ...
-
-    /* Configure USARTx_Tx as alternate function push-pull */
-    GPIO_InitStructure.GPIO_Pin = GPIO_USART_Tx_Pin;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIO_USART, &GPIO_InitStructure);
-
-    /* Configure USARTx_Rx as input floating */
-    GPIO_InitStructure.GPIO_Pin = GPIO_USART_Rx_Pin;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(GPIO_USART, &GPIO_InitStructure);
-
-    // Key configuration ...
-
-    /* Configure gpio as input : Button Left-WKUP */
-    GPIO_InitStructure.GPIO_Pin = GPIO_KEY1_PIN;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(GPIO_KEY, &GPIO_InitStructure);
-
-    /* Configure gpio as input : Button Right-USER */
-    GPIO_InitStructure.GPIO_Pin = GPIO_KEY2_PIN;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(GPIO_KEY, &GPIO_InitStructure);
-
-    // LED configuration ...
-
-    /* Configure gpio as output : LED1, LED2, LED3 */
-    GPIO_InitStructure.GPIO_Pin = GPIO_LED1_PIN | GPIO_LED2_PIN | GPIO_LED3_PIN ;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(GPIO_LED, &GPIO_InitStructure);
+    
+        // UART configuration ...
+    
+        /* Configure USARTx_Tx as alternate function push-pull */
+        GPIO_InitStructure.GPIO_Pin = GPIO_USART_Tx_Pin;
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+        GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+    
+        /* Configure USARTx_Rx as input floating */
+        GPIO_InitStructure.GPIO_Pin = GPIO_USART_Rx_Pin;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+        GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+    
+        // Key configuration ...
+    
+        /* Configure gpio as input : Button Left-WKUP */
+        GPIO_InitStructure.GPIO_Pin = GPIO_KEY1_PIN;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+        GPIO_Init(GPIO_KEY, &GPIO_InitStructure);
+    
+        /* Configure gpio as input : Button Right-USER */
+        GPIO_InitStructure.GPIO_Pin = GPIO_KEY2_PIN;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+        GPIO_Init(GPIO_KEY, &GPIO_InitStructure);
+    
+        // LED configuration ...
+    
+        /* Configure gpio as output : LED1, LED2, LED3 */
+        GPIO_InitStructure.GPIO_Pin = GPIO_LED1_PIN | GPIO_LED2_PIN | GPIO_LED3_PIN ;
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+        GPIO_Init(GPIO_LED, &GPIO_InitStructure);
 }
