@@ -11,9 +11,9 @@
 #endif
 
 
-LED_MENU_DEF int Led_Main(int argc, char **argv);
+LED_MENU_DEF int Led_Main(void);
 LED_MENU_DEF int Led_main_menu(void);
 
-// 사용할 때 LED_MAIN()함수를 불러와서 사용한다.
+// 사용할 때 LED_MAIN_MENU()함수를 불러와서 사용한다.
 
 #endif

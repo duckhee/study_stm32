@@ -12,7 +12,7 @@
      (*(volatile unsigned long *)0x40013804) = c;
  }
  
- LDSTRING_DEF char get_byte(void)
+ LDSTRING_DEF char Ld_get_byte(void)
  {
      //while( !((*(volatile unsigned long *) 0x40013800) & 0x20) ) ;
      while( !((*(volatile unsigned long *)0x40013800) & 0x20) ) ;

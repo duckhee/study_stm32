@@ -9,7 +9,7 @@
 #define KEY_MENU_DEF              extern
 #endif
 
-KEY_MENU_DEF int Key_Main(int argc, char **argv);
-KEY_MENU_DEF int Key_Main_Menu();
+KEY_MENU_DEF int Key_Main(void);
+KEY_MENU_DEF int Key_Main_Menu(void);
 
 #endif

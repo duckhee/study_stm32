@@ -2,6 +2,7 @@
 #define __AP_H__
 
 #include "Hw.h"
+#include "Ap_Clock.h"
 
 
 /* library */

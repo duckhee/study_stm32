@@ -6,5 +6,5 @@ int main()
     
     Hw_Init();
     Led_OffAll();
-    Led_Test();
+    Led_Main();
 }

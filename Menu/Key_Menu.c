@@ -4,11 +4,11 @@
 #include "Key_Menu.h"
 
 
-KEY_MENU_DEF int Key_Main(int argc, char **argv);
-KEY_MENU_DEF int Key_Main_Menu();
+KEY_MENU_DEF int Key_Main(void);
+KEY_MENU_DEF int Key_Main_Menu(void);
 static unsigned short flag;
 
-KEY_MENU_DEF int Key_Main(int argc, char **argv)
+KEY_MENU_DEF int Key_Main(void)
 {
     int key;
 
@@ -18,17 +18,17 @@ KEY_MENU_DEF int Key_Main(int argc, char **argv)
             {
                 case '1':
                     Ld_printf("No.1\n");
-                 
+                    Key_Test();
                 break;
     
                 case '2':
                     Ld_printf("No.2\n");
-                   
+                    Led_Test();
                 break;
                 
                 case '3':
                     Ld_printf("No.3\n");
-                    
+                    Ld_System_Information();
                 break;
     
                 case '4':
@@ -136,9 +136,9 @@ KEY_MENU_DEF int Key_Main_Menu()
         Ld_printf("-------------------------------------------------\n");
         Ld_printf("                 LED MAIN MENU\n");
         Ld_printf("-------------------------------------------------\n");
-        Ld_printf(" 1. Test                                         \n");
-        Ld_printf(" 2. Test                                         \n");
-        Ld_printf(" 3. Test                                         \n");
+        Ld_printf(" 1. Key Test                                         \n");
+        Ld_printf(" 2. Led Test                                         \n");
+        Ld_printf(" 3. System_Information                                         \n");
         Ld_printf(" 4. Test                                         \n");
         Ld_printf(" 5. Test                                         \n");
         Ld_printf(" 6. Test                                         \n");
@@ -152,7 +152,7 @@ KEY_MENU_DEF int Key_Main_Menu()
         Ld_printf("\n\n");
     
         Ld_printf("SELECT THE COMMAND NUMBER : ");
-        key=get_byte();
+        key=Ld_get_byte();
     
         return key;
 }

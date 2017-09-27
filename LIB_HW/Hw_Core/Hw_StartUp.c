@@ -69,6 +69,8 @@ void Reset_Handler(void)
     *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0;         
     
     *(volatile unsigned long *)0x40010804 = 0x888444B4;
+    *(volatile unsigned long *)0x40010004 &= ~(7<<24);
+    *(volatile unsigned long *)0x40010004 |= (1<<26);
 
      *(volatile unsigned long *) 0x40013810 = 0x0;           
      *(volatile unsigned long *) 0x4001380C = 0x200C;        
