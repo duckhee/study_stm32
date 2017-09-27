@@ -23,11 +23,23 @@
 /* defines */
 
 
-#define GPIO_KEY             GPIOA
+#define GPIO_USART           GPIOA
 
 #define GPIO_USART_Rx_Pin    GPIO_Pin_10
 #define GPIO_USART_Tx_Pin    GPIO_Pin_9
 
+
+#define GPIO_KEY             GPIOA
+
+#define GPIO_KEY1_PIN        GPIO_Pin_0 /* LEFT_WKUP */
+#define GPIO_KEY2_PIN        GPIO_Pin_1 /* RIGHT_USER */
+
+
+#define GPIO_LED             GPIOB
+
+#define GPIO_LED1_PIN        GPIO_Pin_9 /* RED */
+#define GPIO_LED2_PIN        GPIO_Pin_5 /* YELLOW */ 
+#define GPIO_LED3_PIN        GPIO_Pin_8 /* BLUE */
 
 #ifdef HW_LOCAL
 #define HW_DEF

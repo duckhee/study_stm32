@@ -19,7 +19,8 @@ EXTRAINCDIRS = ../LIB              \
 
 SRC_AP = ../Main/main.c
 
-SRC_MENU = ../MENU
+SRC_MENU = ../MENU/Key_Menu.c      \
+           ../MENU/Led_Menu.c
 
 SRC_HW = ../LIB_HW/Hw_Core/$(STARTUP_C)    \
          ../LIB_HW/Hw_Core/Hw_Adc.c        \
