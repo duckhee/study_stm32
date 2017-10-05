@@ -4,9 +4,11 @@
 
 //extern __IO uint32_t StartUpCounter;
 
+
+
 CLOCK_DEF void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
 {
-    uint32_t tmp = 0, pllmull = 0, pllsource = 0, presc = 0;
+  uint32_t tmp = 0, pllmull = 0, pllsource = 0, presc = 0;
     
   /* Get SYSCLK source -------------------------------------------------------*/
   tmp = RCC->CFGR & CFGR_SWS_Mask;
@@ -80,13 +82,16 @@ CLOCK_DEF void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
   RCC_Clocks->ADCCLK_Frequency = RCC_Clocks->PCLK2_Frequency / presc;
 }
 
+
+
+
+
 CLOCK_DEF void Ld_System_Information()
 {
-    RCC_ClocksTypeDef  rcc_clocks;
 
     //Ld_printf("StartUpCounter : %d\n", StartUpCounter);
 
-    RCC_GetClocksFreq(&rcc_clocks);
+    
 
     Ld_printf("SYSCLK_Frequency = %d\n",rcc_clocks.SYSCLK_Frequency );
     Ld_printf("HCLK_Frequency = %d\n",rcc_clocks.HCLK_Frequency );
