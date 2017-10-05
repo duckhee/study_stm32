@@ -178,6 +178,7 @@ clean_list :
 	$(REMOVE) $(DEPFILES)
 	$(REMOVE) $(SRC:.c=.s)
 	$(REMOVE) start_stm32f10x.lst
+	$(REMOVE) NUL
 
 # Create object files directory
 ##$(shell mkdir $(OBJDIR) 2>/dev/null)
