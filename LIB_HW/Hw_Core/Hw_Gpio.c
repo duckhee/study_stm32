@@ -168,6 +168,7 @@ currentmode = ((uint32_t)GPIO_InitStruct->GPIO_Mode) & ((uint32_t)0x0F);
       currentpin = (GPIO_InitStruct->GPIO_Pin) & pos;
       if (currentpin == pos)
       {
+          //CRL에 mode 설정하기 위해서 위치 이동
         pos = pinpos << 2;
         /* Clear the corresponding low control register bits */
         pinmask = ((uint32_t)0x0F) << pos;
@@ -203,6 +204,7 @@ currentmode = ((uint32_t)GPIO_InitStruct->GPIO_Mode) & ((uint32_t)0x0F);
       currentpin = ((GPIO_InitStruct->GPIO_Pin) & pos);
       if (currentpin == pos)
       {
+          //CRH에 mode 설정하기 위해서 위치 이동
         pos = pinpos << 2;
         /* Clear the corresponding high control register bits */
         pinmask = ((uint32_t)0x0F) << pos;

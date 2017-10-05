@@ -4,7 +4,7 @@
 
 //extern __IO uint32_t StartUpCounter;
 
-
+RCC_ClocksTypeDef  rcc_clocks;
 
 CLOCK_DEF void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
 {

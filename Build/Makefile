@@ -27,6 +27,7 @@ SRC_MENU = ../Menu/Key_Menu.c              \
 SRC_HW = ../LIB_HW/Hw_Core/$(STARTUP_C)    \
          ../LIB_HW/Hw_Core/Hw_Adc.c        \
 		 ../LIB_HW/Hw_Core/Hw_Dma.c        \
+		 ../LIB_HW/Hw_Core/Hw_Uart.c       \
 		 ../LIB_HW/Hw_Core/Hw_Gpio.c       \
 		 ../LIB_HW/Hw_Core/Hw_I2c.c        \
 		 ../LIB_HW/Hw_Core/Hw_Pwm.c        \

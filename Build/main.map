@@ -1,0 +1,747 @@
+
+Allocating common symbols
+Common symbol       size              file
+
+b                   0x4               Hw_StartUp.o
+Hw_ISR_VectorTable  0x190             Hw_StartUp.o
+rcc_clocks          0x14              main.o
+
+Discarded input sections
+
+ .text          0x0000000000000000        0x0 main.o
+ .data          0x0000000000000000        0x0 main.o
+ .bss           0x0000000000000000        0x0 main.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 main.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 main.o
+ .text          0x0000000000000000        0x0 Ap_Clock.o
+ .data          0x0000000000000000        0x0 Ap_Clock.o
+ .bss           0x0000000000000000        0x0 Ap_Clock.o
+ .text          0x0000000000000000        0x0 Ld_Printf.o
+ .data          0x0000000000000000        0x0 Ld_Printf.o
+ .bss           0x0000000000000000        0x0 Ld_Printf.o
+ .text.check_byte
+                0x0000000000000000       0x24 Ld_Printf.o
+ .text.SerialOutputString
+                0x0000000000000000       0x48 Ld_Printf.o
+ .text.StrNCmp  0x0000000000000000       0x44 Ld_Printf.o
+ .text.StrCmp   0x0000000000000000       0x44 Ld_Printf.o
+ .text.DecToLong
+                0x0000000000000000       0x14 Ld_Printf.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Ld_Printf.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Ld_Printf.o
+ .text          0x0000000000000000        0x0 Util.o
+ .data          0x0000000000000000        0x0 Util.o
+ .bss           0x0000000000000000        0x0 Util.o
+ .text.Hw_second
+                0x0000000000000000       0x18 Util.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Util.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Util.o
+ .text          0x0000000000000000        0x0 Hw_StartUp.o
+ .data          0x0000000000000000        0x0 Hw_StartUp.o
+ .bss           0x0000000000000000        0x0 Hw_StartUp.o
+ .text.__Init_Data
+                0x0000000000000000       0x64 Hw_StartUp.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_StartUp.o
+ .data.a        0x0000000000000000        0x4 Hw_StartUp.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_StartUp.o
+ .text          0x0000000000000000        0x0 Hw_Adc.o
+ .data          0x0000000000000000        0x0 Hw_Adc.o
+ .bss           0x0000000000000000        0x0 Hw_Adc.o
+ .text.Adc_Init
+                0x0000000000000000        0x4 Hw_Adc.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_Adc.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_Adc.o
+ .debug_info    0x0000000000000000       0xfd Hw_Adc.o
+ .debug_abbrev  0x0000000000000000       0x7e Hw_Adc.o
+ .debug_aranges
+                0x0000000000000000       0x20 Hw_Adc.o
+ .debug_ranges  0x0000000000000000       0x10 Hw_Adc.o
+ .debug_line    0x0000000000000000       0x94 Hw_Adc.o
+ .debug_str     0x0000000000000000      0x19b Hw_Adc.o
+ .comment       0x0000000000000000       0x12 Hw_Adc.o
+ .debug_frame   0x0000000000000000       0x20 Hw_Adc.o
+ .ARM.attributes
+                0x0000000000000000       0x33 Hw_Adc.o
+ .text          0x0000000000000000        0x0 Hw_Dma.o
+ .data          0x0000000000000000        0x0 Hw_Dma.o
+ .bss           0x0000000000000000        0x0 Hw_Dma.o
+ .text.Dma_Init
+                0x0000000000000000        0x4 Hw_Dma.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_Dma.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_Dma.o
+ .debug_info    0x0000000000000000       0xfe Hw_Dma.o
+ .debug_abbrev  0x0000000000000000       0x80 Hw_Dma.o
+ .debug_aranges
+                0x0000000000000000       0x20 Hw_Dma.o
+ .debug_ranges  0x0000000000000000       0x10 Hw_Dma.o
+ .debug_line    0x0000000000000000       0x94 Hw_Dma.o
+ .debug_str     0x0000000000000000      0x19b Hw_Dma.o
+ .comment       0x0000000000000000       0x12 Hw_Dma.o
+ .debug_frame   0x0000000000000000       0x20 Hw_Dma.o
+ .ARM.attributes
+                0x0000000000000000       0x33 Hw_Dma.o
+ .text          0x0000000000000000        0x0 Hw_Uart.o
+ .data          0x0000000000000000        0x0 Hw_Uart.o
+ .bss           0x0000000000000000        0x0 Hw_Uart.o
+ .text.Uart1_Init
+                0x0000000000000000       0x44 Hw_Uart.o
+ .text.Serial_PutString
+                0x0000000000000000       0x20 Hw_Uart.o
+ .text.UART_SendData
+                0x0000000000000000        0x8 Hw_Uart.o
+ .text.UART_GetFlagStatus
+                0x0000000000000000        0xc Hw_Uart.o
+ .text.SerialPutChar
+                0x0000000000000000       0x14 Hw_Uart.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_Uart.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_Uart.o
+ .debug_info    0x0000000000000000      0x48d Hw_Uart.o
+ .debug_abbrev  0x0000000000000000      0x203 Hw_Uart.o
+ .debug_loc     0x0000000000000000      0x158 Hw_Uart.o
+ .debug_aranges
+                0x0000000000000000       0x40 Hw_Uart.o
+ .debug_ranges  0x0000000000000000       0x78 Hw_Uart.o
+ .debug_line    0x0000000000000000      0x11b Hw_Uart.o
+ .debug_str     0x0000000000000000      0x30c Hw_Uart.o
+ .comment       0x0000000000000000       0x12 Hw_Uart.o
+ .debug_frame   0x0000000000000000       0x78 Hw_Uart.o
+ .ARM.attributes
+                0x0000000000000000       0x33 Hw_Uart.o
+ .text          0x0000000000000000        0x0 Hw_Gpio.o
+ .data          0x0000000000000000        0x0 Hw_Gpio.o
+ .bss           0x0000000000000000        0x0 Hw_Gpio.o
+ .text.Gpio_A_Init
+                0x0000000000000000       0x8c Hw_Gpio.o
+ .text.Gpio_B_Init
+                0x0000000000000000       0x8c Hw_Gpio.o
+ .text.Gpio_C_Init
+                0x0000000000000000       0x8c Hw_Gpio.o
+ .text.Gpio_D_Init
+                0x0000000000000000       0x8c Hw_Gpio.o
+ .text.GPIO_ReadInputDataBit
+                0x0000000000000000        0xc Hw_Gpio.o
+ .text.GPIO_Configuration
+                0x0000000000000000       0x88 Hw_Gpio.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_Gpio.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_Gpio.o
+ .text          0x0000000000000000        0x0 Hw_I2c.o
+ .data          0x0000000000000000        0x0 Hw_I2c.o
+ .bss           0x0000000000000000        0x0 Hw_I2c.o
+ .text.I2c_Init
+                0x0000000000000000        0x4 Hw_I2c.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_I2c.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_I2c.o
+ .debug_info    0x0000000000000000       0xfe Hw_I2c.o
+ .debug_abbrev  0x0000000000000000       0x80 Hw_I2c.o
+ .debug_aranges
+                0x0000000000000000       0x20 Hw_I2c.o
+ .debug_ranges  0x0000000000000000       0x10 Hw_I2c.o
+ .debug_line    0x0000000000000000       0x94 Hw_I2c.o
+ .debug_str     0x0000000000000000      0x19b Hw_I2c.o
+ .comment       0x0000000000000000       0x12 Hw_I2c.o
+ .debug_frame   0x0000000000000000       0x20 Hw_I2c.o
+ .ARM.attributes
+                0x0000000000000000       0x33 Hw_I2c.o
+ .text          0x0000000000000000        0x0 Hw_Pwm.o
+ .data          0x0000000000000000        0x0 Hw_Pwm.o
+ .bss           0x0000000000000000        0x0 Hw_Pwm.o
+ .text.Pwm_Init
+                0x0000000000000000       0x80 Hw_Pwm.o
+ .text.Pwm_Duty
+                0x0000000000000000        0xc Hw_Pwm.o
+ .bss.g_period  0x0000000000000000        0x2 Hw_Pwm.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_Pwm.o
+ .bss.g_duty    0x0000000000000000        0x2 Hw_Pwm.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_Pwm.o
+ .debug_info    0x0000000000000000      0x198 Hw_Pwm.o
+ .debug_abbrev  0x0000000000000000       0xcb Hw_Pwm.o
+ .debug_loc     0x0000000000000000       0x4d Hw_Pwm.o
+ .debug_aranges
+                0x0000000000000000       0x28 Hw_Pwm.o
+ .debug_ranges  0x0000000000000000       0x18 Hw_Pwm.o
+ .debug_line    0x0000000000000000       0xcc Hw_Pwm.o
+ .debug_str     0x0000000000000000      0x1f0 Hw_Pwm.o
+ .comment       0x0000000000000000       0x12 Hw_Pwm.o
+ .debug_frame   0x0000000000000000       0x4c Hw_Pwm.o
+ .ARM.attributes
+                0x0000000000000000       0x33 Hw_Pwm.o
+ .text          0x0000000000000000        0x0 Hw_Pll.o
+ .data          0x0000000000000000        0x0 Hw_Pll.o
+ .bss           0x0000000000000000        0x0 Hw_Pll.o
+ .text.Pll_Init
+                0x0000000000000000        0x4 Hw_Pll.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_Pll.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_Pll.o
+ .debug_info    0x0000000000000000       0xfd Hw_Pll.o
+ .debug_abbrev  0x0000000000000000       0x7e Hw_Pll.o
+ .debug_aranges
+                0x0000000000000000       0x20 Hw_Pll.o
+ .debug_ranges  0x0000000000000000       0x10 Hw_Pll.o
+ .debug_line    0x0000000000000000       0x94 Hw_Pll.o
+ .debug_str     0x0000000000000000      0x19b Hw_Pll.o
+ .comment       0x0000000000000000       0x12 Hw_Pll.o
+ .debug_frame   0x0000000000000000       0x20 Hw_Pll.o
+ .ARM.attributes
+                0x0000000000000000       0x33 Hw_Pll.o
+ .text          0x0000000000000000        0x0 Hw_Systick.o
+ .data          0x0000000000000000        0x0 Hw_Systick.o
+ .bss           0x0000000000000000        0x0 Hw_Systick.o
+ .text.Systick_Init
+                0x0000000000000000       0x28 Hw_Systick.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_Systick.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_Systick.o
+ .text          0x0000000000000000        0x0 Hw.o
+ .data          0x0000000000000000        0x0 Hw.o
+ .bss           0x0000000000000000        0x0 Hw.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw.o
+ .text          0x0000000000000000        0x0 Hw_Led.o
+ .data          0x0000000000000000        0x0 Hw_Led.o
+ .bss           0x0000000000000000        0x0 Hw_Led.o
+ .text.Led_OnAll
+                0x0000000000000000       0x20 Hw_Led.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_Led.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_Led.o
+ .text          0x0000000000000000        0x0 Hw_Key.o
+ .data          0x0000000000000000        0x0 Hw_Key.o
+ .bss           0x0000000000000000        0x0 Hw_Key.o
+ .text.Key_Test
+                0x0000000000000000       0x9c Hw_Key.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_Key.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_Key.o
+ .debug_info    0x0000000000000000      0x26d Hw_Key.o
+ .debug_abbrev  0x0000000000000000      0x124 Hw_Key.o
+ .debug_loc     0x0000000000000000       0x4a Hw_Key.o
+ .debug_aranges
+                0x0000000000000000       0x20 Hw_Key.o
+ .debug_ranges  0x0000000000000000       0x10 Hw_Key.o
+ .debug_line    0x0000000000000000       0xcb Hw_Key.o
+ .debug_str     0x0000000000000000      0x1ee Hw_Key.o
+ .comment       0x0000000000000000       0x12 Hw_Key.o
+ .debug_frame   0x0000000000000000       0x44 Hw_Key.o
+ .ARM.attributes
+                0x0000000000000000       0x33 Hw_Key.o
+ .text          0x0000000000000000        0x0 Hw_Segment.o
+ .data          0x0000000000000000        0x0 Hw_Segment.o
+ .bss           0x0000000000000000        0x0 Hw_Segment.o
+ .text.SEG_PowerOn
+                0x0000000000000000       0x10 Hw_Segment.o
+ .text.SEG_PowerOff
+                0x0000000000000000       0x10 Hw_Segment.o
+ .text.SEG_On_OnePin
+                0x0000000000000000       0x10 Hw_Segment.o
+ .text.SEG_Off_OnePin
+                0x0000000000000000       0x10 Hw_Segment.o
+ .text.SEG_On_All
+                0x0000000000000000       0x10 Hw_Segment.o
+ .text.SEG_Off_All
+                0x0000000000000000       0x10 Hw_Segment.o
+ .text.SEG_On_Number
+                0x0000000000000000       0x98 Hw_Segment.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Hw_Segment.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Hw_Segment.o
+ .debug_info    0x0000000000000000      0x3ef Hw_Segment.o
+ .debug_abbrev  0x0000000000000000      0x147 Hw_Segment.o
+ .debug_loc     0x0000000000000000      0x13d Hw_Segment.o
+ .debug_aranges
+                0x0000000000000000       0x50 Hw_Segment.o
+ .debug_ranges  0x0000000000000000       0x40 Hw_Segment.o
+ .debug_line    0x0000000000000000      0x125 Hw_Segment.o
+ .debug_str     0x0000000000000000      0x220 Hw_Segment.o
+ .comment       0x0000000000000000       0x12 Hw_Segment.o
+ .debug_frame   0x0000000000000000       0x80 Hw_Segment.o
+ .ARM.attributes
+                0x0000000000000000       0x33 Hw_Segment.o
+ .text          0x0000000000000000        0x0 Key_Menu.o
+ .data          0x0000000000000000        0x0 Key_Menu.o
+ .bss           0x0000000000000000        0x0 Key_Menu.o
+ .text.Key_Main_Menu
+                0x0000000000000000       0xa0 Key_Menu.o
+ .text.Key_Main
+                0x0000000000000000      0x21c Key_Menu.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Key_Menu.o
+ .rodata.str1.4
+                0x0000000000000000      0x352 Key_Menu.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Key_Menu.o
+ .debug_info    0x0000000000000000      0x482 Key_Menu.o
+ .debug_abbrev  0x0000000000000000      0x102 Key_Menu.o
+ .debug_loc     0x0000000000000000      0x171 Key_Menu.o
+ .debug_aranges
+                0x0000000000000000       0x28 Key_Menu.o
+ .debug_ranges  0x0000000000000000       0x18 Key_Menu.o
+ .debug_line    0x0000000000000000      0x11c Key_Menu.o
+ .debug_str     0x0000000000000000      0x1a6 Key_Menu.o
+ .comment       0x0000000000000000       0x12 Key_Menu.o
+ .debug_frame   0x0000000000000000       0x50 Key_Menu.o
+ .ARM.attributes
+                0x0000000000000000       0x33 Key_Menu.o
+ .text          0x0000000000000000        0x0 Led_Menu.o
+ .data          0x0000000000000000        0x0 Led_Menu.o
+ .bss           0x0000000000000000        0x0 Led_Menu.o
+ .data.ADCPrescTable
+                0x0000000000000000        0x4 Led_Menu.o
+ .data.APBAHBPrescTable
+                0x0000000000000000       0x10 Led_Menu.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x0000000008000000 0x0000000000020000 xr
+RAM              0x0000000020000000 0x0000000000005000 xrw
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD main.o
+LOAD Ap_Clock.o
+LOAD Ld_Printf.o
+LOAD Util.o
+LOAD Hw_StartUp.o
+LOAD Hw_Adc.o
+LOAD Hw_Dma.o
+LOAD Hw_Uart.o
+LOAD Hw_Gpio.o
+LOAD Hw_I2c.o
+LOAD Hw_Pwm.o
+LOAD Hw_Pll.o
+LOAD Hw_Systick.o
+LOAD Hw.o
+LOAD Hw_Led.o
+LOAD Hw_Key.o
+LOAD Hw_Segment.o
+LOAD Key_Menu.o
+LOAD Led_Menu.o
+LOAD /opt/local/lib/gcc/arm-none-eabi/5.4.0/../../../../arm-none-eabi/lib/thumb/libc.a
+LOAD /opt/local/lib/gcc/arm-none-eabi/5.4.0/../../../../arm-none-eabi/lib/thumb/libm.a
+LOAD /opt/local/lib/gcc/arm-none-eabi/5.4.0/../../../../arm-none-eabi/lib/thumb/libc.a
+LOAD /opt/local/lib/gcc/arm-none-eabi/5.4.0/thumb/libgcc.a
+                0x0000000020005000                _ld_stack_address = (ORIGIN (RAM) + LENGTH (RAM))
+                0x0000000020000000                _ld_ram_start = ORIGIN (RAM)
+                0x0000000000000000                . = ALIGN (0x4)
+
+.text           0x0000000008000000     0x1130
+                0x0000000008000000                _ld_text_start = .
+                0x0000000008000000                . = ALIGN (0x80)
+                0x0000000000000000                _isr_vectorsflash_offs = (. - 0x8000000)
+ *(.isr_vectorsflash)
+ .isr_vectorsflash
+                0x0000000008000000        0x8 Hw_StartUp.o
+                0x0000000008000000                g_pfnVectors
+                0x0000000008000008                . = ALIGN (0x4)
+ *(.text)
+ *(.text.*)
+ .text.startup.main
+                0x0000000008000008       0x2c main.o
+                0x0000000008000008                main
+ .text.RCC_GetClocksFreq
+                0x0000000008000034       0xac Ap_Clock.o
+                0x0000000008000034                RCC_GetClocksFreq
+ .text.Ld_System_Information
+                0x00000000080000e0       0x48 Ap_Clock.o
+                0x00000000080000e0                Ld_System_Information
+ .text.DecToLong.part.1
+                0x0000000008000128       0x44 Ld_Printf.o
+ .text.print_byte
+                0x000000000800016c       0x28 Ld_Printf.o
+                0x000000000800016c                print_byte
+ .text.Ld_get_byte
+                0x0000000008000194       0x18 Ld_Printf.o
+                0x0000000008000194                Ld_get_byte
+ .text.Ld_printf
+                0x00000000080001ac      0x544 Ld_Printf.o
+                0x00000000080001ac                Ld_printf
+ .text.Hw_1_second
+                0x00000000080006f0        0xc Util.o
+                0x00000000080006f0                Hw_1_second
+ .text.Reset_Handler
+                0x00000000080006fc      0x168 Hw_StartUp.o
+                0x00000000080006fc                Reset_Handler
+ .text.GPIO_Init
+                0x0000000008000864       0xb8 Hw_Gpio.o
+                0x0000000008000864                GPIO_Init
+ .text.Systick_Handler
+                0x000000000800091c        0x4 Hw_Systick.o
+                0x000000000800091c                Systick_Handler
+ .text.Hw_Init  0x0000000008000920       0x50 Hw.o
+                0x0000000008000920                Hw_Init
+ .text.Red_On   0x0000000008000970       0x10 Hw_Led.o
+                0x0000000008000970                Red_On
+ .text.Red_Off  0x0000000008000980       0x10 Hw_Led.o
+                0x0000000008000980                Red_Off
+ .text.Yellow_On
+                0x0000000008000990       0x10 Hw_Led.o
+                0x0000000008000990                Yellow_On
+ .text.Yellow_Off
+                0x00000000080009a0       0x10 Hw_Led.o
+                0x00000000080009a0                Yellow_Off
+ .text.Blue_On  0x00000000080009b0       0x10 Hw_Led.o
+                0x00000000080009b0                Blue_On
+ .text.Blue_Off
+                0x00000000080009c0       0x10 Hw_Led.o
+                0x00000000080009c0                Blue_Off
+ .text.Led_OffAll
+                0x00000000080009d0       0x20 Hw_Led.o
+                0x00000000080009d0                Led_OffAll
+ .text.Led_Mult
+                0x00000000080009f0       0x6c Hw_Led.o
+                0x00000000080009f0                Led_Mult
+ .text.Led_Test
+                0x0000000008000a5c        0xc Hw_Led.o
+                0x0000000008000a5c                Led_Test
+ .text.Led_main_menu
+                0x0000000008000a68       0xa0 Led_Menu.o
+                0x0000000008000a68                Led_main_menu
+ .text.Led_Main
+                0x0000000008000b08      0x244 Led_Menu.o
+                0x0000000008000b08                Led_Main
+ *(.stub .gnu.linkonce.t.*)
+ *(.rodata .rodata.* .gnu.linkonce.r.*)
+ .rodata.str1.4
+                0x0000000008000d4c       0x77 Ap_Clock.o
+ *fill*         0x0000000008000dc3        0x1 
+ .rodata.str1.4
+                0x0000000008000dc4      0x36c Led_Menu.o
+                                        0x36a (size before relaxing)
+ *(.glue_7 .glue_7t)
+ .glue_7        0x0000000008001130        0x0 linker stubs
+ .glue_7t       0x0000000008001130        0x0 linker stubs
+                0x0000000008001130                _ld_text_end = .
+                0x0000000000001130                _ld_text_size = SIZEOF (.text)
+
+.vfp11_veneer   0x0000000008001130        0x0
+ .vfp11_veneer  0x0000000008001130        0x0 linker stubs
+
+.v4_bx          0x0000000008001130        0x0
+ .v4_bx         0x0000000008001130        0x0 linker stubs
+
+.iplt           0x0000000008001130        0x0
+ .iplt          0x0000000008001130        0x0 main.o
+
+.rel.dyn        0x0000000008001130        0x0
+ .rel.iplt      0x0000000008001130        0x0 main.o
+
+.data           0x0000000020000000       0x14 load address 0x0000000008001130
+                0x0000000020000000                _ld_data_start = .
+ *(vtable)
+ *(.data*)
+ .data.ADCPrescTable
+                0x0000000020000000        0x4 Ap_Clock.o
+ .data.APBAHBPrescTable
+                0x0000000020000004       0x10 Ap_Clock.o
+ *(.data .data.* .gnu.linkonce.d.*)
+                0x0000000020000014                . = ALIGN (0x4)
+                0x0000000020000014                _ld_data_end = .
+                0x0000000000000014                _ld_data_size = SIZEOF (.data)
+
+.igot.plt       0x0000000020000014        0x0 load address 0x0000000008001144
+ .igot.plt      0x0000000020000014        0x0 main.o
+
+.bss            0x0000000020000200      0x590 load address 0x0000000008001400
+                0x0000000020000200                _ld_bss_start = .
+ *(.bss)
+ *(COMMON)
+ COMMON         0x0000000020000200       0x14 main.o
+                0x0000000020000200                rcc_clocks
+ *fill*         0x0000000020000214      0x1ec 
+ COMMON         0x0000000020000400      0x390 Hw_StartUp.o
+                0x0000000020000400                b
+                0x0000000020000600                Hw_ISR_VectorTable
+                0x0000000020000790                _ld_bss_end = .
+                0x0000000000000590                _ld_bss_size = SIZEOF (.bss)
+OUTPUT(main.elf elf32-littlearm)
+
+.debug_info     0x0000000000000000     0x2520
+ .debug_info    0x0000000000000000      0x1a0 main.o
+ .debug_info    0x00000000000001a0      0x30a Ap_Clock.o
+ .debug_info    0x00000000000004aa      0xa5b Ld_Printf.o
+ .debug_info    0x0000000000000f05      0x158 Util.o
+ .debug_info    0x000000000000105d      0x27b Hw_StartUp.o
+ .debug_info    0x00000000000012d8      0x615 Hw_Gpio.o
+ .debug_info    0x00000000000018ed      0x114 Hw_Systick.o
+ .debug_info    0x0000000000001a01      0x306 Hw.o
+ .debug_info    0x0000000000001d07      0x37e Hw_Led.o
+ .debug_info    0x0000000000002085      0x49b Led_Menu.o
+
+.debug_abbrev   0x0000000000000000      0xbdd
+ .debug_abbrev  0x0000000000000000       0xcf main.o
+ .debug_abbrev  0x00000000000000cf      0x13b Ap_Clock.o
+ .debug_abbrev  0x000000000000020a      0x2f5 Ld_Printf.o
+ .debug_abbrev  0x00000000000004ff       0xd3 Util.o
+ .debug_abbrev  0x00000000000005d2      0x130 Hw_StartUp.o
+ .debug_abbrev  0x0000000000000702      0x14c Hw_Gpio.o
+ .debug_abbrev  0x000000000000084e       0x98 Hw_Systick.o
+ .debug_abbrev  0x00000000000008e6       0xd8 Hw.o
+ .debug_abbrev  0x00000000000009be      0x11d Hw_Led.o
+ .debug_abbrev  0x0000000000000adb      0x102 Led_Menu.o
+
+.debug_loc      0x0000000000000000     0x260c
+ .debug_loc     0x0000000000000000       0x20 main.o
+ .debug_loc     0x0000000000000020      0x1fe Ap_Clock.o
+ .debug_loc     0x000000000000021e     0x1815 Ld_Printf.o
+ .debug_loc     0x0000000000001a33       0x2c Util.o
+ .debug_loc     0x0000000000001a5f      0x140 Hw_StartUp.o
+ .debug_loc     0x0000000000001b9f      0x82b Hw_Gpio.o
+ .debug_loc     0x00000000000023ca       0x2c Hw_Systick.o
+ .debug_loc     0x00000000000023f6       0x38 Hw.o
+ .debug_loc     0x000000000000242e       0x6d Hw_Led.o
+ .debug_loc     0x000000000000249b      0x171 Led_Menu.o
+
+.debug_aranges  0x0000000000000000      0x220
+ .debug_aranges
+                0x0000000000000000       0x20 main.o
+ .debug_aranges
+                0x0000000000000020       0x28 Ap_Clock.o
+ .debug_aranges
+                0x0000000000000048       0x60 Ld_Printf.o
+ .debug_aranges
+                0x00000000000000a8       0x28 Util.o
+ .debug_aranges
+                0x00000000000000d0       0x28 Hw_StartUp.o
+ .debug_aranges
+                0x00000000000000f8       0x50 Hw_Gpio.o
+ .debug_aranges
+                0x0000000000000148       0x28 Hw_Systick.o
+ .debug_aranges
+                0x0000000000000170       0x20 Hw.o
+ .debug_aranges
+                0x0000000000000190       0x68 Hw_Led.o
+ .debug_aranges
+                0x00000000000001f8       0x28 Led_Menu.o
+
+.debug_ranges   0x0000000000000000      0x448
+ .debug_ranges  0x0000000000000000       0x10 main.o
+ .debug_ranges  0x0000000000000010       0x18 Ap_Clock.o
+ .debug_ranges  0x0000000000000028      0x300 Ld_Printf.o
+ .debug_ranges  0x0000000000000328       0x18 Util.o
+ .debug_ranges  0x0000000000000340       0x30 Hw_StartUp.o
+ .debug_ranges  0x0000000000000370       0x40 Hw_Gpio.o
+ .debug_ranges  0x00000000000003b0       0x18 Hw_Systick.o
+ .debug_ranges  0x00000000000003c8       0x10 Hw.o
+ .debug_ranges  0x00000000000003d8       0x58 Hw_Led.o
+ .debug_ranges  0x0000000000000430       0x18 Led_Menu.o
+
+.debug_line     0x0000000000000000      0xd41
+ .debug_line    0x0000000000000000       0xae main.o
+ .debug_line    0x00000000000000ae       0xf3 Ap_Clock.o
+ .debug_line    0x00000000000001a1      0x3b9 Ld_Printf.o
+ .debug_line    0x000000000000055a       0xa2 Util.o
+ .debug_line    0x00000000000005fc      0x134 Hw_StartUp.o
+ .debug_line    0x0000000000000730      0x218 Hw_Gpio.o
+ .debug_line    0x0000000000000948       0xb3 Hw_Systick.o
+ .debug_line    0x00000000000009fb       0xb7 Hw.o
+ .debug_line    0x0000000000000ab2      0x16e Hw_Led.o
+ .debug_line    0x0000000000000c20      0x121 Led_Menu.o
+
+.debug_str      0x0000000000000000      0x7af
+ .debug_str     0x0000000000000000      0x1c9 main.o
+                                        0x202 (size before relaxing)
+ .debug_str     0x00000000000001c9       0xa6 Ap_Clock.o
+                                        0x29a (size before relaxing)
+ .debug_str     0x000000000000026f       0xfd Ld_Printf.o
+                                        0x274 (size before relaxing)
+ .debug_str     0x000000000000036c       0x29 Util.o
+                                        0x1a0 (size before relaxing)
+ .debug_str     0x0000000000000395       0xdf Hw_StartUp.o
+                                        0x256 (size before relaxing)
+ .debug_str     0x0000000000000474      0x235 Hw_Gpio.o
+                                        0x3f4 (size before relaxing)
+ .debug_str     0x00000000000006a9       0x3c Hw_Systick.o
+                                        0x1b3 (size before relaxing)
+ .debug_str     0x00000000000006e5       0x1f Hw.o
+                                        0x317 (size before relaxing)
+ .debug_str     0x0000000000000704       0x7c Hw_Led.o
+                                        0x21c (size before relaxing)
+ .debug_str     0x0000000000000780       0x2f Led_Menu.o
+                                        0x1a6 (size before relaxing)
+
+.comment        0x0000000000000000       0x11
+ .comment       0x0000000000000000       0x11 main.o
+                                         0x12 (size before relaxing)
+ .comment       0x0000000000000011       0x12 Ap_Clock.o
+ .comment       0x0000000000000011       0x12 Ld_Printf.o
+ .comment       0x0000000000000011       0x12 Util.o
+ .comment       0x0000000000000011       0x12 Hw_StartUp.o
+ .comment       0x0000000000000011       0x12 Hw_Gpio.o
+ .comment       0x0000000000000011       0x12 Hw_Systick.o
+ .comment       0x0000000000000011       0x12 Hw.o
+ .comment       0x0000000000000011       0x12 Hw_Led.o
+ .comment       0x0000000000000011       0x12 Led_Menu.o
+
+.ARM.attributes
+                0x0000000000000000       0x33
+ .ARM.attributes
+                0x0000000000000000       0x33 main.o
+ .ARM.attributes
+                0x0000000000000033       0x33 Ap_Clock.o
+ .ARM.attributes
+                0x0000000000000066       0x33 Ld_Printf.o
+ .ARM.attributes
+                0x0000000000000099       0x33 Util.o
+ .ARM.attributes
+                0x00000000000000cc       0x33 Hw_StartUp.o
+ .ARM.attributes
+                0x00000000000000ff       0x33 Hw_Gpio.o
+ .ARM.attributes
+                0x0000000000000132       0x33 Hw_Systick.o
+ .ARM.attributes
+                0x0000000000000165       0x33 Hw.o
+ .ARM.attributes
+                0x0000000000000198       0x33 Hw_Led.o
+ .ARM.attributes
+                0x00000000000001cb       0x33 Led_Menu.o
+
+.debug_frame    0x0000000000000000      0x5b0
+ .debug_frame   0x0000000000000000       0x2c main.o
+ .debug_frame   0x000000000000002c       0x60 Ap_Clock.o
+ .debug_frame   0x000000000000008c      0x180 Ld_Printf.o
+ .debug_frame   0x000000000000020c       0x38 Util.o
+ .debug_frame   0x0000000000000244       0x68 Hw_StartUp.o
+ .debug_frame   0x00000000000002ac      0x170 Hw_Gpio.o
+ .debug_frame   0x000000000000041c       0x40 Hw_Systick.o
+ .debug_frame   0x000000000000045c       0x38 Hw.o
+ .debug_frame   0x0000000000000494       0xcc Hw_Led.o
+ .debug_frame   0x0000000000000560       0x50 Led_Menu.o
+
+Cross Reference Table
+
+Symbol                                            File
+Adc_Init                                          Hw_Adc.o
+Blue_Off                                          Hw_Led.o
+                                                  Led_Menu.o
+Blue_On                                           Hw_Led.o
+                                                  Led_Menu.o
+DecToLong                                         Ld_Printf.o
+Dma_Init                                          Hw_Dma.o
+GPIO_Configuration                                Hw_Gpio.o
+GPIO_Init                                         Hw_Gpio.o
+                                                  Hw.o
+GPIO_ReadInputDataBit                             Hw_Gpio.o
+                                                  Hw_Key.o
+Gpio_A_Init                                       Hw_Gpio.o
+Gpio_B_Init                                       Hw_Gpio.o
+Gpio_C_Init                                       Hw_Gpio.o
+Gpio_D_Init                                       Hw_Gpio.o
+Hw_1_second                                       Util.o
+                                                  Hw_Key.o
+                                                  Hw_Led.o
+Hw_ISR_VectorTable                                Hw_StartUp.o
+Hw_Init                                           Hw.o
+                                                  main.o
+Hw_second                                         Util.o
+I2c_Init                                          Hw_I2c.o
+Key_Main                                          Key_Menu.o
+Key_Main_Menu                                     Key_Menu.o
+Key_Test                                          Hw_Key.o
+                                                  Key_Menu.o
+LED_Off_Blue                                      Hw_Key.o
+LED_On_Blue                                       Hw_Key.o
+Ld_System_Information                             Ap_Clock.o
+                                                  Led_Menu.o
+                                                  Key_Menu.o
+Ld_get_byte                                       Ld_Printf.o
+                                                  Led_Menu.o
+                                                  Key_Menu.o
+Ld_printf                                         Ld_Printf.o
+                                                  Led_Menu.o
+                                                  Key_Menu.o
+                                                  Ap_Clock.o
+Led_Main                                          Led_Menu.o
+                                                  main.o
+Led_Mult                                          Hw_Led.o
+Led_OffAll                                        Hw_Led.o
+                                                  Hw_Key.o
+                                                  main.o
+Led_OnAll                                         Hw_Led.o
+Led_Test                                          Hw_Led.o
+                                                  Led_Menu.o
+                                                  Key_Menu.o
+Led_main_menu                                     Led_Menu.o
+Pll_Init                                          Hw_Pll.o
+Pwm_Duty                                          Hw_Pwm.o
+Pwm_Init                                          Hw_Pwm.o
+RCC_GetClocksFreq                                 Ap_Clock.o
+                                                  main.o
+Red_Off                                           Hw_Led.o
+                                                  Led_Menu.o
+                                                  Hw_Key.o
+Red_On                                            Hw_Led.o
+                                                  Led_Menu.o
+                                                  Hw_Key.o
+Reset_Handler                                     Hw_StartUp.o
+SEG_Off_All                                       Hw_Segment.o
+SEG_Off_OnePin                                    Hw_Segment.o
+SEG_On_All                                        Hw_Segment.o
+SEG_On_Number                                     Hw_Segment.o
+SEG_On_OnePin                                     Hw_Segment.o
+SEG_PowerOff                                      Hw_Segment.o
+SEG_PowerOn                                       Hw_Segment.o
+SerialOutputString                                Ld_Printf.o
+SerialPutChar                                     Hw_Uart.o
+Serial_PutString                                  Hw_Uart.o
+StrCmp                                            Ld_Printf.o
+StrNCmp                                           Ld_Printf.o
+Systick_Handler                                   Hw_Systick.o
+                                                  Hw_StartUp.o
+Systick_Init                                      Hw_Systick.o
+UART_GetFlagStatus                                Hw_Uart.o
+UART_SendData                                     Hw_Uart.o
+USART1_Init                                       Hw_Uart.o
+Uart1_Init                                        Hw_Uart.o
+Yellow_Off                                        Hw_Led.o
+                                                  Led_Menu.o
+                                                  Hw_Key.o
+Yellow_On                                         Hw_Led.o
+                                                  Led_Menu.o
+                                                  Hw_Key.o
+__Init_Data                                       Hw_StartUp.o
+_ld_bss_end                                       Hw_StartUp.o
+_ld_bss_start                                     Hw_StartUp.o
+_ld_data_end                                      Hw_StartUp.o
+_ld_data_start                                    Hw_StartUp.o
+_ld_ram_start                                     Hw_StartUp.o
+_ld_stack_address                                 Hw_StartUp.o
+a                                                 Hw_StartUp.o
+b                                                 Hw_StartUp.o
+check_byte                                        Ld_Printf.o
+g_duty                                            Hw_Pwm.o
+g_period                                          Hw_Pwm.o
+g_pfnVectors                                      Hw_StartUp.o
+main                                              main.o
+                                                  Hw_StartUp.o
+print_byte                                        Ld_Printf.o
+rcc_clocks                                        Ap_Clock.o
+                                                  main.o
