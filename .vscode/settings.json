@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "hw_gpio.h": "c",
+        "hw.h": "c",
+        "stm32_reg.h": "c",
+        "hw_led.h": "c"
+    }
+}

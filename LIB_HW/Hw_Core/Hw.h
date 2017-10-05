@@ -1,6 +1,9 @@
 #ifndef __HW_H__
 #define __HW_H__
 
+#include <stdint.h>
+#include <stdio.h>
+
 //stm32 register def
 #include "stm32_reg.h"
 
@@ -13,12 +16,17 @@
 #include "Hw_Pwm.h"
 #include "Hw_Adc.h"
 #include "Hw_Dma.h"
+#include "Hw_Uart.h"
+#include "Hw_System.h"
 
 //driver
 #include "Hw_Led.h"
+#include "Hw_Key.h"
+#include "Hw_Segment.h"
 
 /* Library */
 #include "Util.h"
+#include "Ld_Printf.h"
 
 /* defines */
 

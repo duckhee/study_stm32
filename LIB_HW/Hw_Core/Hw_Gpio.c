@@ -2,7 +2,7 @@
 
 #include "Hw_Gpio.h"
 
-
+#include "Ld_Printf.h"
 
 GPIO_DEF void Gpio_A_Init(uint16_t pinNum, GPIOSpeed_TypeDef speedValE, GPIOMode_TypeDef modeE)
 {
@@ -143,14 +143,21 @@ GPIO_DEF void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct)
   uint32_t tmpreg = 0x00, pinmask = 0x00;
   
 /*---------------------------- GPIO Mode Configuration -----------------------*/
-  currentmode = ((uint32_t)GPIO_InitStruct->GPIO_Mode) & ((uint32_t)0x0F);
+//and 연산으로 상위 비트 삭제 
+currentmode = ((uint32_t)GPIO_InitStruct->GPIO_Mode) & ((uint32_t)0x0F);
+//자동으로 cyf 위치만 남는다.
+
+//output mode 
   if ((((uint32_t)GPIO_InitStruct->GPIO_Mode) & ((uint32_t)0x10)) != 0x00)
   { 
     /* Output mode */
+    //gpio_speed는 설정을 하지 않는다? shift를 시키지 않고 그냥 or연산 ??? shift를 시키지 않아도 된다.
     currentmode |= (uint32_t)GPIO_InitStruct->GPIO_Speed;
+
   }
 /*---------------------------- GPIO CRL Configuration ------------------------*/
   /* Configure the eight low port pins */
+  //핀 설정 
   if (((uint32_t)GPIO_InitStruct->GPIO_Pin & ((uint32_t)0x00FF)) != 0x00)
   {
     tmpreg = GPIOx->CRL;
@@ -268,6 +275,7 @@ GPIO_DEF void GPIO_Configuration(void)
         // LED configuration ...
     
         /* Configure gpio as output : LED1, LED2, LED3 */
+        //output만 speed를 설정을 해주면 된다.
         GPIO_InitStructure.GPIO_Pin = GPIO_LED1_PIN | GPIO_LED2_PIN | GPIO_LED3_PIN ;
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;

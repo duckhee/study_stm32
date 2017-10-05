@@ -3,8 +3,7 @@
 
 /* Includes */
 
-#include <stdint.h>
-#include <stdio.h>
+
 #include "Hw.h"
 
 /* typedefs */
@@ -307,6 +306,53 @@ typedef struct
        uint32_t RESERVED5[644];
   __O  uint32_t STIR;                         /*!< Software Trigger Interrupt Register      */
 }  NVIC_Type;
+
+/* TIM Struct */
+typedef struct
+{
+  __IO uint16_t CR1;
+  uint16_t  RESERVED0;
+  __IO uint16_t CR2;
+  uint16_t  RESERVED1;
+  __IO uint16_t SMCR;
+  uint16_t  RESERVED2;
+  __IO uint16_t DIER;
+  uint16_t  RESERVED3;
+  __IO uint16_t SR;
+  uint16_t  RESERVED4;
+  __IO uint16_t EGR;
+  uint16_t  RESERVED5;
+  __IO uint16_t CCMR1;
+  uint16_t  RESERVED6;
+  __IO uint16_t CCMR2;
+  uint16_t  RESERVED7;
+  __IO uint16_t CCER;
+  uint16_t  RESERVED8;
+  __IO uint16_t CNT;
+  uint16_t  RESERVED9;
+  __IO uint16_t PSC;
+  uint16_t  RESERVED10;
+  __IO uint16_t ARR;
+  uint16_t  RESERVED11;
+  __IO uint16_t RCR;
+  uint16_t  RESERVED12;
+  __IO uint16_t CCR1;
+  uint16_t  RESERVED13;
+  __IO uint16_t CCR2;
+  uint16_t  RESERVED14;
+  __IO uint16_t CCR3;
+  uint16_t  RESERVED15;
+  __IO uint16_t CCR4;
+  uint16_t  RESERVED16;
+  __IO uint16_t BDTR;
+  uint16_t  RESERVED17;
+  __IO uint16_t DCR;
+  uint16_t  RESERVED18;
+  __IO uint16_t DMAR;
+  uint16_t  RESERVED19;
+} TIM_TypeDef;
+
+
 
 #define __NVIC_PRIO_BITS          4 /*!< STM32 uses 4 Bits for the Priority Levels    */
 
