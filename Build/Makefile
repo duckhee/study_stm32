@@ -15,14 +15,14 @@ EXTRAINCDIRS = ../LIB                       \
                ../LIB_HW                    \
                ../LIB_HW/Hw_Core            \
 	           ../LIB_HW/Hw_Lib             \
-			   ../MENU                      \
+			   ../Menu                      \
 	           ../Main
 
 SRC_AP = ../Main/main.c                     \
          ../LIB_AP/Ap_Lib/Ap_Clock.c
 
-SRC_MENU = ../MENU/Key_Menu.c              \
-           ../MENU/Led_Menu.c
+SRC_MENU = ../Menu/Key_Menu.c              \
+           ../Menu/Led_Menu.c              \
 
 SRC_HW = ../LIB_HW/Hw_Core/$(STARTUP_C)    \
          ../LIB_HW/Hw_Core/Hw_Adc.c        \
@@ -179,6 +179,7 @@ clean_list :
 	$(REMOVE) $(SRC:.c=.s)
 	$(REMOVE) NUL
 	$(REMOVE) start_stm32f10x.lst
+	$(REMOVE) NUL
 
 # Create object files directory
 ##$(shell mkdir $(OBJDIR) 2>/dev/null)
