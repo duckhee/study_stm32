@@ -1,0 +1,1084 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 2
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"Segment_Menu.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.Seg_Main,"ax",%progbits
+  19              		.align	2
+  20              		.global	Seg_Main
+  21              		.thumb
+  22              		.thumb_func
+  24              	Seg_Main:
+  25              	.LFB0:
+  26              		.file 1 "../Menu/Segment_Menu.c"
+   1:../Menu/Segment_Menu.c **** 
+   2:../Menu/Segment_Menu.c **** #define SEG_MENU_LOCAL
+   3:../Menu/Segment_Menu.c **** 
+   4:../Menu/Segment_Menu.c **** #include "Segment_Menu.h"
+   5:../Menu/Segment_Menu.c **** 
+   6:../Menu/Segment_Menu.c **** 
+   7:../Menu/Segment_Menu.c **** SEG_MENU_DEF int Seg_Main(void);
+   8:../Menu/Segment_Menu.c **** SEG_MENU_DEF int Seg_main_menu(void);
+   9:../Menu/Segment_Menu.c **** static unsigned short flag;
+  10:../Menu/Segment_Menu.c **** 
+  11:../Menu/Segment_Menu.c **** 
+  12:../Menu/Segment_Menu.c **** SEG_MENU_DEF int Seg_Main(void)
+  13:../Menu/Segment_Menu.c **** {
+  27              		.loc 1 13 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 38B5     		push	{r3, r4, r5, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 16
+  34              		.cfi_offset 3, -16
+  35              		.cfi_offset 4, -12
+  36              		.cfi_offset 5, -8
+  37              		.cfi_offset 14, -4
+  38 0002 7D4C     		ldr	r4, .L32
+  39              	.LBB2:
+  14:../Menu/Segment_Menu.c **** int key;
+  15:../Menu/Segment_Menu.c **** 
+  16:../Menu/Segment_Menu.c ****     while((key = Key_Main_Menu()) != 0)
+  17:../Menu/Segment_Menu.c ****     {
+  18:../Menu/Segment_Menu.c ****             switch(key)
+  19:../Menu/Segment_Menu.c ****             {
+  20:../Menu/Segment_Menu.c ****                 case '1':
+  21:../Menu/Segment_Menu.c ****                     Ld_printf("No.1\n");
+  22:../Menu/Segment_Menu.c ****                     PowerOn_7_SEG();
+  23:../Menu/Segment_Menu.c ****                 break;
+  24:../Menu/Segment_Menu.c ****     
+  25:../Menu/Segment_Menu.c ****                 case '2':
+  26:../Menu/Segment_Menu.c ****                     Ld_printf("No.2\n");
+  27:../Menu/Segment_Menu.c ****                     PowerOff_7_SEG();
+  28:../Menu/Segment_Menu.c ****                 break;
+  29:../Menu/Segment_Menu.c ****                 
+  30:../Menu/Segment_Menu.c ****                 case '3':
+  31:../Menu/Segment_Menu.c ****                     Ld_printf("No.3\n");
+  32:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(1);
+  33:../Menu/Segment_Menu.c ****                 break;
+  34:../Menu/Segment_Menu.c ****     
+  35:../Menu/Segment_Menu.c ****                 case '4':
+  36:../Menu/Segment_Menu.c ****                     Ld_printf("No.4\n");
+  37:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(2);
+  38:../Menu/Segment_Menu.c ****                 break;
+  39:../Menu/Segment_Menu.c ****                   
+  40:../Menu/Segment_Menu.c ****                 case '5':
+  41:../Menu/Segment_Menu.c ****                     Ld_printf("No.5\n");
+  42:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(3);
+  43:../Menu/Segment_Menu.c ****                 break;
+  44:../Menu/Segment_Menu.c ****     
+  45:../Menu/Segment_Menu.c ****                 case '6':
+  46:../Menu/Segment_Menu.c ****                     Ld_printf("No.6\n");
+  47:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(4);
+  48:../Menu/Segment_Menu.c ****                 break;
+  49:../Menu/Segment_Menu.c ****     
+  50:../Menu/Segment_Menu.c ****                 case '7':
+  51:../Menu/Segment_Menu.c ****                     Ld_printf("No.7\n");
+  52:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(5);
+  53:../Menu/Segment_Menu.c ****                 break;
+  54:../Menu/Segment_Menu.c ****     
+  55:../Menu/Segment_Menu.c ****                 case '8':
+  56:../Menu/Segment_Menu.c ****                     Ld_printf("No.8\n");
+  57:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(6);
+  58:../Menu/Segment_Menu.c ****                 break;
+  59:../Menu/Segment_Menu.c ****     
+  60:../Menu/Segment_Menu.c ****                 case '9':
+  61:../Menu/Segment_Menu.c ****                     Ld_printf("No.9\n");
+  62:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(7);
+  63:../Menu/Segment_Menu.c ****                 break;
+  64:../Menu/Segment_Menu.c ****     
+  65:../Menu/Segment_Menu.c ****                 case '0':
+  66:../Menu/Segment_Menu.c ****                     Ld_printf("No.0\n");
+  67:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(8);
+  68:../Menu/Segment_Menu.c ****                 break;
+  69:../Menu/Segment_Menu.c ****     
+  70:../Menu/Segment_Menu.c ****                 case 'a':
+  71:../Menu/Segment_Menu.c ****                     Ld_printf("No.a\n");
+  72:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(9);
+  73:../Menu/Segment_Menu.c ****                 break;
+  74:../Menu/Segment_Menu.c ****     
+  75:../Menu/Segment_Menu.c ****                 case 'b':
+  76:../Menu/Segment_Menu.c ****                     Ld_printf("No.b\n");
+  77:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(0);
+  78:../Menu/Segment_Menu.c ****                 break;
+  79:../Menu/Segment_Menu.c ****     
+  80:../Menu/Segment_Menu.c ****                 case 'c':
+  81:../Menu/Segment_Menu.c ****                     Ld_printf("No.c\n");
+  82:../Menu/Segment_Menu.c ****                     On_7_SEG_AllPin();
+  83:../Menu/Segment_Menu.c ****                 break;
+  84:../Menu/Segment_Menu.c ****     
+  85:../Menu/Segment_Menu.c ****                 case 'd':
+  86:../Menu/Segment_Menu.c ****                     Ld_printf("No.d\n");
+  87:../Menu/Segment_Menu.c ****                     Off_7_SEG_AllPin();
+  88:../Menu/Segment_Menu.c ****                 break;
+  89:../Menu/Segment_Menu.c ****     
+  90:../Menu/Segment_Menu.c ****                 case 'e':
+  91:../Menu/Segment_Menu.c ****                     Ld_printf("No.e\n");
+  92:../Menu/Segment_Menu.c ****                     Seven_Segment_Test();
+  93:../Menu/Segment_Menu.c ****                 break;
+  94:../Menu/Segment_Menu.c ****     
+  95:../Menu/Segment_Menu.c ****                 case 'f':
+  96:../Menu/Segment_Menu.c ****                     Ld_printf("No.f\n");
+  97:../Menu/Segment_Menu.c ****                     CLOCK_DEF void System_Information();
+  98:../Menu/Segment_Menu.c ****                 break;
+  99:../Menu/Segment_Menu.c ****     
+ 100:../Menu/Segment_Menu.c ****                 case 'g':
+ 101:../Menu/Segment_Menu.c ****                     Ld_printf("No.g\n");
+ 102:../Menu/Segment_Menu.c ****          
+ 103:../Menu/Segment_Menu.c ****                 break;
+ 104:../Menu/Segment_Menu.c ****     
+ 105:../Menu/Segment_Menu.c ****                 case 'h':
+ 106:../Menu/Segment_Menu.c ****                     Ld_printf("No.h\n");
+ 107:../Menu/Segment_Menu.c ****            
+ 108:../Menu/Segment_Menu.c ****                 break;
+ 109:../Menu/Segment_Menu.c ****     
+ 110:../Menu/Segment_Menu.c ****                 case 'i':
+ 111:../Menu/Segment_Menu.c ****                     Ld_printf("No.i\n");
+ 112:../Menu/Segment_Menu.c ****     
+ 113:../Menu/Segment_Menu.c ****                 break;
+ 114:../Menu/Segment_Menu.c ****     
+ 115:../Menu/Segment_Menu.c ****                 case 'j':
+ 116:../Menu/Segment_Menu.c ****                     Ld_printf("No.j\n");
+ 117:../Menu/Segment_Menu.c ****     
+ 118:../Menu/Segment_Menu.c ****                 break;
+ 119:../Menu/Segment_Menu.c ****     
+ 120:../Menu/Segment_Menu.c ****                 case 'k':
+ 121:../Menu/Segment_Menu.c ****                     Ld_printf("No.k\n");
+  40              		.loc 1 121 0
+  41 0004 7D4D     		ldr	r5, .L32+4
+  42              	.L3:
+  43              	.LBE2:
+  16:../Menu/Segment_Menu.c ****     {
+  44              		.loc 1 16 0
+  45 0006 A047     		blx	r4
+  46              	.LVL0:
+  47 0008 0028     		cmp	r0, #0
+  48 000a 00F08B80 		beq	.L26
+  18:../Menu/Segment_Menu.c ****             {
+  49              		.loc 1 18 0
+  50 000e 3038     		subs	r0, r0, #48
+  51              	.LVL1:
+  52 0010 4128     		cmp	r0, #65
+  53 0012 F8D8     		bhi	.L3
+  54 0014 01A3     		adr	r3, .L5
+  55 0016 53F820F0 		ldr	pc, [r3, r0, lsl #2]
+  56 001a 00BF     		.p2align 2
+  57              	.L5:
+  58 001c EB010000 		.word	.L4+1
+  59 0020 E1010000 		.word	.L6+1
+  60 0024 D7010000 		.word	.L7+1
+  61 0028 CB010000 		.word	.L8+1
+  62 002c BF010000 		.word	.L9+1
+  63 0030 B3010000 		.word	.L10+1
+  64 0034 A7010000 		.word	.L11+1
+  65 0038 9B010000 		.word	.L12+1
+  66 003c 8F010000 		.word	.L13+1
+  67 0040 83010000 		.word	.L14+1
+  68 0044 07000000 		.word	.L3+1
+  69 0048 07000000 		.word	.L3+1
+  70 004c 07000000 		.word	.L3+1
+  71 0050 07000000 		.word	.L3+1
+  72 0054 07000000 		.word	.L3+1
+  73 0058 07000000 		.word	.L3+1
+  74 005c 07000000 		.word	.L3+1
+  75 0060 07000000 		.word	.L3+1
+  76 0064 07000000 		.word	.L3+1
+  77 0068 07000000 		.word	.L3+1
+  78 006c 07000000 		.word	.L3+1
+  79 0070 07000000 		.word	.L3+1
+  80 0074 07000000 		.word	.L3+1
+  81 0078 07000000 		.word	.L3+1
+  82 007c 07000000 		.word	.L3+1
+  83 0080 07000000 		.word	.L3+1
+  84 0084 07000000 		.word	.L3+1
+  85 0088 07000000 		.word	.L3+1
+  86 008c 07000000 		.word	.L3+1
+  87 0090 07000000 		.word	.L3+1
+  88 0094 07000000 		.word	.L3+1
+  89 0098 07000000 		.word	.L3+1
+  90 009c 07000000 		.word	.L3+1
+  91 00a0 07000000 		.word	.L3+1
+  92 00a4 07000000 		.word	.L3+1
+  93 00a8 07000000 		.word	.L3+1
+  94 00ac 07000000 		.word	.L3+1
+  95 00b0 07000000 		.word	.L3+1
+  96 00b4 07000000 		.word	.L3+1
+  97 00b8 07000000 		.word	.L3+1
+  98 00bc 07000000 		.word	.L3+1
+  99 00c0 07000000 		.word	.L3+1
+ 100 00c4 07000000 		.word	.L3+1
+ 101 00c8 07000000 		.word	.L3+1
+ 102 00cc 07000000 		.word	.L3+1
+ 103 00d0 07000000 		.word	.L3+1
+ 104 00d4 07000000 		.word	.L3+1
+ 105 00d8 07000000 		.word	.L3+1
+ 106 00dc 07000000 		.word	.L3+1
+ 107 00e0 77010000 		.word	.L15+1
+ 108 00e4 6B010000 		.word	.L16+1
+ 109 00e8 61010000 		.word	.L17+1
+ 110 00ec 57010000 		.word	.L18+1
+ 111 00f0 4D010000 		.word	.L19+1
+ 112 00f4 47010000 		.word	.L20+1
+ 113 00f8 41010000 		.word	.L21+1
+ 114 00fc 3B010000 		.word	.L22+1
+ 115 0100 35010000 		.word	.L23+1
+ 116 0104 2F010000 		.word	.L24+1
+ 117 0108 29010000 		.word	.L25+1
+ 118 010c 07000000 		.word	.L3+1
+ 119 0110 07000000 		.word	.L3+1
+ 120 0114 07000000 		.word	.L3+1
+ 121 0118 07000000 		.word	.L3+1
+ 122 011c 07000000 		.word	.L3+1
+ 123 0120 25010000 		.word	.L26+1
+ 124              	.LVL2:
+ 125              		.p2align 1
+ 126              	.L26:
+ 122:../Menu/Segment_Menu.c ****     
+ 123:../Menu/Segment_Menu.c ****                 break;
+ 124:../Menu/Segment_Menu.c ****     
+ 125:../Menu/Segment_Menu.c ****                 case 'q':
+ 126:../Menu/Segment_Menu.c ****                     return 0;
+ 127:../Menu/Segment_Menu.c ****             }
+ 128:../Menu/Segment_Menu.c ****     }
+ 129:../Menu/Segment_Menu.c ****     return 0;
+ 130:../Menu/Segment_Menu.c **** }
+ 127              		.loc 1 130 0
+ 128 0124 0020     		movs	r0, #0
+ 129 0126 38BD     		pop	{r3, r4, r5, pc}
+ 130              	.LVL3:
+ 131              	.L25:
+ 132              	.LBB3:
+ 121:../Menu/Segment_Menu.c ****     
+ 133              		.loc 1 121 0
+ 134 0128 3548     		ldr	r0, .L32+8
+ 135              	.LVL4:
+ 136 012a A847     		blx	r5
+ 137              	.LVL5:
+ 123:../Menu/Segment_Menu.c ****     
+ 138              		.loc 1 123 0
+ 139 012c 6BE7     		b	.L3
+ 140              	.LVL6:
+ 141              	.L24:
+ 116:../Menu/Segment_Menu.c ****     
+ 142              		.loc 1 116 0
+ 143 012e 3548     		ldr	r0, .L32+12
+ 144              	.LVL7:
+ 145 0130 A847     		blx	r5
+ 146              	.LVL8:
+ 118:../Menu/Segment_Menu.c ****     
+ 147              		.loc 1 118 0
+ 148 0132 68E7     		b	.L3
+ 149              	.LVL9:
+ 150              	.L23:
+ 111:../Menu/Segment_Menu.c ****     
+ 151              		.loc 1 111 0
+ 152 0134 3448     		ldr	r0, .L32+16
+ 153              	.LVL10:
+ 154 0136 A847     		blx	r5
+ 155              	.LVL11:
+ 113:../Menu/Segment_Menu.c ****     
+ 156              		.loc 1 113 0
+ 157 0138 65E7     		b	.L3
+ 158              	.LVL12:
+ 159              	.L22:
+ 106:../Menu/Segment_Menu.c ****            
+ 160              		.loc 1 106 0
+ 161 013a 3448     		ldr	r0, .L32+20
+ 162              	.LVL13:
+ 163 013c A847     		blx	r5
+ 164              	.LVL14:
+ 108:../Menu/Segment_Menu.c ****     
+ 165              		.loc 1 108 0
+ 166 013e 62E7     		b	.L3
+ 167              	.LVL15:
+ 168              	.L21:
+ 101:../Menu/Segment_Menu.c ****          
+ 169              		.loc 1 101 0
+ 170 0140 3348     		ldr	r0, .L32+24
+ 171              	.LVL16:
+ 172 0142 A847     		blx	r5
+ 173              	.LVL17:
+ 103:../Menu/Segment_Menu.c ****     
+ 174              		.loc 1 103 0
+ 175 0144 5FE7     		b	.L3
+ 176              	.LVL18:
+ 177              	.L20:
+  96:../Menu/Segment_Menu.c ****                     CLOCK_DEF void System_Information();
+ 178              		.loc 1 96 0
+ 179 0146 3348     		ldr	r0, .L32+28
+ 180              	.LVL19:
+ 181 0148 A847     		blx	r5
+ 182              	.LVL20:
+  98:../Menu/Segment_Menu.c ****     
+ 183              		.loc 1 98 0
+ 184 014a 5CE7     		b	.L3
+ 185              	.LVL21:
+ 186              	.L19:
+  91:../Menu/Segment_Menu.c ****                     Seven_Segment_Test();
+ 187              		.loc 1 91 0
+ 188 014c 3248     		ldr	r0, .L32+32
+ 189              	.LVL22:
+ 190 014e A847     		blx	r5
+ 191              	.LVL23:
+  92:../Menu/Segment_Menu.c ****                 break;
+ 192              		.loc 1 92 0
+ 193 0150 324B     		ldr	r3, .L32+36
+ 194 0152 9847     		blx	r3
+ 195              	.LVL24:
+  93:../Menu/Segment_Menu.c ****     
+ 196              		.loc 1 93 0
+ 197 0154 57E7     		b	.L3
+ 198              	.LVL25:
+ 199              	.L18:
+  86:../Menu/Segment_Menu.c ****                     Off_7_SEG_AllPin();
+ 200              		.loc 1 86 0
+ 201 0156 3248     		ldr	r0, .L32+40
+ 202              	.LVL26:
+ 203 0158 A847     		blx	r5
+ 204              	.LVL27:
+  87:../Menu/Segment_Menu.c ****                 break;
+ 205              		.loc 1 87 0
+ 206 015a 324B     		ldr	r3, .L32+44
+ 207 015c 9847     		blx	r3
+ 208              	.LVL28:
+  88:../Menu/Segment_Menu.c ****     
+ 209              		.loc 1 88 0
+ 210 015e 52E7     		b	.L3
+ 211              	.LVL29:
+ 212              	.L17:
+  81:../Menu/Segment_Menu.c ****                     On_7_SEG_AllPin();
+ 213              		.loc 1 81 0
+ 214 0160 3148     		ldr	r0, .L32+48
+ 215              	.LVL30:
+ 216 0162 A847     		blx	r5
+ 217              	.LVL31:
+  82:../Menu/Segment_Menu.c ****                 break;
+ 218              		.loc 1 82 0
+ 219 0164 314B     		ldr	r3, .L32+52
+ 220 0166 9847     		blx	r3
+ 221              	.LVL32:
+  83:../Menu/Segment_Menu.c ****     
+ 222              		.loc 1 83 0
+ 223 0168 4DE7     		b	.L3
+ 224              	.LVL33:
+ 225              	.L16:
+  76:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(0);
+ 226              		.loc 1 76 0
+ 227 016a 3148     		ldr	r0, .L32+56
+ 228              	.LVL34:
+ 229 016c A847     		blx	r5
+ 230              	.LVL35:
+  77:../Menu/Segment_Menu.c ****                 break;
+ 231              		.loc 1 77 0
+ 232 016e 314B     		ldr	r3, .L32+60
+ 233 0170 0020     		movs	r0, #0
+ 234 0172 9847     		blx	r3
+ 235              	.LVL36:
+  78:../Menu/Segment_Menu.c ****     
+ 236              		.loc 1 78 0
+ 237 0174 47E7     		b	.L3
+ 238              	.LVL37:
+ 239              	.L15:
+  71:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(9);
+ 240              		.loc 1 71 0
+ 241 0176 3048     		ldr	r0, .L32+64
+ 242              	.LVL38:
+ 243 0178 A847     		blx	r5
+ 244              	.LVL39:
+  72:../Menu/Segment_Menu.c ****                 break;
+ 245              		.loc 1 72 0
+ 246 017a 2E4B     		ldr	r3, .L32+60
+ 247 017c 0920     		movs	r0, #9
+ 248 017e 9847     		blx	r3
+ 249              	.LVL40:
+  73:../Menu/Segment_Menu.c ****     
+ 250              		.loc 1 73 0
+ 251 0180 41E7     		b	.L3
+ 252              	.LVL41:
+ 253              	.L14:
+  61:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(7);
+ 254              		.loc 1 61 0
+ 255 0182 2E48     		ldr	r0, .L32+68
+ 256              	.LVL42:
+ 257 0184 A847     		blx	r5
+ 258              	.LVL43:
+  62:../Menu/Segment_Menu.c ****                 break;
+ 259              		.loc 1 62 0
+ 260 0186 2B4B     		ldr	r3, .L32+60
+ 261 0188 0720     		movs	r0, #7
+ 262 018a 9847     		blx	r3
+ 263              	.LVL44:
+  63:../Menu/Segment_Menu.c ****     
+ 264              		.loc 1 63 0
+ 265 018c 3BE7     		b	.L3
+ 266              	.LVL45:
+ 267              	.L13:
+  56:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(6);
+ 268              		.loc 1 56 0
+ 269 018e 2C48     		ldr	r0, .L32+72
+ 270              	.LVL46:
+ 271 0190 A847     		blx	r5
+ 272              	.LVL47:
+  57:../Menu/Segment_Menu.c ****                 break;
+ 273              		.loc 1 57 0
+ 274 0192 284B     		ldr	r3, .L32+60
+ 275 0194 0620     		movs	r0, #6
+ 276 0196 9847     		blx	r3
+ 277              	.LVL48:
+  58:../Menu/Segment_Menu.c ****     
+ 278              		.loc 1 58 0
+ 279 0198 35E7     		b	.L3
+ 280              	.LVL49:
+ 281              	.L12:
+  51:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(5);
+ 282              		.loc 1 51 0
+ 283 019a 2A48     		ldr	r0, .L32+76
+ 284              	.LVL50:
+ 285 019c A847     		blx	r5
+ 286              	.LVL51:
+  52:../Menu/Segment_Menu.c ****                 break;
+ 287              		.loc 1 52 0
+ 288 019e 254B     		ldr	r3, .L32+60
+ 289 01a0 0520     		movs	r0, #5
+ 290 01a2 9847     		blx	r3
+ 291              	.LVL52:
+  53:../Menu/Segment_Menu.c ****     
+ 292              		.loc 1 53 0
+ 293 01a4 2FE7     		b	.L3
+ 294              	.LVL53:
+ 295              	.L11:
+  46:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(4);
+ 296              		.loc 1 46 0
+ 297 01a6 2848     		ldr	r0, .L32+80
+ 298              	.LVL54:
+ 299 01a8 A847     		blx	r5
+ 300              	.LVL55:
+  47:../Menu/Segment_Menu.c ****                 break;
+ 301              		.loc 1 47 0
+ 302 01aa 224B     		ldr	r3, .L32+60
+ 303 01ac 0420     		movs	r0, #4
+ 304 01ae 9847     		blx	r3
+ 305              	.LVL56:
+  48:../Menu/Segment_Menu.c ****     
+ 306              		.loc 1 48 0
+ 307 01b0 29E7     		b	.L3
+ 308              	.LVL57:
+ 309              	.L10:
+  41:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(3);
+ 310              		.loc 1 41 0
+ 311 01b2 2648     		ldr	r0, .L32+84
+ 312              	.LVL58:
+ 313 01b4 A847     		blx	r5
+ 314              	.LVL59:
+  42:../Menu/Segment_Menu.c ****                 break;
+ 315              		.loc 1 42 0
+ 316 01b6 1F4B     		ldr	r3, .L32+60
+ 317 01b8 0320     		movs	r0, #3
+ 318 01ba 9847     		blx	r3
+ 319              	.LVL60:
+  43:../Menu/Segment_Menu.c ****     
+ 320              		.loc 1 43 0
+ 321 01bc 23E7     		b	.L3
+ 322              	.LVL61:
+ 323              	.L9:
+  36:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(2);
+ 324              		.loc 1 36 0
+ 325 01be 2448     		ldr	r0, .L32+88
+ 326              	.LVL62:
+ 327 01c0 A847     		blx	r5
+ 328              	.LVL63:
+  37:../Menu/Segment_Menu.c ****                 break;
+ 329              		.loc 1 37 0
+ 330 01c2 1C4B     		ldr	r3, .L32+60
+ 331 01c4 0220     		movs	r0, #2
+ 332 01c6 9847     		blx	r3
+ 333              	.LVL64:
+  38:../Menu/Segment_Menu.c ****                   
+ 334              		.loc 1 38 0
+ 335 01c8 1DE7     		b	.L3
+ 336              	.LVL65:
+ 337              	.L8:
+  31:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(1);
+ 338              		.loc 1 31 0
+ 339 01ca 2248     		ldr	r0, .L32+92
+ 340              	.LVL66:
+ 341 01cc A847     		blx	r5
+ 342              	.LVL67:
+  32:../Menu/Segment_Menu.c ****                 break;
+ 343              		.loc 1 32 0
+ 344 01ce 194B     		ldr	r3, .L32+60
+ 345 01d0 0120     		movs	r0, #1
+ 346 01d2 9847     		blx	r3
+ 347              	.LVL68:
+  33:../Menu/Segment_Menu.c ****     
+ 348              		.loc 1 33 0
+ 349 01d4 17E7     		b	.L3
+ 350              	.LVL69:
+ 351              	.L7:
+  26:../Menu/Segment_Menu.c ****                     PowerOff_7_SEG();
+ 352              		.loc 1 26 0
+ 353 01d6 2048     		ldr	r0, .L32+96
+ 354              	.LVL70:
+ 355 01d8 A847     		blx	r5
+ 356              	.LVL71:
+  27:../Menu/Segment_Menu.c ****                 break;
+ 357              		.loc 1 27 0
+ 358 01da 204B     		ldr	r3, .L32+100
+ 359 01dc 9847     		blx	r3
+ 360              	.LVL72:
+  28:../Menu/Segment_Menu.c ****                 
+ 361              		.loc 1 28 0
+ 362 01de 12E7     		b	.L3
+ 363              	.LVL73:
+ 364              	.L6:
+  21:../Menu/Segment_Menu.c ****                     PowerOn_7_SEG();
+ 365              		.loc 1 21 0
+ 366 01e0 1F48     		ldr	r0, .L32+104
+ 367              	.LVL74:
+ 368 01e2 A847     		blx	r5
+ 369              	.LVL75:
+  22:../Menu/Segment_Menu.c ****                 break;
+ 370              		.loc 1 22 0
+ 371 01e4 1F4B     		ldr	r3, .L32+108
+ 372 01e6 9847     		blx	r3
+ 373              	.LVL76:
+  23:../Menu/Segment_Menu.c ****     
+ 374              		.loc 1 23 0
+ 375 01e8 0DE7     		b	.L3
+ 376              	.LVL77:
+ 377              	.L4:
+  66:../Menu/Segment_Menu.c ****                     OutPut_7_SEG_Number(8);
+ 378              		.loc 1 66 0
+ 379 01ea 1F48     		ldr	r0, .L32+112
+ 380              	.LVL78:
+ 381 01ec A847     		blx	r5
+ 382              	.LVL79:
+  67:../Menu/Segment_Menu.c ****                 break;
+ 383              		.loc 1 67 0
+ 384 01ee 114B     		ldr	r3, .L32+60
+ 385 01f0 0820     		movs	r0, #8
+ 386 01f2 9847     		blx	r3
+ 387              	.LVL80:
+  68:../Menu/Segment_Menu.c ****     
+ 388              		.loc 1 68 0
+ 389 01f4 07E7     		b	.L3
+ 390              	.L33:
+ 391 01f6 00BF     		.align	2
+ 392              	.L32:
+ 393 01f8 00000000 		.word	Key_Main_Menu
+ 394 01fc 00000000 		.word	Ld_printf
+ 395 0200 A0000000 		.word	.LC20
+ 396 0204 98000000 		.word	.LC19
+ 397 0208 90000000 		.word	.LC18
+ 398 020c 88000000 		.word	.LC17
+ 399 0210 80000000 		.word	.LC16
+ 400 0214 78000000 		.word	.LC15
+ 401 0218 70000000 		.word	.LC14
+ 402 021c 00000000 		.word	Seven_Segment_Test
+ 403 0220 68000000 		.word	.LC13
+ 404 0224 00000000 		.word	Off_7_SEG_AllPin
+ 405 0228 60000000 		.word	.LC12
+ 406 022c 00000000 		.word	On_7_SEG_AllPin
+ 407 0230 58000000 		.word	.LC11
+ 408 0234 00000000 		.word	OutPut_7_SEG_Number
+ 409 0238 50000000 		.word	.LC10
+ 410 023c 40000000 		.word	.LC8
+ 411 0240 38000000 		.word	.LC7
+ 412 0244 30000000 		.word	.LC6
+ 413 0248 28000000 		.word	.LC5
+ 414 024c 20000000 		.word	.LC4
+ 415 0250 18000000 		.word	.LC3
+ 416 0254 10000000 		.word	.LC2
+ 417 0258 08000000 		.word	.LC1
+ 418 025c 00000000 		.word	PowerOff_7_SEG
+ 419 0260 00000000 		.word	.LC0
+ 420 0264 00000000 		.word	PowerOn_7_SEG
+ 421 0268 48000000 		.word	.LC9
+ 422              	.LBE3:
+ 423              		.cfi_endproc
+ 424              	.LFE0:
+ 426              		.section	.text.Seg_main_menu,"ax",%progbits
+ 427              		.align	2
+ 428              		.global	Seg_main_menu
+ 429              		.thumb
+ 430              		.thumb_func
+ 432              	Seg_main_menu:
+ 433              	.LFB1:
+ 131:../Menu/Segment_Menu.c **** SEG_MENU_DEF int Seg_main_menu(void)
+ 132:../Menu/Segment_Menu.c **** {
+ 434              		.loc 1 132 0
+ 435              		.cfi_startproc
+ 436              		@ args = 0, pretend = 0, frame = 0
+ 437              		@ frame_needed = 0, uses_anonymous_args = 0
+ 438 0000 70B5     		push	{r4, r5, r6, lr}
+ 439              	.LCFI1:
+ 440              		.cfi_def_cfa_offset 16
+ 441              		.cfi_offset 4, -16
+ 442              		.cfi_offset 5, -12
+ 443              		.cfi_offset 6, -8
+ 444              		.cfi_offset 14, -4
+ 133:../Menu/Segment_Menu.c ****     int key;
+ 134:../Menu/Segment_Menu.c ****     
+ 135:../Menu/Segment_Menu.c ****         Ld_printf("\n\n");
+ 445              		.loc 1 135 0
+ 446 0002 1A4E     		ldr	r6, .L36
+ 136:../Menu/Segment_Menu.c ****         Ld_printf("-------------------------------------------------\n");
+ 447              		.loc 1 136 0
+ 448 0004 1A4D     		ldr	r5, .L36+4
+ 135:../Menu/Segment_Menu.c ****         Ld_printf("-------------------------------------------------\n");
+ 449              		.loc 1 135 0
+ 450 0006 1B4C     		ldr	r4, .L36+8
+ 451 0008 3046     		mov	r0, r6
+ 452 000a A047     		blx	r4
+ 453              	.LVL81:
+ 454              		.loc 1 136 0
+ 455 000c 2846     		mov	r0, r5
+ 456 000e A047     		blx	r4
+ 457              	.LVL82:
+ 137:../Menu/Segment_Menu.c ****         Ld_printf("                 LED MAIN MENU\n");
+ 458              		.loc 1 137 0
+ 459 0010 1948     		ldr	r0, .L36+12
+ 460 0012 A047     		blx	r4
+ 461              	.LVL83:
+ 138:../Menu/Segment_Menu.c ****         Ld_printf("-------------------------------------------------\n");
+ 462              		.loc 1 138 0
+ 463 0014 2846     		mov	r0, r5
+ 464 0016 A047     		blx	r4
+ 465              	.LVL84:
+ 139:../Menu/Segment_Menu.c ****         Ld_printf(" 1. PowerOn_7_SEG                                         \n");
+ 466              		.loc 1 139 0
+ 467 0018 1848     		ldr	r0, .L36+16
+ 468 001a A047     		blx	r4
+ 469              	.LVL85:
+ 140:../Menu/Segment_Menu.c ****         Ld_printf(" 2. PowerOff_7_SEG                                         \n");
+ 470              		.loc 1 140 0
+ 471 001c 1848     		ldr	r0, .L36+20
+ 472 001e A047     		blx	r4
+ 473              	.LVL86:
+ 141:../Menu/Segment_Menu.c ****         Ld_printf(" 3. SEG 1                                         \n");
+ 474              		.loc 1 141 0
+ 475 0020 1848     		ldr	r0, .L36+24
+ 476 0022 A047     		blx	r4
+ 477              	.LVL87:
+ 142:../Menu/Segment_Menu.c ****         Ld_printf(" 4. SEG 2                                        \n");
+ 478              		.loc 1 142 0
+ 479 0024 1848     		ldr	r0, .L36+28
+ 480 0026 A047     		blx	r4
+ 481              	.LVL88:
+ 143:../Menu/Segment_Menu.c ****         Ld_printf(" 5. SEG 3                                        \n");
+ 482              		.loc 1 143 0
+ 483 0028 1848     		ldr	r0, .L36+32
+ 484 002a A047     		blx	r4
+ 485              	.LVL89:
+ 144:../Menu/Segment_Menu.c ****         Ld_printf(" 6. SEG 4                                        \n");
+ 486              		.loc 1 144 0
+ 487 002c 1848     		ldr	r0, .L36+36
+ 488 002e A047     		blx	r4
+ 489              	.LVL90:
+ 145:../Menu/Segment_Menu.c ****         Ld_printf(" 7. SEG 5                                        \n");
+ 490              		.loc 1 145 0
+ 491 0030 1848     		ldr	r0, .L36+40
+ 492 0032 A047     		blx	r4
+ 493              	.LVL91:
+ 146:../Menu/Segment_Menu.c ****         Ld_printf(" 8. SEG 6                                        \n");
+ 494              		.loc 1 146 0
+ 495 0034 1848     		ldr	r0, .L36+44
+ 496 0036 A047     		blx	r4
+ 497              	.LVL92:
+ 147:../Menu/Segment_Menu.c ****         Ld_printf(" 9. SEG 7                                        \n");
+ 498              		.loc 1 147 0
+ 499 0038 1848     		ldr	r0, .L36+48
+ 500 003a A047     		blx	r4
+ 501              	.LVL93:
+ 148:../Menu/Segment_Menu.c ****         Ld_printf(" 0. SEG 8                                        \n");
+ 502              		.loc 1 148 0
+ 503 003c 1848     		ldr	r0, .L36+52
+ 504 003e A047     		blx	r4
+ 505              	.LVL94:
+ 149:../Menu/Segment_Menu.c ****         Ld_printf(" a. SEG 9                                        \n");
+ 506              		.loc 1 149 0
+ 507 0040 1848     		ldr	r0, .L36+56
+ 508 0042 A047     		blx	r4
+ 509              	.LVL95:
+ 150:../Menu/Segment_Menu.c ****         Ld_printf(" b. SEG 0                                        \n");
+ 510              		.loc 1 150 0
+ 511 0044 1848     		ldr	r0, .L36+60
+ 512 0046 A047     		blx	r4
+ 513              	.LVL96:
+ 151:../Menu/Segment_Menu.c ****         Ld_printf(" c. On_7_SEG_AllPin                                        \n");
+ 514              		.loc 1 151 0
+ 515 0048 1848     		ldr	r0, .L36+64
+ 516 004a A047     		blx	r4
+ 517              	.LVL97:
+ 152:../Menu/Segment_Menu.c ****         Ld_printf(" d. Off_7_SEG_AllPin                                        \n");
+ 518              		.loc 1 152 0
+ 519 004c 1848     		ldr	r0, .L36+68
+ 520 004e A047     		blx	r4
+ 521              	.LVL98:
+ 153:../Menu/Segment_Menu.c ****         Ld_printf("-------------------------------------------------\n");
+ 522              		.loc 1 153 0
+ 523 0050 2846     		mov	r0, r5
+ 524 0052 A047     		blx	r4
+ 525              	.LVL99:
+ 154:../Menu/Segment_Menu.c ****         Ld_printf(" q. LED Menu QUIT\n");
+ 526              		.loc 1 154 0
+ 527 0054 1748     		ldr	r0, .L36+72
+ 528 0056 A047     		blx	r4
+ 529              	.LVL100:
+ 155:../Menu/Segment_Menu.c ****         Ld_printf("-------------------------------------------------\n");
+ 530              		.loc 1 155 0
+ 531 0058 2846     		mov	r0, r5
+ 532 005a A047     		blx	r4
+ 533              	.LVL101:
+ 156:../Menu/Segment_Menu.c ****         Ld_printf("\n\n");
+ 534              		.loc 1 156 0
+ 535 005c 3046     		mov	r0, r6
+ 536 005e A047     		blx	r4
+ 537              	.LVL102:
+ 157:../Menu/Segment_Menu.c ****     
+ 158:../Menu/Segment_Menu.c ****         Ld_printf("SELECT THE COMMAND NUMBER : ");
+ 538              		.loc 1 158 0
+ 539 0060 1548     		ldr	r0, .L36+76
+ 540 0062 A047     		blx	r4
+ 541              	.LVL103:
+ 159:../Menu/Segment_Menu.c ****         key=Ld_get_byte();
+ 542              		.loc 1 159 0
+ 543 0064 154B     		ldr	r3, .L36+80
+ 544 0066 9847     		blx	r3
+ 545              	.LVL104:
+ 160:../Menu/Segment_Menu.c ****     
+ 161:../Menu/Segment_Menu.c ****         return key;
+ 162:../Menu/Segment_Menu.c **** }...
+ 546              		.loc 1 162 0
+ 547 0068 70BD     		pop	{r4, r5, r6, pc}
+ 548              	.L37:
+ 549 006a 00BF     		.align	2
+ 550              	.L36:
+ 551 006c A8000000 		.word	.LC21
+ 552 0070 AC000000 		.word	.LC22
+ 553 0074 00000000 		.word	Ld_printf
+ 554 0078 E0000000 		.word	.LC23
+ 555 007c 00010000 		.word	.LC24
+ 556 0080 3C010000 		.word	.LC25
+ 557 0084 7C010000 		.word	.LC26
+ 558 0088 B0010000 		.word	.LC27
+ 559 008c E4010000 		.word	.LC28
+ 560 0090 18020000 		.word	.LC29
+ 561 0094 4C020000 		.word	.LC30
+ 562 0098 80020000 		.word	.LC31
+ 563 009c B4020000 		.word	.LC32
+ 564 00a0 E8020000 		.word	.LC33
+ 565 00a4 1C030000 		.word	.LC34
+ 566 00a8 50030000 		.word	.LC35
+ 567 00ac 84030000 		.word	.LC36
+ 568 00b0 C4030000 		.word	.LC37
+ 569 00b4 04040000 		.word	.LC38
+ 570 00b8 18040000 		.word	.LC39
+ 571 00bc 00000000 		.word	Ld_get_byte
+ 572              		.cfi_endproc
+ 573              	.LFE1:
+ 575              		.section	.data.ADCPrescTable,"aw",%progbits
+ 576              		.align	2
+ 579              	ADCPrescTable:
+ 580 0000 02       		.byte	2
+ 581 0001 04       		.byte	4
+ 582 0002 06       		.byte	6
+ 583 0003 08       		.byte	8
+ 584              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 585              		.align	2
+ 586              	.LC0:
+ 587 0000 4E6F2E31 		.ascii	"No.1\012\000"
+ 587      0A00
+ 588 0006 0000     		.space	2
+ 589              	.LC1:
+ 590 0008 4E6F2E32 		.ascii	"No.2\012\000"
+ 590      0A00
+ 591 000e 0000     		.space	2
+ 592              	.LC2:
+ 593 0010 4E6F2E33 		.ascii	"No.3\012\000"
+ 593      0A00
+ 594 0016 0000     		.space	2
+ 595              	.LC3:
+ 596 0018 4E6F2E34 		.ascii	"No.4\012\000"
+ 596      0A00
+ 597 001e 0000     		.space	2
+ 598              	.LC4:
+ 599 0020 4E6F2E35 		.ascii	"No.5\012\000"
+ 599      0A00
+ 600 0026 0000     		.space	2
+ 601              	.LC5:
+ 602 0028 4E6F2E36 		.ascii	"No.6\012\000"
+ 602      0A00
+ 603 002e 0000     		.space	2
+ 604              	.LC6:
+ 605 0030 4E6F2E37 		.ascii	"No.7\012\000"
+ 605      0A00
+ 606 0036 0000     		.space	2
+ 607              	.LC7:
+ 608 0038 4E6F2E38 		.ascii	"No.8\012\000"
+ 608      0A00
+ 609 003e 0000     		.space	2
+ 610              	.LC8:
+ 611 0040 4E6F2E39 		.ascii	"No.9\012\000"
+ 611      0A00
+ 612 0046 0000     		.space	2
+ 613              	.LC9:
+ 614 0048 4E6F2E30 		.ascii	"No.0\012\000"
+ 614      0A00
+ 615 004e 0000     		.space	2
+ 616              	.LC10:
+ 617 0050 4E6F2E61 		.ascii	"No.a\012\000"
+ 617      0A00
+ 618 0056 0000     		.space	2
+ 619              	.LC11:
+ 620 0058 4E6F2E62 		.ascii	"No.b\012\000"
+ 620      0A00
+ 621 005e 0000     		.space	2
+ 622              	.LC12:
+ 623 0060 4E6F2E63 		.ascii	"No.c\012\000"
+ 623      0A00
+ 624 0066 0000     		.space	2
+ 625              	.LC13:
+ 626 0068 4E6F2E64 		.ascii	"No.d\012\000"
+ 626      0A00
+ 627 006e 0000     		.space	2
+ 628              	.LC14:
+ 629 0070 4E6F2E65 		.ascii	"No.e\012\000"
+ 629      0A00
+ 630 0076 0000     		.space	2
+ 631              	.LC15:
+ 632 0078 4E6F2E66 		.ascii	"No.f\012\000"
+ 632      0A00
+ 633 007e 0000     		.space	2
+ 634              	.LC16:
+ 635 0080 4E6F2E67 		.ascii	"No.g\012\000"
+ 635      0A00
+ 636 0086 0000     		.space	2
+ 637              	.LC17:
+ 638 0088 4E6F2E68 		.ascii	"No.h\012\000"
+ 638      0A00
+ 639 008e 0000     		.space	2
+ 640              	.LC18:
+ 641 0090 4E6F2E69 		.ascii	"No.i\012\000"
+ 641      0A00
+ 642 0096 0000     		.space	2
+ 643              	.LC19:
+ 644 0098 4E6F2E6A 		.ascii	"No.j\012\000"
+ 644      0A00
+ 645 009e 0000     		.space	2
+ 646              	.LC20:
+ 647 00a0 4E6F2E6B 		.ascii	"No.k\012\000"
+ 647      0A00
+ 648 00a6 0000     		.space	2
+ 649              	.LC21:
+ 650 00a8 0A0A00   		.ascii	"\012\012\000"
+ 651 00ab 00       		.space	1
+ 652              	.LC22:
+ 653 00ac 2D2D2D2D 		.ascii	"-------------------------------------------------\012"
+ 653      2D2D2D2D 
+ 653      2D2D2D2D 
+ 653      2D2D2D2D 
+ 653      2D2D2D2D 
+ 654 00de 00       		.ascii	"\000"
+ 655 00df 00       		.space	1
+ 656              	.LC23:
+ 657 00e0 20202020 		.ascii	"                 LED MAIN MENU\012\000"
+ 657      20202020 
+ 657      20202020 
+ 657      20202020 
+ 657      204C4544 
+ 658              	.LC24:
+ 659 0100 20312E20 		.ascii	" 1. PowerOn_7_SEG                                  "
+ 659      506F7765 
+ 659      724F6E5F 
+ 659      375F5345 
+ 659      47202020 
+ 660 0133 20202020 		.ascii	"       \012\000"
+ 660      2020200A 
+ 660      00
+ 661              	.LC25:
+ 662 013c 20322E20 		.ascii	" 2. PowerOff_7_SEG                                 "
+ 662      506F7765 
+ 662      724F6666 
+ 662      5F375F53 
+ 662      45472020 
+ 663 016f 20202020 		.ascii	"        \012\000"
+ 663      20202020 
+ 663      0A00
+ 664 0179 000000   		.space	3
+ 665              	.LC26:
+ 666 017c 20332E20 		.ascii	" 3. SEG 1                                         \012"
+ 666      53454720 
+ 666      31202020 
+ 666      20202020 
+ 666      20202020 
+ 667 01af 00       		.ascii	"\000"
+ 668              	.LC27:
+ 669 01b0 20342E20 		.ascii	" 4. SEG 2                                        \012"
+ 669      53454720 
+ 669      32202020 
+ 669      20202020 
+ 669      20202020 
+ 670 01e2 00       		.ascii	"\000"
+ 671 01e3 00       		.space	1
+ 672              	.LC28:
+ 673 01e4 20352E20 		.ascii	" 5. SEG 3                                        \012"
+ 673      53454720 
+ 673      33202020 
+ 673      20202020 
+ 673      20202020 
+ 674 0216 00       		.ascii	"\000"
+ 675 0217 00       		.space	1
+ 676              	.LC29:
+ 677 0218 20362E20 		.ascii	" 6. SEG 4                                        \012"
+ 677      53454720 
+ 677      34202020 
+ 677      20202020 
+ 677      20202020 
+ 678 024a 00       		.ascii	"\000"
+ 679 024b 00       		.space	1
+ 680              	.LC30:
+ 681 024c 20372E20 		.ascii	" 7. SEG 5                                        \012"
+ 681      53454720 
+ 681      35202020 
+ 681      20202020 
+ 681      20202020 
+ 682 027e 00       		.ascii	"\000"
+ 683 027f 00       		.space	1
+ 684              	.LC31:
+ 685 0280 20382E20 		.ascii	" 8. SEG 6                                        \012"
+ 685      53454720 
+ 685      36202020 
+ 685      20202020 
+ 685      20202020 
+ 686 02b2 00       		.ascii	"\000"
+ 687 02b3 00       		.space	1
+ 688              	.LC32:
+ 689 02b4 20392E20 		.ascii	" 9. SEG 7                                        \012"
+ 689      53454720 
+ 689      37202020 
+ 689      20202020 
+ 689      20202020 
+ 690 02e6 00       		.ascii	"\000"
+ 691 02e7 00       		.space	1
+ 692              	.LC33:
+ 693 02e8 20302E20 		.ascii	" 0. SEG 8                                        \012"
+ 693      53454720 
+ 693      38202020 
+ 693      20202020 
+ 693      20202020 
+ 694 031a 00       		.ascii	"\000"
+ 695 031b 00       		.space	1
+ 696              	.LC34:
+ 697 031c 20612E20 		.ascii	" a. SEG 9                                        \012"
+ 697      53454720 
+ 697      39202020 
+ 697      20202020 
+ 697      20202020 
+ 698 034e 00       		.ascii	"\000"
+ 699 034f 00       		.space	1
+ 700              	.LC35:
+ 701 0350 20622E20 		.ascii	" b. SEG 0                                        \012"
+ 701      53454720 
+ 701      30202020 
+ 701      20202020 
+ 701      20202020 
+ 702 0382 00       		.ascii	"\000"
+ 703 0383 00       		.space	1
+ 704              	.LC36:
+ 705 0384 20632E20 		.ascii	" c. On_7_SEG_AllPin                                "
+ 705      4F6E5F37 
+ 705      5F534547 
+ 705      5F416C6C 
+ 705      50696E20 
+ 706 03b7 20202020 		.ascii	"        \012\000"
+ 706      20202020 
+ 706      0A00
+ 707 03c1 000000   		.space	3
+ 708              	.LC37:
+ 709 03c4 20642E20 		.ascii	" d. Off_7_SEG_AllPin                               "
+ 709      4F66665F 
+ 709      375F5345 
+ 709      475F416C 
+ 709      6C50696E 
+ 710 03f7 20202020 		.ascii	"         \012\000"
+ 710      20202020 
+ 710      200A00
+ 711 0402 0000     		.space	2
+ 712              	.LC38:
+ 713 0404 20712E20 		.ascii	" q. LED Menu QUIT\012\000"
+ 713      4C454420 
+ 713      4D656E75 
+ 713      20515549 
+ 713      540A00
+ 714 0417 00       		.space	1
+ 715              	.LC39:
+ 716 0418 53454C45 		.ascii	"SELECT THE COMMAND NUMBER : \000"
+ 716      43542054 
+ 716      48452043 
+ 716      4F4D4D41 
+ 716      4E44204E 
+ 717 0435 000000   		.section	.data.APBAHBPrescTable,"aw",%progbits
+ 718              		.align	2
+ 721              	APBAHBPrescTable:
+ 722 0000 00       		.byte	0
+ 723 0001 00       		.byte	0
+ 724 0002 00       		.byte	0
+ 725 0003 00       		.byte	0
+ 726 0004 01       		.byte	1
+ 727 0005 02       		.byte	2
+ 728 0006 03       		.byte	3
+ 729 0007 04       		.byte	4
+ 730 0008 01       		.byte	1
+ 731 0009 02       		.byte	2
+ 732 000a 03       		.byte	3
+ 733 000b 04       		.byte	4
+ 734 000c 06       		.byte	6
+ 735 000d 07       		.byte	7
+ 736 000e 08       		.byte	8
+ 737 000f 09       		.byte	9
+ 738              		.text
+ 739              	.Letext0:
+ 740              		.file 2 "c:\\program files (x86)\\gnu tools arm embedded\\4.9 2015q1\\arm-none-eabi\\include\\mach
+ 741              		.file 3 "c:\\program files (x86)\\gnu tools arm embedded\\4.9 2015q1\\arm-none-eabi\\include\\stdi
+ 742              		.file 4 "../LIB_AP/Ap_Core/Get_clock.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 Segment_Menu.c
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:19     .text.Seg_Main:00000000 $t
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:24     .text.Seg_Main:00000000 Seg_Main
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:58     .text.Seg_Main:0000001c $d
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:125    .text.Seg_Main:00000124 $t
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:393    .text.Seg_Main:000001f8 $d
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:427    .text.Seg_main_menu:00000000 $t
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:432    .text.Seg_main_menu:00000000 Seg_main_menu
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:551    .text.Seg_main_menu:0000006c $d
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:576    .data.ADCPrescTable:00000000 $d
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:579    .data.ADCPrescTable:00000000 ADCPrescTable
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:585    .rodata.str1.4:00000000 $d
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:718    .data.APBAHBPrescTable:00000000 $d
+C:\Users\CANDH\AppData\Local\Temp\ccQBAsku.s:721    .data.APBAHBPrescTable:00000000 APBAHBPrescTable
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+Key_Main_Menu
+Ld_printf
+Seven_Segment_Test
+Off_7_SEG_AllPin
+On_7_SEG_AllPin
+OutPut_7_SEG_Number
+PowerOff_7_SEG
+PowerOn_7_SEG
+Ld_get_byte

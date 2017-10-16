@@ -3,4 +3,5 @@
 int main()
 {
     Hw_Init();
+    Seg_Main();
 }

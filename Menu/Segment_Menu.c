@@ -94,7 +94,7 @@ int key;
     
                 case 'f':
                     Ld_printf("No.f\n");
-    
+                    CLOCK_DEF void System_Information();
                 break;
     
                 case 'g':

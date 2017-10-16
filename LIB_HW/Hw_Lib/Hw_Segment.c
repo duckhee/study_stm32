@@ -128,30 +128,30 @@ SEG_DEF void Seven_Segment_Test(void)
 
     PowerOn_7_SEG();
 
-    delay_1_second();
+    Hw_1_second();
     Off_7_SEG_AllPin();
 
     On_7_SEG_OnePin(GPIO_7_SEG_A_PIN);
-    delay_1_second();
+    Hw_1_second();
     On_7_SEG_OnePin(GPIO_7_SEG_B_PIN);
-    delay_1_second();
+    Hw_1_second();
     On_7_SEG_OnePin(GPIO_7_SEG_C_PIN);
-    delay_1_second();
+    Hw_1_second();
     On_7_SEG_OnePin(GPIO_7_SEG_D_PIN);
-    delay_1_second();
+    Hw_1_second();
     On_7_SEG_OnePin(GPIO_7_SEG_E_PIN);
-    delay_1_second();
+    Hw_1_second();
     On_7_SEG_OnePin(GPIO_7_SEG_F_PIN);
-    delay_1_second();
+    Hw_1_second();
     On_7_SEG_OnePin(GPIO_7_SEG_G_PIN);
-    delay_1_second();
+    Hw_1_second();
     On_7_SEG_OnePin(GPIO_7_SEG_DP_PIN);
-    delay_1_second();
+    Hw_1_second();
 
     for(i=0; i<10; i++)
     {
         OutPut_7_SEG_Number(i);
-        delay_1_second();
+        Hw_1_second();
     }
 }
 
