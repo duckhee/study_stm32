@@ -1,14 +1,13 @@
 #define CLOCK_LOCAL
 
-#include "Ap_Clock.h"
+#include "Get_clock.h"
 
-//extern __IO uint32_t StartUpCounter;
+CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks);
+CLOCK_DEF void System_Information();
 
-RCC_ClocksTypeDef  rcc_clocks;
-
-CLOCK_DEF void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
+CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
 {
-  uint32_t tmp = 0, pllmull = 0, pllsource = 0, presc = 0;
+    uint32_t tmp = 0, pllmull = 0, pllsource = 0, presc = 0;
     
   /* Get SYSCLK source -------------------------------------------------------*/
   tmp = RCC->CFGR & CFGR_SWS_Mask;
@@ -82,21 +81,16 @@ CLOCK_DEF void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
   RCC_Clocks->ADCCLK_Frequency = RCC_Clocks->PCLK2_Frequency / presc;
 }
 
+extern __IO uint32_t StartUpCouter;
 
-
-
-
-CLOCK_DEF void Ld_System_Information()
+CLOCK_DEF void System_Information()
 {
-
-    //Ld_printf("StartUpCounter : %d\n", StartUpCounter);
-
-    
-
-    Ld_printf("SYSCLK_Frequency = %d\n",rcc_clocks.SYSCLK_Frequency );
-    Ld_printf("HCLK_Frequency = %d\n",rcc_clocks.HCLK_Frequency );
-    Ld_printf("PCLK1_Frequency = %d\n",rcc_clocks.PCLK1_Frequency );
-    Ld_printf("PCLK2_Frequency = %d\n",rcc_clocks.PCLK2_Frequency );
-    Ld_printf("ADCCLK_Frequency = %d\n",rcc_clocks.ADCCLK_Frequency );
-    
+    RCC_ClocksTypeDef rcc_clock;
+    Ld_printf("StartupCounter : %d\n", StartUpCouter);
+    Rcc_GetClocksFreq(&rcc_clock);
+    Ld_printf("System clock frequency = %d\n", rcc_clock.SYSCLK_Frequency);
+    Ld_printf("HCLK_Freqeuncy : %d\n", rcc_clock.HCLK_Frequency);
+    Ld_printf("PCLK1_Frequency : %d\n", rcc_clock.PCLK1_Frequency);
+    Ld_printf("PCLK2_Frequency : %d\n", rcc_clock.PCLK2_Frequency);
+    Ld_printf("ADCCLK_Frequency : %d\n", rcc_clock.ADCCLK_Frequency);
 }

@@ -27,7 +27,7 @@ void (*g_pfnVectors[])(void) =
 
 extern int main();
 
-extern void Systick_Handler(void);
+//extern void Systick_Handler(void);
 
 volatile unsigned long Hw_ISR_VectorTable[100] __attribute__((align(512)));
 
@@ -82,7 +82,7 @@ void Reset_Handler(void)
     *(volatile unsigned long *)0xE000ED08 = (unsigned long)Hw_ISR_VectorTable;
     
     //인터럽트 3 - SYSTEM TIMER interrupt 설정
-    Hw_ISR_VectorTable[ 15 ] = Systick_Handler;
+    //Hw_ISR_VectorTable[ 15 ] = Systick_Handler;
     
     main();
 

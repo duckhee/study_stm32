@@ -6,7 +6,7 @@
 KEY_DEF void Key_Test(void)
 {
     uint32_t i = 0;
-    Led_OffAll();
+    Led_All_Off();
 
     while(1)
     {
@@ -14,28 +14,28 @@ KEY_DEF void Key_Test(void)
 
         if((i++ & 0x1) == 0x0)
         {
-            LED_On_Blue();
+            Led_Blue_On();
         }
         else
         {
-            LED_Off_Blue();
+            Led_Blue_Off();
         }
 
         if(GPIO_ReadInputDataBit(GPIO_KEY, GPIO_KEY1_PIN) == Bit_SET)
         {
-            Red_On();
+            Led_Red_On();
         }
         else
         {
-            Red_Off();
+            RedLed_Red_Off_Off();
         }
         if(GPIO_ReadInputDataBit(GPIO_KEY, GPIO_KEY2_PIN) == Bit_SET)
         {
-            Yellow_On();
+            Led_Yellow_On();
         }
         else
         {
-            Yellow_Off();
+            Led_Yellow_Off();
         }
     }
 }

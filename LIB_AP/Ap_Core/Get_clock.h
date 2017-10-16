@@ -1,13 +1,8 @@
-#ifndef __AP_CLOCK_H__
-#define __AP_CLOCK_H__
+#ifndef __GET_CLOCK_H__
+#define __GET_CLOCK_H__
 
 #include "Ap.h"
 
-#ifdef CLOCK_LOCAL
-#define CLOCK_DEF 
-#else
-#define CLOCK_DEF              extern
-#endif
 
 #define CFGR_SWS_Mask             ((uint32_t)0x0000000C)
 #define CFGR_PLLMull_Mask         ((uint32_t)0x003C0000)
@@ -22,8 +17,16 @@ static __I uint8_t APBAHBPrescTable[16] = {0, 0, 0, 0, 1, 2, 3, 4, 1, 2, 3, 4, 6
 static __I uint8_t ADCPrescTable[4] = {2, 4, 6, 8};
 
 
-CLOCK_DEF void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks);
+#ifdef CLOCK_LOCAL
+#define CLOCK_DEF
+#else
+#define CLOCK_DEF                 extern
+#endif
 
-CLOCK_DEF void Ld_System_Information(void);
+
+CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Cloks);
+CLOCK_DEF void System_Information();
+
+
 
 #endif
