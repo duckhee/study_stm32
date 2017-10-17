@@ -18,6 +18,7 @@
 //HW LIB
 #include "Hw_Led.h"
 #include "Hw_Key.h"
+#include "Hw_Segment.h"
 
 
 //Library

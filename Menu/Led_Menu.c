@@ -18,107 +18,107 @@ LED_MENU_DEF int Led_Main(void)
         switch(key)
         {
             case '1':
-                Ld_printf("No.1\n");
-                Red_On();
+                printf("No.1\n");
+                Led_Red_On();
             break;
 
             case '2':
-                Ld_printf("No.2\n");
-                Red_Off();
+                printf("No.2\n");
+                Led_Red_Off();
             break;
             
             case '3':
-                Ld_printf("No.3\n");
-                Yellow_On();
+                printf("No.3\n");
+                Led_Yellow_On();
             break;
 
             case '4':
-                Ld_printf("No.4\n");
-                Yellow_Off();
+                printf("No.4\n");
+                Led_Yellow_Off();
             break;
               
             case '5':
-                Ld_printf("No.5\n");
-                Blue_On();
+                printf("No.5\n");
+                Led_Blue_On();
             break;
 
             case '6':
-                Ld_printf("No.6\n");
-                Blue_Off();
+                printf("No.6\n");
+                Led_Blue_Off();
             break;
 
             case '7':
-                Ld_printf("No.7\n");
+                printf("No.7\n");
                 Led_Test();
             break;
 
             case '8':
-                Ld_printf("No.8\n");
-                Ld_System_Information();
+                printf("No.8\n");
+                System_Information();
             break;
 
             case '9':
-                Ld_printf("No.9\n");
-                
+                printf("No.9\n");
+                Led_All_On();
             break;
 
             case '0':
-                Ld_printf("No.0\n");
-             
+                printf("No.0\n");
+                Led_All_Off();
             break;
 
             case 'a':
-                Ld_printf("No.a\n");
+                printf("No.a\n");
             
             break;
 
             case 'b':
-                Ld_printf("No.b\n");
+                printf("No.b\n");
               
             break;
 
             case 'c':
-                Ld_printf("No.c\n");
+                printf("No.c\n");
             
             break;
 
             case 'd':
-                Ld_printf("No.d\n");
+                printf("No.d\n");
         
             break;
 
             case 'e':
-                Ld_printf("No.e\n");
+                printf("No.e\n");
      
             break;
 
             case 'f':
-                Ld_printf("No.f\n");
+                printf("No.f\n");
 
             break;
 
             case 'g':
-                Ld_printf("No.g\n");
+                printf("No.g\n");
      
             break;
 
             case 'h':
-                Ld_printf("No.h\n");
+                printf("No.h\n");
        
             break;
 
             case 'i':
-                Ld_printf("No.i\n");
+                printf("No.i\n");
 
             break;
 
             case 'j':
-                Ld_printf("No.j\n");
+                printf("No.j\n");
 
             break;
 
             case 'k':
-                Ld_printf("No.k\n");
+                printf("No.k\n");
 
             break;
 
@@ -134,27 +134,27 @@ LED_MENU_DEF int Led_main_menu(void)
 {
     int key;
 
-    Ld_printf("\n\n");
-    Ld_printf("-------------------------------------------------\n");
-    Ld_printf("                 LED MAIN MENU\n");
-    Ld_printf("-------------------------------------------------\n");
-    Ld_printf(" 1. Red On                                         \n");
-    Ld_printf(" 2. Red Off                                         \n");
-    Ld_printf(" 3. Yellow On                                         \n");
-    Ld_printf(" 4. Yellow Off                                         \n");
-    Ld_printf(" 5. Blue On                                         \n");
-    Ld_printf(" 6. Blue Off                                         \n");
-    Ld_printf(" 7. Led Test                                         \n");
-    Ld_printf(" 8. System_Information                                         \n");
-    Ld_printf(" 9. Test                                         \n");
-    Ld_printf(" 0. Test                                         \n");
-    Ld_printf("-------------------------------------------------\n");
-    Ld_printf(" q. LED Menu QUIT\n");
-    Ld_printf("-------------------------------------------------\n");
-    Ld_printf("\n\n");
+    printf("\n\n");
+    printf("-------------------------------------------------\n");
+    printf("                 LED MAIN MENU\n");
+    printf("-------------------------------------------------\n");
+    printf(" 1. Red On                                         \n");
+    printf(" 2. Red Off                                         \n");
+    printf(" 3. Yellow On                                         \n");
+    printf(" 4. Yellow Off                                         \n");
+    printf(" 5. Blue On                                         \n");
+    printf(" 6. Blue Off                                         \n");
+    printf(" 7. Led Test                                         \n");
+    printf(" 8. System_Information                                         \n");
+    printf(" 9. Test                                         \n");
+    printf(" 0. Test                                         \n");
+    printf("-------------------------------------------------\n");
+    printf(" q. LED Menu QUIT\n");
+    printf("-------------------------------------------------\n");
+    printf("\n\n");
 
-    Ld_printf("SELECT THE COMMAND NUMBER : ");
-    key=Ld_get_byte();
-
+    printf("SELECT THE COMMAND NUMBER : ");
+    key=get_byte();
+    printf("key %d\n", key);
     return key;
 }
