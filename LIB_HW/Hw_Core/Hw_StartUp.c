@@ -20,7 +20,7 @@ __attribute__((section(".isr_vectorsflash")))
 
 void (*g_pfnVectors[])(void) = 
 {
-    (intfunc)((unsigned)&_ld_stack_address),
+    (intfunc)((unsigned long)&_ld_stack_address),
     Reset_Handler,
 };
 
@@ -48,7 +48,7 @@ void Reset_Handler(void)
     
     do
     {
-        HSEStatus = (0x40021000  & 0x1 << 1);
+        HSEStatus = ((*(volatile unsigned long *)0x40021000)  & 0x1 << 1);
         StartUpCounter++;
     }while((HSEStatus == 0) && (StartUpCounter != 0x0500));
   
