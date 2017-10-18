@@ -86,11 +86,11 @@ extern __IO uint32_t StartUpCouter;
 CLOCK_DEF void System_Information()
 {
     RCC_ClocksTypeDef rcc_clock;
-    Ld_printf("StartupCounter : %d\n", StartUpCouter);
+    printf("StartupCounter : %d\n", StartUpCouter);
     Rcc_GetClocksFreq(&rcc_clock);
-    Ld_printf("System clock frequency = %d\n", rcc_clock.SYSCLK_Frequency);
-    Ld_printf("HCLK_Freqeuncy : %d\n", rcc_clock.HCLK_Frequency);
-    Ld_printf("PCLK1_Frequency : %d\n", rcc_clock.PCLK1_Frequency);
-    Ld_printf("PCLK2_Frequency : %d\n", rcc_clock.PCLK2_Frequency);
-    Ld_printf("ADCCLK_Frequency : %d\n", rcc_clock.ADCCLK_Frequency);
+    printf("System clock frequency = %d\n", rcc_clock.SYSCLK_Frequency);
+    printf("HCLK_Freqeuncy : %d\n", rcc_clock.HCLK_Frequency);
+    printf("PCLK1_Frequency : %d\n", rcc_clock.PCLK1_Frequency);
+    printf("PCLK2_Frequency : %d\n", rcc_clock.PCLK2_Frequency);
+    printf("ADCCLK_Frequency : %d\n", rcc_clock.ADCCLK_Frequency);
 }

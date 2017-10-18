@@ -3,5 +3,8 @@
 int main()
 {
     Hw_Init();
-    Seg_Main();
+    Led_Main();
+    //Seg_Main();
+    //Seg_main_menu();
+    //Seven_Segment_Test();
 }
