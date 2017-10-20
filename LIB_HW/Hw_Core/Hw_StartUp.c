@@ -1,3 +1,6 @@
+
+#include "Hw.h"
+
 typedef void (*const intfunc)(void);
 
 extern unsigned long _ld_stack_address;
@@ -23,30 +26,30 @@ void (*g_pfeVectors[])(void) =
 
 extern int main();
 
- volatile unsigned long Hw_ISR_VectorTable[100] __attribute__((align(512)));
+ //volatile unsigned long Hw_ISR_VectorTable[100] __attribute__((align(512)));
 
 void Reset_Handler(void)
 {
     unsigned long HSEStatus = 0, StartUpCounter = 0;
+
     Init_Data();
+    
+    do
+    {
+        
+        HSEStatus = (*(volatile unsigned long *) 0x40021000 & 0x1<<1);
+        
+        StartUpCounter++;
+    } while((HSEStatus == 0) && (StartUpCounter != 0x0500));
+    
+    
     //////	FLASH Memory Latency ����(2 Wait State)
     *(volatile unsigned long *) 0x40022000 |= 0x10; //bit4 PRETBE = 1 set
     *(volatile unsigned long *) 0x40022000 &= ~(0x7); //bit 2, 1, 0 clear 0, 0, 0
     *(volatile unsigned long *) 0x40022000 |= 0x2; //bit 2, 1, 0 = 0, 1, 0
-
+    
     *(volatile unsigned long *) 0x40021000 |= 0x1;
-
-    do
-    {
-<<<<<<< HEAD
-        HSEStatus = (*(volatile unsigned long *) 0x40021000 & 0x1<<1);
-=======
-        HSEStatus = ((*(volatile unsigned long *)0x40021000)  & 0x1 << 1);
->>>>>>> 28b62eb54bf533eaf1046ef54516ba94fed78fec
-        StartUpCounter++;
-    } while((HSEStatus == 0) && (StartUpCounter != 0x0500));
-
-
+    
     /////// PLL ���� ���� �� ��� 36MHz �ܺ� �� ��� 72Mhz�� ������
     *(volatile unsigned long *) 0x40021004 &= ~(0xF<<18 | 0x1<<17 | 0x1<<16);              //0x3F0000;      //RCC_CFGR
     *(volatile unsigned long *) 0x40021004 |= (0x7<<18);              //RCC_CFGR  //���� 4MHz
@@ -98,12 +101,18 @@ void Reset_Handler(void)
 
 
         //인터럽트 2 - 벡터를 RAM 영역으로 이동
-        *(volatile unsigned long *)0xE000ED08 = (unsigned long)Hw_ISR_VectorTable;
+   //     *(volatile unsigned long *)0xE000ED08 = (unsigned long)Hw_ISR_VectorTable;
         
         //인터럽트 3 - SYSTEM TIMER interrupt 설정
 //        Hw_ISR_VectorTable[ 15 ] = Systick_Handler;
         
         main();
+
+        #if 0
+
+        printf("failed  upload ...");
+
+        #endif
     
 }
 

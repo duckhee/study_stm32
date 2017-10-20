@@ -40,7 +40,7 @@ LED_DEF void Led_All_Off()
     Led_Blue_Off();
 }
 LED_DEF void Led_Mult(uint32_t counting){
-    for(; counting < 0; counting --)
+    for(; counting > 0; counting --)
     {
         Led_Red_Off();
         Led_Yellow_On();
@@ -68,6 +68,7 @@ LED_DEF void Led_Test()
     Led_All_On();
     #else
     Led_Mult(30);
+    Led_All_Off();
     #endif
 
 }

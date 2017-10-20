@@ -101,7 +101,7 @@ SEG_MENU_DEF int Seg_Main(void)
     
                 case 'g':
                     printf("No.g\n");
-         
+                    Led_Test();
                 break;
     
                 case 'h':
