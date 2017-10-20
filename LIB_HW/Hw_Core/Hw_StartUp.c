@@ -38,7 +38,11 @@ void Reset_Handler(void)
 
     do
     {
+<<<<<<< HEAD
         HSEStatus = (*(volatile unsigned long *) 0x40021000 & 0x1<<1);
+=======
+        HSEStatus = ((*(volatile unsigned long *)0x40021000)  & 0x1 << 1);
+>>>>>>> 28b62eb54bf533eaf1046ef54516ba94fed78fec
         StartUpCounter++;
     } while((HSEStatus == 0) && (StartUpCounter != 0x0500));
 
