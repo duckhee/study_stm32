@@ -25,6 +25,7 @@ SECTIONS
       *(.stub .gnu.linkonce.t.*)
       *(.rodata .rodata.* .gnu.linkonce.r.*) /* read-only data (constants) */
       *(.glue_7 .glue_7t)                    /* redundant for thumb2 ?! */
+      . = ALIGN(4);
       _ld_text_end = .;
    } >FLASH
    _ld_text_size = SIZEOF(.text);
@@ -32,6 +33,7 @@ SECTIONS
    .data  : AT (ADDR(.text) + SIZEOF(.text))
    {
       _ld_data_start = .;
+      . = ALIGN(4);
 		*(vtable)
 		*(.data*)
     *(.data .data.* .gnu.linkonce.d.*)
@@ -44,6 +46,7 @@ SECTIONS
     .bss (NOLOAD):
    {
       _ld_bss_start = .;
+      
       *(.bss)
       *(COMMON)
       _ld_bss_end = .;

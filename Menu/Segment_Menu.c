@@ -20,78 +20,78 @@ SEG_MENU_DEF int Seg_Main(void)
                 case '1':
                     printf("No.1\n");
                     printf("PowerOn_7_SEG");
-                    PowerOn_7_SEG();
+                     PowerOn_7_SEG();
                 break;
     
                 case '2':
                     printf("No.2\n");
                     printf("PowerOff_7_SEG");
-                    PowerOff_7_SEG();
+                     PowerOff_7_SEG();
                 break;
                 
                 case '3':
                     printf("No.3\n");
-                    OutPut_7_SEG_Number(1);
+                     OutPut_7_SEG_Number(1);
                 break;
     
                 case '4':
                     printf("No.4\n");
-                    OutPut_7_SEG_Number(2);
+                     OutPut_7_SEG_Number(2);
                 break;
                   
                 case '5':
                     printf("No.5\n");
-                    OutPut_7_SEG_Number(3);
+                     OutPut_7_SEG_Number(3);
                 break;
     
                 case '6':
                     printf("No.6\n");
-                    OutPut_7_SEG_Number(4);
+                     OutPut_7_SEG_Number(4);
                 break;
     
                 case '7':
                     printf("No.7\n");
-                    OutPut_7_SEG_Number(5);
+                     OutPut_7_SEG_Number(5);
                 break;
     
                 case '8':
                     printf("No.8\n");
-                    OutPut_7_SEG_Number(6);
+                     OutPut_7_SEG_Number(6);
                 break;
     
                 case '9':
                     printf("No.9\n");
-                    OutPut_7_SEG_Number(7);
+                     OutPut_7_SEG_Number(7);
                 break;
     
                 case '0':
                     printf("No.0\n");
-                    OutPut_7_SEG_Number(8);
+                     OutPut_7_SEG_Number(8);
                 break;
     
                 case 'a':
                     printf("No.a\n");
-                    OutPut_7_SEG_Number(9);
+                     OutPut_7_SEG_Number(9);
                 break;
     
                 case 'b':
                     printf("No.b\n");
-                    OutPut_7_SEG_Number(0);
+                     OutPut_7_SEG_Number(0);
                 break;
     
                 case 'c':
                     printf("No.c\n");
-                    On_7_SEG_AllPin();
+                     On_7_SEG_AllPin();
                 break;
     
                 case 'd':
                     printf("No.d\n");
-                    Off_7_SEG_AllPin();
+                     Off_7_SEG_AllPin();
                 break;
     
                 case 'e':
                     printf("No.e\n");
-                    Seven_Segment_Test();
+                     Seven_Segment_Test();
                 break;
     
                 case 'f':
