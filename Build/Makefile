@@ -3,7 +3,7 @@ PREFIX = arm-none-eabi-
 REMOVE_CMD = rm
 #start file
 STARTUP_C = Hw_StartUp.c
-#target file
+#target file (output file name)
 TARGET = main
 #build folder
 OUTDIR = ./Build
@@ -64,10 +64,10 @@ CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CONLYFLAGS += -Wnested-externs 
 CONLYFLAGS += -std=gnu99
 #이게 맞는지?
-LDFLAGS = -static -nostdlib -nostartfiles -Wl,-Map=$(TARGET).map,--cref,--gc-sections -L./ -lc  -lm  -lc -lgcc -T./stm32f10x.ld
+LDFLAGS = -static -nostdlib -nostartfiles -Wl,-Map=$(TARGET).map,--cref,--gc-sections -L./ -lc  -lm  -lc -lgcc -T.//stm32f10x.ld
 #ELF32_LDFLAGS = -Wl,-T,stm32f10x.ld
 
-
+ELFSIZE = $(SIZE) -A $(TARGET).elf
 
 # Define Messages
 # English
@@ -89,7 +89,7 @@ ALLOBJ = $(addsuffix .o, $(ALLSRCBASE))
 
 
 # Default target.
-all: createdirs build
+all: createdirs build sizeinfo
 
 elf: $(TARGET).elf
 lss: $(TARGET).lss 
@@ -99,6 +99,10 @@ bin: $(TARGET).bin
 
 
 build: elf hex bin lss sym
+
+sizeinfo:
+	@echo code size $@
+	$(ELFSIZE) 
 
 # Create output directories.
 createdirs:
@@ -188,5 +192,5 @@ clean_list :
 
 # Listing of phony targets.
 .PHONY : all finish \
-build elf hex bin lss sym clean clean_list createdirs
+build elf hex bin lss sym clean clean_list createdirs sizeinfo
 

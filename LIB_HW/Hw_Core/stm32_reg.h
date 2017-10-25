@@ -630,10 +630,5 @@ typedef struct
                                          This parameter can be set either to ENABLE or DISABLE */ 
 }EXTI_InitTypeDef;
 
-void NVIC_PriorityGroupConfig(uint32_t NVIC_PriorityGroup);
-void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct);
-void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource);
-void EXTI_Init(EXTI_InitTypeDef* EXTI_InitStruct);
-
 #endif  /* __STM_H */
 

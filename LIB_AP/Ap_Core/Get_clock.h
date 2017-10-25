@@ -25,7 +25,7 @@ static __I uint8_t ADCPrescTable[4] = {2, 4, 6, 8};
 
 
 CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Cloks);
-CLOCK_DEF void System_Information();
+CLOCK_DEF void System_Information(void);
 
 
 

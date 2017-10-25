@@ -129,7 +129,7 @@ GPIO_DEF void GPIO_Configuration(void)
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIO_LED, &GPIO_InitStructure);
-
+    //led all off setting
     Led_All_Off();
 
     GPIO_InitStructure.GPIO_Pin
@@ -137,7 +137,7 @@ GPIO_DEF void GPIO_Configuration(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIO_7_SEG, &GPIO_InitStructure);
-
+    //segment all off setting
     Off_7_SEG_AllPin();
 
 }
