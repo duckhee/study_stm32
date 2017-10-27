@@ -12,4 +12,5 @@ HW_DEF void Hw_Init()
     RCC->APB2ENR |= RCC_APB2Periph_GPIOC;
     RCC->APB2ENR |= RCC_APB2Periph_USART1;
     GPIO_Configuration();
+    //LED, KEY, USART, SEGMENT config
 }
