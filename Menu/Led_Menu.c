@@ -155,6 +155,6 @@ LED_MENU_DEF int Led_main_menu(void)
 
     printf("SELECT THE COMMAND NUMBER : ");
     key=get_byte();
-    printf("key %d\n", key);
+    
     return key;
 }

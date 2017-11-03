@@ -153,6 +153,6 @@ KEY_MENU_DEF int Key_Main_Menu()
     
         printf("SELECT THE COMMAND NUMBER : ");
         key=get_byte();
-        printf("key %d\n", key);
+        
         return key;
 }
