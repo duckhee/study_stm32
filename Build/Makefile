@@ -179,8 +179,8 @@ clean_list :
 	$(REMOVE) $(LSTFILES)
 	$(REMOVE) $(DEPFILES)
 	$(REMOVE) $(SRC:.c=.s)
+	$(REMOVE) *.lst
 	$(REMOVE) NUL
-	$(REMOVE) start_stm32f10x.lst
 	
 
 # Create object files directory
