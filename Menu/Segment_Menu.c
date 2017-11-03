@@ -20,7 +20,7 @@ SEG_MENU_DEF int Seg_Main(void)
                 case '1':
                     printf("No.1\n");
                     printf("PowerOn_7_SEG");
-                     PowerOn_7_SEG();
+                    PowerOn_7_SEG();
                 break;
     
                 case '2':
@@ -159,7 +159,6 @@ SEG_MENU_DEF int Seg_main_menu(void)
         char a = '1';
         printf("SELECT THE COMMAND NUMBER : ");
         key=get_byte();
-        printf("key %d\n", key);
-        printf("key a : %d\n", a);
+
         return key;
 }
