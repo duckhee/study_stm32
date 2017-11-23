@@ -2,6 +2,7 @@
 
 typedef void (*const intfunc)(void);
 // Private define ----------------------------------------------------------------------------------------
+//WEAK key word assemble
 #define WEAK __attribute__ ((weak))
 
 //link pointer get LINKERSCRIPT
