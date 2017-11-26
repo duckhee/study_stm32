@@ -237,8 +237,17 @@ void Reset_Handler(void)
 	//use system clock 찾아보기 
 	//while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x00); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 HSI
 	//while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x04); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 HSE
-    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 PLL
-    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
+	while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 PLL
+	/* 
+		
+	RCC_CFGR |= ( 0<< 7 | 0<<11 | 0<<10 | 0<<10 );	// HPRE 0XXX HCLK	= 72MHZ
+	//xxxx xxxx xxxx xxxx xxxx xxxx 0XXX xxxx
+	RCC_CFGR |= ( 0<<13 | 0<<12 | 0<<11 );			// PPRE2 0XX PCLK2	= 72MHZ
+	//xxxx xxxx xxxx xxxx xx0X Xxxx xxxx xxxx
+	RCC_CFGR |= ( 1<<10 | 0<< 9 | 0<< 8 );			// PPRE1 100 PCLK1	= 36MHz	
+	//xxxx xxxx xxxx xxxx xxxx x100 xxxx xxxx		//(PCLK1 has to be <= 36MHz)
+	*/
+    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN / ADC EN    APB2ENR
     *(volatile unsigned long *)0x40010804 = 0x888444B4; //GPIO A CRH bit
 
    
