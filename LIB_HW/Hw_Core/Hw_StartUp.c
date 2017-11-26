@@ -213,8 +213,9 @@ void Reset_Handler(void)
     *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16 | 0x1 << 14); //18 bit set 0, 17 bit set 0, 16 bit set 0
 	//PLL not use HSE, HSI
 	*(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
-	//PLL use HSE or HSI
-    // *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ?? HSI use maybe...
+	//PLL use HSE
+	// *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ?? HSE use maybe...
+	//PLL use HSE
     // *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
     
     *(volatile unsigned long *) 0x40021000 |= 0x01 << 24/*0x1000000*/;                       //PLLON
@@ -237,7 +238,7 @@ void Reset_Handler(void)
 	//while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x00); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 HSI
 	//while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x04); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 HSE
     while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 PLL
-    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0;            // uart/ IOPA EN / AFIO EN    APB2ENR
+    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
     *(volatile unsigned long *)0x40010804 = 0x888444B4; //GPIO A CRH bit
 
    
