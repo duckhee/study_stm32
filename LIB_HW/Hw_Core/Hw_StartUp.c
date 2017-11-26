@@ -205,12 +205,16 @@ void Reset_Handler(void)
     *(volatile unsigned long *)0x40022000 &= ~(0x7); //bit 2, 1, 0 clear 0, 0, 0
     *(volatile unsigned long *)0x40022000 |= 0x2; //bit 2, 1, 0 = 0, 1, 0
     //////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    // reset setting PLL 
-    *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16); //18 bit set 0, 17 bit set 0, 16 bit set 0
-
-    *(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
-    // *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ??
+	
+	//PLL reset first
+	*(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
+	//PLLMUL
+    // reset setting PLL PLLMUL = 18, PLL SRC = 16, PLL XTPRE reset = 17, ADC PRE = 14
+    *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16 | 0x1 << 14); //18 bit set 0, 17 bit set 0, 16 bit set 0
+	//PLL not use HSE, HSI
+	*(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
+	//PLL use HSE or HSI
+    // *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ?? HSI use maybe...
     // *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
     
     *(volatile unsigned long *) 0x40021000 |= 0x01 << 24/*0x1000000*/;                       //PLLON
@@ -223,9 +227,16 @@ void Reset_Handler(void)
         10: PLL selected as system clock <------------- use this
         11: not allowed (not use system clock PLL)
     */
-    *(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
-    *(volatile unsigned long *)0x40021004 |= 0x2; //set system clcok PLL
-    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // ??? 알아보기 
+	*(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
+	//use hsi clock as system 
+	// *(volatile unsigned long *)0x40021004 |= 0x00;
+	//use hse clock as system
+	// *(volatile unsigned long *)0x40021004 |= 0x01;
+	*(volatile unsigned long *)0x40021004 |= 0x2; //set system clcok PLL
+	//use system clock 찾아보기 
+	//while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x00); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 HSI
+	//while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x04); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 HSE
+    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 PLL
     *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0;            // uart/ IOPA EN / AFIO EN    APB2ENR
     *(volatile unsigned long *)0x40010804 = 0x888444B4; //GPIO A CRH bit
 
