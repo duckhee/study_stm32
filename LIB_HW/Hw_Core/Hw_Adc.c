@@ -3,5 +3,8 @@
 #include "Hw_Adc.h"
 
 
-
+ADC_DEF void ADC_Init()
+{
+    
+}
 

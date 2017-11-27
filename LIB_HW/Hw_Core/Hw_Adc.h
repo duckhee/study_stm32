@@ -6,7 +6,7 @@
 #ifdef ADC_LOCAL
 #define ADC_DEF
 #else
-#define ADC_DEF
+#define ADC_DEF            extern
 #endif
 
 
