@@ -11,7 +11,7 @@
 #define CFGR_PPRE2_Set_Mask       ((uint32_t)0x00003800)
 #define CFGR_ADCPRE_Set_Mask      ((uint32_t)0x0000C000)
 
- static __I uint8_t APBAHBPrescTable[15] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
+ static __I uint8_t APBAHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
  static __I uint8_t ADCPrescTable[4] = {2, 4, 6, 8};
 
 
@@ -75,7 +75,9 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
   /* Compute HCLK, PCLK1, PCLK2 and ADCCLK clocks frequencies ----------------*/
   /* Get HCLK prescaler */
   tmp = RCC->CFGR & CFGR_HPRE_Set_Mask;
+  printf("tmp HCLK : %d\n", tmp);
   tmp = tmp >> 4;
+  printf("HCLK tmp  : %d\n", tmp);
   printf("HCLK_Frequency tmp : %08x\n", tmp);
   presc = APBAHBPrescTable[tmp];
   printf("HCLK_Frequency presc : %08x\n", presc);
@@ -85,8 +87,9 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
 
   /* Get PCLK1 prescaler */
   tmp = RCC->CFGR & CFGR_PPRE1_Set_Mask;
+  printf(" tmp PCLK1_Frequency : %d\n", tmp);
   tmp = tmp >> 8;
-  printf("PCLK1_Frequency tmp : %08x\n", tmp);
+  printf("PCLK1_Frequency tmp  : %d\n", tmp);
   presc = APBAHBPrescTable[tmp];
   printf("PCLK1_Frequency presc : %08x\n", presc);
   printf("PCLK1_Frequency presc : %d\n", presc);
@@ -96,8 +99,9 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
 
   /* Get PCLK2 prescaler */
   tmp = RCC->CFGR & CFGR_PPRE2_Set_Mask;
+  printf(" tmp PCLK1_Frequency : %\d\n", tmp);
   tmp = tmp >> 11;
-  printf("PCLK2_Frequency tmp : %08x\n", tmp);
+  printf("PCLK1_Frequency tmp  : %\d\n", tmp);
   presc = APBAHBPrescTable[tmp];
   printf("PCLK2_Frequency presc : %08x\n", presc);
   printf("PCLK2_Frequency presc : %d\n", presc);
@@ -107,8 +111,9 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
 
   /* Get ADCCLK prescaler */
   tmp = RCC->CFGR & CFGR_ADCPRE_Set_Mask;
+  printf(" tmp ADCCLK_Frequency : %d\n", tmp);
   tmp = tmp >> 14;
-  printf("PCLK2_Frequency tmp : %08x\n", tmp);
+  printf("ADCCLK_Frequency tmp : %d\n", tmp);
   presc = ADCPrescTable[tmp];
   printf("ADCCLK_Frequency presc : %08x\n", presc);
   printf("ADCCLK_Frequency presc : %d\n", presc);
