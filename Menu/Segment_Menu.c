@@ -15,6 +15,7 @@ SEG_MENU_DEF int Seg_Main(void)
 
     while((key = Seg_main_menu()) != 0)
     {
+        printf("key : %d\n", key);
             switch(key)
             {
                 case '1':

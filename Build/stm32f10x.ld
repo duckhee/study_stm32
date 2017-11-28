@@ -44,7 +44,7 @@ SECTIONS
     .bss (NOLOAD):
    {
       _ld_bss_start = .;
-      *(.bss .bss.*)
+      *(.bss)
       *(COMMON)
       _ld_bss_end = .;
    } >RAM

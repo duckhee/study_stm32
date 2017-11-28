@@ -11,6 +11,9 @@
 #define CFGR_PPRE2_Set_Mask       ((uint32_t)0x00003800)
 #define CFGR_ADCPRE_Set_Mask      ((uint32_t)0x0000C000)
 
+ static __I uint32_t APBAHBPrescTable[15] = {0, 0, 0, 0, 1, 2, 3, 4, 1, 2, 3, 4, 6, 7, 8, 9};
+ static __I uint32_t ADCPrescTable[4] = {2, 4, 6, 8};
+
 
 CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks);
 CLOCK_DEF void System_Information();
@@ -73,15 +76,20 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
   /* Get HCLK prescaler */
   tmp = RCC->CFGR & CFGR_HPRE_Set_Mask;
   tmp = tmp >> 4;
-  
+  printf("HCLK_Frequency tmp : %08x\n", tmp);
   presc = APBAHBPrescTable[tmp];
+  printf("HCLK_Frequency presc : %08x\n", presc);
+  printf("HCLK_Frequency presc : %d\n",presc);
   /* HCLK clock frequency */
   RCC_Clocks->HCLK_Frequency = RCC_Clocks->SYSCLK_Frequency >> presc;
 
   /* Get PCLK1 prescaler */
   tmp = RCC->CFGR & CFGR_PPRE1_Set_Mask;
   tmp = tmp >> 8;
+  printf("PCLK1_Frequency tmp : %08x\n", tmp);
   presc = APBAHBPrescTable[tmp];
+  printf("PCLK1_Frequency presc : %08x\n", presc);
+  printf("PCLK1_Frequency presc : %d\n", presc);
   /* PCLK1 clock frequency */
   RCC_Clocks->PCLK1_Frequency = RCC_Clocks->HCLK_Frequency >> presc;
   
@@ -89,7 +97,10 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
   /* Get PCLK2 prescaler */
   tmp = RCC->CFGR & CFGR_PPRE2_Set_Mask;
   tmp = tmp >> 11;
+  printf("PCLK2_Frequency tmp : %08x\n", tmp);
   presc = APBAHBPrescTable[tmp];
+  printf("PCLK2_Frequency presc : %08x\n", presc);
+  printf("PCLK2_Frequency presc : %d\n", presc);
   /* PCLK2 clock frequency */
   RCC_Clocks->PCLK2_Frequency = RCC_Clocks->HCLK_Frequency >> presc;
   
@@ -97,7 +108,10 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
   /* Get ADCCLK prescaler */
   tmp = RCC->CFGR & CFGR_ADCPRE_Set_Mask;
   tmp = tmp >> 14;
+  printf("PCLK2_Frequency tmp : %08x\n", tmp);
   presc = ADCPrescTable[tmp];
+  printf("ADCCLK_Frequency presc : %08x\n", presc);
+  printf("ADCCLK_Frequency presc : %d\n", presc);
   /* ADCCLK clock frequency */
   RCC_Clocks->ADCCLK_Frequency = RCC_Clocks->PCLK2_Frequency / presc;
   
