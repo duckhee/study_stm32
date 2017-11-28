@@ -18,6 +18,8 @@ CLOCK_DEF void System_Information();
 CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
 {
     uint32_t tmp = 0, pllmull = 0, pllsource = 0, presc = 0;
+
+    
     
   /* Get SYSCLK source -------------------------------------------------------*/
   tmp = RCC->CFGR & CFGR_SWS_Mask;
@@ -26,10 +28,12 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
   {
     case 0x00:  /* HSI used as system clock */
       RCC_Clocks->SYSCLK_Frequency = HSI_Value;
+      
       break;
 
     case 0x04:  /* HSE used as system clock */
       RCC_Clocks->SYSCLK_Frequency = HSE_Value;
+      
       break;
 
     case 0x08:  /* PLL used as system clock */
@@ -42,12 +46,15 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
       if (pllsource == 0x00)
       {/* HSI oscillator clock divided by 2 selected as PLL clock entry */
         RCC_Clocks->SYSCLK_Frequency = (HSI_Value >> 1) * pllmull;
+      
+        
       }
       else
       {/* HSE selected as PLL clock entry */
         if ((RCC->CFGR & CFGR_PLLXTPRE_Mask) != (uint32_t)RESET)
         {/* HSE oscillator clock divided by 2 */
           RCC_Clocks->SYSCLK_Frequency = (HSE_Value >> 1) * pllmull;
+          
         }
         else
         {
@@ -58,6 +65,7 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
 
     default:
       RCC_Clocks->SYSCLK_Frequency = HSI_Value;
+      
       break;
   }
 
@@ -65,6 +73,7 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
   /* Get HCLK prescaler */
   tmp = RCC->CFGR & CFGR_HPRE_Set_Mask;
   tmp = tmp >> 4;
+  
   presc = APBAHBPrescTable[tmp];
   /* HCLK clock frequency */
   RCC_Clocks->HCLK_Frequency = RCC_Clocks->SYSCLK_Frequency >> presc;
@@ -75,6 +84,7 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
   presc = APBAHBPrescTable[tmp];
   /* PCLK1 clock frequency */
   RCC_Clocks->PCLK1_Frequency = RCC_Clocks->HCLK_Frequency >> presc;
+  
 
   /* Get PCLK2 prescaler */
   tmp = RCC->CFGR & CFGR_PPRE2_Set_Mask;
@@ -82,6 +92,7 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
   presc = APBAHBPrescTable[tmp];
   /* PCLK2 clock frequency */
   RCC_Clocks->PCLK2_Frequency = RCC_Clocks->HCLK_Frequency >> presc;
+  
 
   /* Get ADCCLK prescaler */
   tmp = RCC->CFGR & CFGR_ADCPRE_Set_Mask;
@@ -89,12 +100,14 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
   presc = ADCPrescTable[tmp];
   /* ADCCLK clock frequency */
   RCC_Clocks->ADCCLK_Frequency = RCC_Clocks->PCLK2_Frequency / presc;
+  
 }
 
 extern __IO uint32_t StartUpCouter;
 
 CLOCK_DEF void System_Information()
 {
+
     RCC_ClocksTypeDef rcc_clock;
     printf("StartupCounter : %d\n", StartUpCouter);
     Rcc_GetClocksFreq(&rcc_clock);

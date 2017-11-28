@@ -1,7 +1,10 @@
 #ifndef __HW_H__
 #define __HW_H__
 
+
+
 #include <stdint.h>
+
 
 #include "stm32_reg.h"
 
