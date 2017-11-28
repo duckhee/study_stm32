@@ -11,7 +11,7 @@
 #define CFGR_PPRE2_Set_Mask       ((uint32_t)0x00003800)
 #define CFGR_ADCPRE_Set_Mask      ((uint32_t)0x0000C000)
 
- static __I uint8_t APBAHBPrescTable[15] = {0, 0, 0, 0, 1, 2, 3, 4, 1, 2, 3, 4, 6, 7, 8, 9};
+ static __I uint8_t APBAHBPrescTable[15] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
  static __I uint8_t ADCPrescTable[4] = {2, 4, 6, 8};
 
 
