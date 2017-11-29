@@ -15,7 +15,7 @@ arm-none-eabi-objdump -tT <elf_object>
 
 arm-none-eabi-readelf -S &lt;object&gt; <br>
 = section header 추출<br>
-arm-none-eabi-readelf -l '<object>'<br>
+arm-none-eabi-readelf -l &lt;object&gt;<br>
 = program header table 추출<br>
 arm-none-eabi-readelf -s &lt;object&gt;<br>
 = symbol table 추출<br>
