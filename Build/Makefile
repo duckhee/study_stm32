@@ -54,6 +54,7 @@ OBJDUMP = $(PREFIX)objdump
 OBJNM = $(PREFIX)nm
 SIZE = $(PREFIX)size
 REMOVE = $(REMOVE_CMD) -rf
+GCC_VERSION = $(PREFIX)gcc -v
 
 CFLAGS  = -gdwarf-2 -O2 -mcpu=cortex-m3 -mthumb-interwork -DSTM32F10X_MD 
 #CFLAGS += $(INCLUDE) -mlong-calls -ffunction-sections -fdata-sections -fpromote-loop-indices -Wall -Wextra -Wimplicit -Wcast-align -Wpointer-arith -Wredundant-decls 
@@ -102,7 +103,11 @@ build: elf hex bin lss sym
 
 sizeinfo:
 	@echo code size $@
-	$(ELFSIZE) 
+	$(ELFSIZE)
+
+get_version:
+	@echo gcc version make $@
+	$(GCC_VERSION)
 
 # Create output directories.
 createdirs:

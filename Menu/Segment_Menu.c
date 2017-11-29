@@ -6,6 +6,7 @@
 
 SEG_MENU_DEF int Seg_Main(void);
 SEG_MENU_DEF int Seg_main_menu(void);
+
 static unsigned short flag;
 
 
@@ -107,7 +108,7 @@ SEG_MENU_DEF int Seg_Main(void)
     
                 case 'h':
                     printf("No.h\n");
-           
+                    
                 break;
     
                 case 'i':
