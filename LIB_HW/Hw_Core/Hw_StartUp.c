@@ -245,6 +245,8 @@ void Reset_Handler(void)
 	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
 	//////////////////////////////////////////////////////////////////
     while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+	//AHBENR enable
+	*(volatile unsigned long *)0x40021014 |= 0x1 << 0 | 0x1 << 1; //DMA1 clock enable
     *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
     *(volatile unsigned long *)0x40010804 = 0x888444B4; //GPIO A CRH bit
 
