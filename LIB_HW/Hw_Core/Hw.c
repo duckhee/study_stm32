@@ -51,7 +51,7 @@ HW_DEF void RCC_Configuration(void)
 
 HW_DEF void Hw_Init()
 {
-    //RCC_Configuration();
+    
     RCC->APB2ENR |= RCC_APB2Periph_GPIOA;
     RCC->APB2ENR |= RCC_APB2Periph_GPIOB;
     RCC->APB2ENR |= RCC_APB2Periph_GPIOC;
