@@ -183,7 +183,21 @@ void Reset_Handler(void)
     unsigned long HSIStatus = 0, StartUpCounter = 0;
     //unsigned long HSEStatus = 0, StartUpCounter = 0;
     Init_Data();
-    
+      
+	/* Zero fill the bss segment.  This is done with inline assembly since this
+	   will clear the value of pulDest if it is not kept in a register. */
+	/*
+	__asm("  ldr     r0, =_ld_bss_start\n"
+          "  ldr     r1, =_ld_bss_end\n"
+          "  mov     r2, #0\n"
+          "  .thumb_func\n"
+          "zero_loop:\n"
+          "    cmp     r0, r1\n"
+          "    it      lt\n"
+          "    strlt   r2, [r0], #4\n"
+          "    blt     zero_loop");
+        	
+	*/
     //HSI On 
     *(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
     //HSE ON
@@ -222,6 +236,14 @@ void Reset_Handler(void)
     */
     *(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
     *(volatile unsigned long *)0x40021004 |= 0x2; //set system clcok PLL
+	//////////////////////////////////////////////////////////////////
+	//APB1 PCLK1 36hz
+	//*(volatile unsigned long *)0x40021004 &= ~(0x7<<8);
+	//*(volatile unsigned long *)0x40021004 |= (0x4<<8);
+	//APB2 PLCK2 72hz
+	//*(volatile unsigned long *)0x40021004 &= ~(0x7<<11);
+	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
+	//////////////////////////////////////////////////////////////////
     while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
     *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
     *(volatile unsigned long *)0x40010804 = 0x888444B4; //GPIO A CRH bit
