@@ -26,30 +26,30 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
     
   /* Get SYSCLK source -------------------------------------------------------*/
   tmp = RCC->CFGR & CFGR_SWS_Mask;
-  
+  printf("tmp :::: %d\n", tmp);
   switch (tmp)
   {
     case 0x00:  /* HSI used as system clock */
       RCC_Clocks->SYSCLK_Frequency = HSI_Value;
-      
+      printf("HSI_Value :::: %d\n",HSI_Value);
       break;
 
     case 0x04:  /* HSE used as system clock */
       RCC_Clocks->SYSCLK_Frequency = HSE_Value;
-      
+      printf("HSE_VLAUE :::: %d\n",HSE_Value);
       break;
 
     case 0x08:  /* PLL used as system clock */
       /* Get PLL clock source and multiplication factor ----------------------*/
       pllmull = RCC->CFGR & CFGR_PLLMull_Mask;
       pllsource = RCC->CFGR & CFGR_PLLSRC_Mask;
-      
+      printf("pllmull :::: %d\n", pllmull);
       pllmull = ( pllmull >> 18) + 2;
-      
+      printf("pllmull :::: %d\n", pllmull);
       if (pllsource == 0x00)
       {/* HSI oscillator clock divided by 2 selected as PLL clock entry */
         RCC_Clocks->SYSCLK_Frequency = (HSI_Value >> 1) * pllmull;
-      
+        printf("SYSCLK_Frequency : %d\n", (HSI_Value >> 1) * pllmull);
         
       }
       else
@@ -57,18 +57,19 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
         if ((RCC->CFGR & CFGR_PLLXTPRE_Mask) != (uint32_t)RESET)
         {/* HSE oscillator clock divided by 2 */
           RCC_Clocks->SYSCLK_Frequency = (HSE_Value >> 1) * pllmull;
-          
+          printf("SYSCLK_Frequency : %d\n", (HSE_Value >> 1) * pllmull);
         }
         else
         {
           RCC_Clocks->SYSCLK_Frequency = HSE_Value * pllmull;
+          printf("SYSCLK_Frequency : %d\n", HSE_Value * pllmull);
         }
       }
       break;
 
     default:
       RCC_Clocks->SYSCLK_Frequency = HSI_Value;
-      
+      printf("HSI_Value : %d\n", HSI_Value);
       break;
   }
 

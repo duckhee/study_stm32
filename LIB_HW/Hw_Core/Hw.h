@@ -38,7 +38,7 @@
 
 
 HW_DEF void Hw_Init();
-
+HW_DEF void RCC_Configuration(void);
 
 
 #endif
