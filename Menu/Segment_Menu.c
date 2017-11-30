@@ -9,7 +9,6 @@ SEG_MENU_DEF int Seg_main_menu(void);
 
 static unsigned short flag;
 
-
 SEG_MENU_DEF int Seg_Main(void)
 {
     int key;
@@ -159,7 +158,7 @@ SEG_MENU_DEF int Seg_main_menu(void)
         printf("-------------------------------------------------\n");
         printf("\n\n");
         char a = '1';
-        printf("SELECT THE COMMAND NUMBER : ");
+        printf("SELECT THE COMMAND NUMBER : \n");
         key=get_byte();
 
         return key;
