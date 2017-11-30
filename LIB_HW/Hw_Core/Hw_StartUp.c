@@ -216,7 +216,20 @@ void Reset_Handler(void)
           "    strlt   r2, [r0], #4\n"
           "    blt     zero_loop");
         	
+	/*
 	
+	__asm("  ldr     r0, =_ld_bss_start\n"
+          "  ldr     r1, =_ld_bss_end\n"
+          "  mov     r2, #0\n"
+          "  .thumb_func\n"
+          "zero_loop:\n"
+          "    cmp     r0, r1\n"
+          "    it      lt\n"
+          "    strlt   r2, [r0], #4\n"
+          "    blt     zero_loop");
+        	
+	
+	*/
 	
     //HSI On 
     *(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
