@@ -1,4 +1,4 @@
-ENTRY(Hw_StartUp_Init)
+ENTRY(Reset_Handler)
 
 /* Memory Spaces Definitions */
 MEMORY

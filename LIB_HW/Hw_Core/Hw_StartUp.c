@@ -4,15 +4,27 @@ typedef void (*const intfunc)(void);
 // Private define ----------------------------------------------------------------------------------------
 #define WEAK __attribute__ ((weak))
 
-//link pointer get LINKERSCRIPT
-extern unsigned long _ld_stack_address;
-extern unsigned long _ld_ram_start;
-extern unsigned long _ld_text_start;
-extern unsigned long _ld_text_end;
-extern unsigned long _ld_data_start;
-extern unsigned long _ld_data_end;
-extern unsigned long _ld_bss_start;
-extern unsigned long _ld_bss_end;
+// //link pointer get LINKERSCRIPT
+// extern unsigned long _ld_stack_address;
+// extern unsigned long _ld_ram_start;
+// extern unsigned long _ld_text_start;
+// extern unsigned long _ld_text_end;
+// extern unsigned long _ld_data_start;
+// extern unsigned long _ld_data_end;
+// extern unsigned long _ld_bss_start;
+// extern unsigned long _ld_bss_end;
+
+//-- init value for the stack pointer. defined in linker script 
+//
+extern unsigned long _estack;
+extern unsigned long _sidata;    /*!< Start address for the initialization 
+                                      values of the .data section.            */
+extern unsigned long _sdata;     /*!< Start address for the .data section     */    
+extern unsigned long _edata;     /*!< End address for the .data section       */    
+extern unsigned long _sbss;      /*!< Start address for the .bss section      */
+extern unsigned long _ebss;      /*!< End address for the .bss section        */      
+extern void 	     _eram;      /*!< End address for ram                     */
+
 //--------  Private function prototypes ------------------------------------------------------------------
 void Reset_Handler(void) __attribute__((__interrupt__));
 extern int main();
@@ -102,7 +114,8 @@ __attribute__((section(".isr_vectorsflash")))
 
 void (*g_pfnVectors[])(void) = 
 {
-    (intfunc)((unsigned long)&_ld_stack_address), //the stack pointer after relocation flass 영역에 위치한 링크 스크립트 가르치는 것이다. data section을 가르치는 것?
+	(intfunc)((unsigned long)&_estack),	
+    // (intfunc)((unsigned long)&_ld_stack_address), //the stack pointer after relocation flass 영역에 위치한 링크 스크립트 가르치는 것이다. data section을 가르치는 것?
     Reset_Handler,						//  2.Reset Handler
 	NMI_Handler,						//  3.NMI Handler
 	HardFault_Handler,					//  4.Hard Fault Handler
@@ -180,13 +193,21 @@ void Reset_Handler(void)
 {
     unsigned long HSIStatus = 0, StartUpCounter = 0;
     //unsigned long HSEStatus = 0, StartUpCounter = 0;
-    Init_Data();
+    //Init_Data();
       
 	/* Zero fill the bss segment.  This is done with inline assembly since this
 	   will clear the value of pulDest if it is not kept in a register. */
-	/*
-	__asm("  ldr     r0, =_ld_bss_start\n"
-          "  ldr     r1, =_ld_bss_end\n"
+		unsigned long *pulSrc, *pulDest;	
+	
+		// Copy the data segment initializers from flash to SRAM
+	pulSrc = &_sidata;
+
+	for(pulDest = &_sdata; pulDest < &_edata; )
+	{
+		*(pulDest++) = *(pulSrc++);
+	}
+		__asm("  ldr     r0, =_sbss\n"
+          "  ldr     r1, =_ebss\n"
           "  mov     r2, #0\n"
           "  .thumb_func\n"
           "zero_loop:\n"
@@ -195,7 +216,8 @@ void Reset_Handler(void)
           "    strlt   r2, [r0], #4\n"
           "    blt     zero_loop");
         	
-	*/
+	
+	
     //HSI On 
     *(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
     //HSE ON
@@ -277,27 +299,27 @@ void Reset_Handler(void)
 }
 
 
-void Init_Data()
-{
-    unsigned long *pulSrc, *pulDest;
+// void Init_Data()
+// {
+//     unsigned long *pulSrc, *pulDest;
 
-    pulSrc = &_ld_data_start;
-    pulDest = &_ld_ram_start;
+//     pulSrc = &_ld_data_start;
+//     pulDest = &_ld_ram_start;
 
-    if(pulSrc != pulDest)
-    {
-        for(;pulDest < &_ld_data_end; )
-        {
-            *(pulDest++) = *(pulSrc++);
+//     if(pulSrc != pulDest)
+//     {
+//         for(;pulDest < &_ld_data_end; )
+//         {
+//             *(pulDest++) = *(pulSrc++);
 
-        }
-    }
+//         }
+//     }
 
-    for(pulDest = &_ld_bss_start; pulDest <  &_ld_bss_end; )
-    {
-        *(pulDest++) = 0;
-    }
-}
+//     for(pulDest = &_ld_bss_start; pulDest <  &_ld_bss_end; )
+//     {
+//         *(pulDest++) = 0;
+//     }
+// }
 //code move ram section 
 
 

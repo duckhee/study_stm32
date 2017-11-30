@@ -65,7 +65,7 @@ CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CONLYFLAGS += -Wnested-externs 
 CONLYFLAGS += -std=gnu99
 #이게 맞는지?
-LDFLAGS = -static -nostdlib -nostartfiles -Wl,-Map=$(TARGET).map,--cref,--gc-sections -L./ -lc  -lm  -lc -lgcc -T.//stm32f10x.ld
+LDFLAGS = -static -nostdlib -nostartfiles -Wl,-Map=$(TARGET).map,--cref,--gc-sections -L./ -lc  -lm  -lc -lgcc -T.//STM32F10x_128k_20k_flash.ld
 #ELF32_LDFLAGS = -Wl,-T,stm32f10x.ld
 
 ELFSIZE = $(SIZE) -A $(TARGET).elf
