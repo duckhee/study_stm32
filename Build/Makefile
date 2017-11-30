@@ -34,6 +34,7 @@ SRC_HW = ../LIB_HW/Hw_Core/$(STARTUP_C)    \
 		 ../LIB_HW/Hw_Lib/Hw_Led.c         \
 		 ../LIB_HW/Hw_Lib/Hw_Key.c         \
          ../LIB_HW/Hw_Lib/Hw_Segment.c     \
+		 
 
 SRC_MENU = ../Menu/Key_Menu.c              \
            ../Menu/Led_Menu.c              \

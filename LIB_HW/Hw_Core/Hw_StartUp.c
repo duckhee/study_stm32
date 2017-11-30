@@ -102,7 +102,7 @@ __attribute__((section(".isr_vectorsflash")))
 
 void (*g_pfnVectors[])(void) = 
 {
-    (intfunc)((unsigned long)&_ld_stack_address),
+    (intfunc)((unsigned long)&_ld_stack_address), //the stack pointer after relocation flass 영역에 위치한 링크 스크립트 가르치는 것이다. data section을 가르치는 것?
     Reset_Handler,              /* Reset Handler */
     Reset_Handler,						//  2.Reset Handler
 	NMI_Handler,						//  3.NMI Handler
