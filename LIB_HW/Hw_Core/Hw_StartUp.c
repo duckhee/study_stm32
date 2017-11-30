@@ -103,7 +103,6 @@ __attribute__((section(".isr_vectorsflash")))
 void (*g_pfnVectors[])(void) = 
 {
     (intfunc)((unsigned long)&_ld_stack_address), //the stack pointer after relocation flass 영역에 위치한 링크 스크립트 가르치는 것이다. data section을 가르치는 것?
-    Reset_Handler,              /* Reset Handler */
     Reset_Handler,						//  2.Reset Handler
 	NMI_Handler,						//  3.NMI Handler
 	HardFault_Handler,					//  4.Hard Fault Handler
@@ -119,7 +118,6 @@ void (*g_pfnVectors[])(void) =
 	0,									// 14.Reserved
 	PendSV_Handler,						// 15.PendSV Handler
 	SysTick_Handler,					// 16.SysTick Handler
-	
 	// External Interrupts //
 	WWDG_IRQHandler,					//  1.Window Watchdog
 	PVD_IRQHandler,						//  2.PVD through EXTI Line detect
@@ -214,6 +212,7 @@ void Reset_Handler(void)
     }while((HSIStatus == 0) && (StartUpCounter != 0x0500));
     
     ///////////////// FLASH Memory Latency move code RAM sections ////////////////////////////////////
+	*(volatile unsigned long *)0x40022000 |= (1<<4);     //prefetch buffer enable
     *(volatile unsigned long *)0x40022000 |= 0x10; //bit PRETBE = 1 Set
     *(volatile unsigned long *)0x40022000 &= ~(0x7); //bit 2, 1, 0 clear 0, 0, 0
     *(volatile unsigned long *)0x40022000 |= 0x2; //bit 2, 1, 0 = 0, 1, 0

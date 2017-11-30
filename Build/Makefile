@@ -34,7 +34,6 @@ SRC_HW = ../LIB_HW/Hw_Core/$(STARTUP_C)    \
 		 ../LIB_HW/Hw_Lib/Hw_Led.c         \
 		 ../LIB_HW/Hw_Lib/Hw_Key.c         \
          ../LIB_HW/Hw_Lib/Hw_Segment.c     \
-		 
 
 SRC_MENU = ../Menu/Key_Menu.c              \
            ../Menu/Led_Menu.c              \
@@ -55,7 +54,7 @@ OBJDUMP = $(PREFIX)objdump
 OBJNM = $(PREFIX)nm
 SIZE = $(PREFIX)size
 REMOVE = $(REMOVE_CMD) -rf
-GCC_VERSION = $(PREFIX)gcc -v
+
 
 CFLAGS  = -gdwarf-2 -O2 -mcpu=cortex-m3 -mthumb-interwork -DSTM32F10X_MD 
 #CFLAGS += $(INCLUDE) -mlong-calls -ffunction-sections -fdata-sections -fpromote-loop-indices -Wall -Wextra -Wimplicit -Wcast-align -Wpointer-arith -Wredundant-decls 
@@ -91,7 +90,7 @@ ALLOBJ = $(addsuffix .o, $(ALLSRCBASE))
 
 
 # Default target.
-all: createdirs build sizeinfo
+all: createdirs build sizeinfo gcc_version
 
 elf: $(TARGET).elf
 lss: $(TARGET).lss 
@@ -106,9 +105,9 @@ sizeinfo:
 	@echo code size $@
 	$(ELFSIZE)
 
-get_version:
+gcc_version:
 	@echo gcc version make $@
-	$(GCC_VERSION)
+	$(CC) --version
 
 # Create output directories.
 createdirs:

@@ -44,6 +44,7 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
       pllmull = RCC->CFGR & CFGR_PLLMull_Mask;
       pllsource = RCC->CFGR & CFGR_PLLSRC_Mask;
       printf("pllmull :::: %d\n", pllmull);
+      printf("pllsource :::: %d\n", pllsource);
       pllmull = ( pllmull >> 18) + 2;
       printf("pllmull :::: %d\n", pllmull);
       if (pllsource == 0x00)

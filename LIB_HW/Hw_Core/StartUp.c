@@ -175,6 +175,7 @@ void Reset_Handler(void)
 {
     Init_Data();
     RCC_Configuration();
+	
     *(volatile unsigned long *)0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
     *(volatile unsigned long *)0x40010804 = 0x888444B4; //GPIO A CRH bit
     USART1_Init();
