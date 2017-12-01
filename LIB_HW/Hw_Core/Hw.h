@@ -18,6 +18,8 @@
 #include "Hw_NVIC.h"
 #include "Hw_Systick.h"
 #include "Hw_EXT_IRQHandler.h"
+#include "Hw_DMA.h"
+#include "Hw_Adc.h"
 
 
 //HW LIB

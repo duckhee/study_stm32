@@ -1,7 +1,7 @@
 #ifndef __HW_ADC_H__
 #define __HW_ADC_H__
 
-#include "stm32_reg.h"
+#include "Hw.h"
 
 #ifdef ADC_LOCAL
 #define ADC_DEF
