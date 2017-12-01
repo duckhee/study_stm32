@@ -1,0 +1,2406 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 2
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"Hw_I2C_IMU.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.Hw_I2C_HW_Init,"ax",%progbits
+  19              		.align	2
+  20              		.global	Hw_I2C_HW_Init
+  21              		.thumb
+  22              		.thumb_func
+  24              	Hw_I2C_HW_Init:
+  25              	.LFB0:
+  26              		.file 1 "../LIB_HW/Hw_I2C_IMU.c"
+   1:../LIB_HW/Hw_I2C_IMU.c **** //----------------------------------------------------------------------------
+   2:../LIB_HW/Hw_I2C_IMU.c **** //    프로그램명 	: I2C IMU 관련 함수
+   3:../LIB_HW/Hw_I2C_IMU.c **** //
+   4:../LIB_HW/Hw_I2C_IMU.c **** //    만든이     	: 
+   5:../LIB_HW/Hw_I2C_IMU.c **** //
+   6:../LIB_HW/Hw_I2C_IMU.c **** //    날  짜     	: 
+   7:../LIB_HW/Hw_I2C_IMU.c **** //    
+   8:../LIB_HW/Hw_I2C_IMU.c **** //    최종 수정  	:
+   9:../LIB_HW/Hw_I2C_IMU.c **** //
+  10:../LIB_HW/Hw_I2C_IMU.c **** //    MPU_Type		:
+  11:../LIB_HW/Hw_I2C_IMU.c **** //
+  12:../LIB_HW/Hw_I2C_IMU.c **** //    파일명     	: Hw_I2C_IMU.c
+  13:../LIB_HW/Hw_I2C_IMU.c **** //----------------------------------------------------------------------------
+  14:../LIB_HW/Hw_I2C_IMU.c **** 
+  15:../LIB_HW/Hw_I2C_IMU.c **** 
+  16:../LIB_HW/Hw_I2C_IMU.c **** //----- 헤더파일 열기
+  17:../LIB_HW/Hw_I2C_IMU.c **** //
+  18:../LIB_HW/Hw_I2C_IMU.c **** #define  HW_I2C_IMU_LOCAL
+  19:../LIB_HW/Hw_I2C_IMU.c **** 
+  20:../LIB_HW/Hw_I2C_IMU.c **** 
+  21:../LIB_HW/Hw_I2C_IMU.c **** #include "Hw_I2C_IMU.h"
+  22:../LIB_HW/Hw_I2C_IMU.c **** #include "Lb_Printf.h"
+  23:../LIB_HW/Hw_I2C_IMU.c **** 
+  24:../LIB_HW/Hw_I2C_IMU.c **** //-- I2C
+  25:../LIB_HW/Hw_I2C_IMU.c **** //
+  26:../LIB_HW/Hw_I2C_IMU.c **** #define I2C1_BASE					0x40005400
+  27:../LIB_HW/Hw_I2C_IMU.c **** #define I2C1_CR1					(*(volatile unsigned long *)(I2C1_BASE + 0x0000))
+  28:../LIB_HW/Hw_I2C_IMU.c **** #define I2C1_CR2					(*(volatile unsigned long *)(I2C1_BASE + 0x0004))
+  29:../LIB_HW/Hw_I2C_IMU.c **** #define I2C1_OAR1					(*(volatile unsigned long *)(I2C1_BASE + 0x0008))
+  30:../LIB_HW/Hw_I2C_IMU.c **** #define I2C1_OAR2					(*(volatile unsigned long *)(I2C1_BASE + 0x000C))
+  31:../LIB_HW/Hw_I2C_IMU.c **** #define I2C1_DR						(*(volatile unsigned long *)(I2C1_BASE + 0x0010))
+  32:../LIB_HW/Hw_I2C_IMU.c **** #define I2C1_SR1					(*(volatile unsigned long *)(I2C1_BASE + 0x0014))
+  33:../LIB_HW/Hw_I2C_IMU.c **** #define I2C1_SR2					(*(volatile unsigned long *)(I2C1_BASE + 0x0018))
+  34:../LIB_HW/Hw_I2C_IMU.c **** #define I2C1_CCR					(*(volatile unsigned long *)(I2C1_BASE + 0x001C))
+  35:../LIB_HW/Hw_I2C_IMU.c **** #define I2C1_TRISE				(*(volatile unsigned long *)(I2C1_BASE + 0x0020))
+  36:../LIB_HW/Hw_I2C_IMU.c **** 
+  37:../LIB_HW/Hw_I2C_IMU.c **** #define AFIO_MAPR					(*(volatile unsigned long *)(0x40010000 + 0x0004))
+  38:../LIB_HW/Hw_I2C_IMU.c **** 
+  39:../LIB_HW/Hw_I2C_IMU.c **** #define RCC_APB1ENR			  (*(volatile unsigned long *)(0x40021000 + 0x001C))
+  40:../LIB_HW/Hw_I2C_IMU.c **** 
+  41:../LIB_HW/Hw_I2C_IMU.c **** #define GPIOB_CRH					(*(volatile unsigned long *)(0x40010C00 + 0x0004))
+  42:../LIB_HW/Hw_I2C_IMU.c **** 
+  43:../LIB_HW/Hw_I2C_IMU.c **** 
+  44:../LIB_HW/Hw_I2C_IMU.c **** #define HW_I2C_ERR_NONE		0
+  45:../LIB_HW/Hw_I2C_IMU.c **** #define HW_I2C_ERR_TIMEOUT	1
+  46:../LIB_HW/Hw_I2C_IMU.c **** #define HW_I2C_ERR_START	2
+  47:../LIB_HW/Hw_I2C_IMU.c **** #define HW_I2C_ERR_ADDR		3
+  48:../LIB_HW/Hw_I2C_IMU.c **** #define HW_I2C_ERR_TXE		4
+  49:../LIB_HW/Hw_I2C_IMU.c **** #define HW_I2C_ERR_RXE		5
+  50:../LIB_HW/Hw_I2C_IMU.c **** #define HW_I2C_ERR_STOP		6
+  51:../LIB_HW/Hw_I2C_IMU.c **** 
+  52:../LIB_HW/Hw_I2C_IMU.c **** 
+  53:../LIB_HW/Hw_I2C_IMU.c **** void Hw_I2C_IMU_IO_Setup( void );
+  54:../LIB_HW/Hw_I2C_IMU.c **** u16  Hw_I2C_IMU_WaitForBitSet( u32 *reg_addr, u32 reg_bit, u32 time_out );
+  55:../LIB_HW/Hw_I2C_IMU.c **** u16  Hw_I2C_IMU_GetErrStatus( void );
+  56:../LIB_HW/Hw_I2C_IMU.c **** 
+  57:../LIB_HW/Hw_I2C_IMU.c **** 
+  58:../LIB_HW/Hw_I2C_IMU.c **** /*---------------------------------------------------------------------------
+  59:../LIB_HW/Hw_I2C_IMU.c ****      TITLE   : Hw_I2C_SW_Init
+  60:../LIB_HW/Hw_I2C_IMU.c ****      WORK    : 
+  61:../LIB_HW/Hw_I2C_IMU.c ****      ARG     : void
+  62:../LIB_HW/Hw_I2C_IMU.c ****      RET     : void
+  63:../LIB_HW/Hw_I2C_IMU.c **** ---------------------------------------------------------------------------*/
+  64:../LIB_HW/Hw_I2C_IMU.c **** void Hw_I2C_HW_Init( void )
+  65:../LIB_HW/Hw_I2C_IMU.c **** {
+  27              		.loc 1 65 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 24
+  34              		.cfi_offset 3, -24
+  35              		.cfi_offset 4, -20
+  36              		.cfi_offset 5, -16
+  37              		.cfi_offset 6, -12
+  38              		.cfi_offset 7, -8
+  39              		.cfi_offset 14, -4
+  66:../LIB_HW/Hw_I2C_IMU.c **** 	u32 SR;
+  67:../LIB_HW/Hw_I2C_IMU.c **** 
+  68:../LIB_HW/Hw_I2C_IMU.c **** 
+  69:../LIB_HW/Hw_I2C_IMU.c **** 	//-- I/O 초기화
+  70:../LIB_HW/Hw_I2C_IMU.c **** 	//
+  71:../LIB_HW/Hw_I2C_IMU.c **** 	Hw_I2C_HW_IO_Setup();	
+  40              		.loc 1 71 0
+  41 0002 104B     		ldr	r3, .L3
+  42 0004 9847     		blx	r3
+  43              	.LVL0:
+  72:../LIB_HW/Hw_I2C_IMU.c **** 
+  73:../LIB_HW/Hw_I2C_IMU.c **** 
+  74:../LIB_HW/Hw_I2C_IMU.c **** 	I2C1_CR1 = 0;
+  75:../LIB_HW/Hw_I2C_IMU.c **** 
+  76:../LIB_HW/Hw_I2C_IMU.c **** 	//-- 1. I2C 클럭 입력 주파수 설정 
+  77:../LIB_HW/Hw_I2C_IMU.c **** 	//
+  78:../LIB_HW/Hw_I2C_IMU.c **** 	I2C1_CR2 = 0 
+  79:../LIB_HW/Hw_I2C_IMU.c **** 				| ( 36 << 0 );		// FREQ = 36Mhz
+  80:../LIB_HW/Hw_I2C_IMU.c **** 
+  81:../LIB_HW/Hw_I2C_IMU.c **** 	//-- 2. Clock Control 
+  82:../LIB_HW/Hw_I2C_IMU.c **** 	//
+  83:../LIB_HW/Hw_I2C_IMU.c **** //	I2C1_CCR = 0 
+  84:../LIB_HW/Hw_I2C_IMU.c **** //				| (  1 << 15 )		// Fast Mode I2C
+  85:../LIB_HW/Hw_I2C_IMU.c **** //				| (  0 << 14 )		// Duty Tlow/Thig = 2
+  86:../LIB_HW/Hw_I2C_IMU.c **** //				| ( 30 <<  0 );		// 30*27ns + 2*30*27ns = 400Khz
+  87:../LIB_HW/Hw_I2C_IMU.c **** 
+  88:../LIB_HW/Hw_I2C_IMU.c **** 	//-- 3. Maximum Rise Time  
+  89:../LIB_HW/Hw_I2C_IMU.c **** 	//
+  90:../LIB_HW/Hw_I2C_IMU.c **** 	I2C1_TRISE = 4;				// 300ns / 100ns + 1 = 4 
+  91:../LIB_HW/Hw_I2C_IMU.c **** 
+  92:../LIB_HW/Hw_I2C_IMU.c **** 
+  93:../LIB_HW/Hw_I2C_IMU.c **** 	//-- Clock Enable
+  94:../LIB_HW/Hw_I2C_IMU.c **** 	//
+  95:../LIB_HW/Hw_I2C_IMU.c **** 	RCC_APB1ENR |= (1<<21);		// I2C1 Clock enable
+  96:../LIB_HW/Hw_I2C_IMU.c **** 
+  97:../LIB_HW/Hw_I2C_IMU.c **** 
+  98:../LIB_HW/Hw_I2C_IMU.c **** 	I2C1_CR1 &= ~(0x01 << 1);      // CLR_BIT( REG_I2C1_CR1, 1 );		// I2C Mode		
+  99:../LIB_HW/Hw_I2C_IMU.c **** 	I2C1_CR1 |=   0x01 << 0;       //	SET_BIT( REG_I2C1_CR1, 0 );		// Peripheral enable	
+ 100:../LIB_HW/Hw_I2C_IMU.c **** 
+ 101:../LIB_HW/Hw_I2C_IMU.c **** 	SR = REG_I2C1_SR1;
+ 102:../LIB_HW/Hw_I2C_IMU.c **** 	SR = REG_I2C1_SR2;
+ 103:../LIB_HW/Hw_I2C_IMU.c **** 	
+ 104:../LIB_HW/Hw_I2C_IMU.c **** 	//-- 2. Clock Control 
+ 105:../LIB_HW/Hw_I2C_IMU.c **** 	//
+ 106:../LIB_HW/Hw_I2C_IMU.c **** 	I2C1_CCR = 0 
+  44              		.loc 1 106 0
+  45 0006 48F21E00 		movw	r0, #32798
+  74:../LIB_HW/Hw_I2C_IMU.c **** 
+  46              		.loc 1 74 0
+  47 000a 0F4B     		ldr	r3, .L3+4
+  78:../LIB_HW/Hw_I2C_IMU.c **** 				| ( 36 << 0 );		// FREQ = 36Mhz
+  48              		.loc 1 78 0
+  49 000c 0F4D     		ldr	r5, .L3+8
+  90:../LIB_HW/Hw_I2C_IMU.c **** 
+  50              		.loc 1 90 0
+  51 000e 104A     		ldr	r2, .L3+12
+  95:../LIB_HW/Hw_I2C_IMU.c **** 
+  52              		.loc 1 95 0
+  53 0010 1049     		ldr	r1, .L3+16
+  90:../LIB_HW/Hw_I2C_IMU.c **** 
+  54              		.loc 1 90 0
+  55 0012 0424     		movs	r4, #4
+  74:../LIB_HW/Hw_I2C_IMU.c **** 
+  56              		.loc 1 74 0
+  57 0014 0027     		movs	r7, #0
+  78:../LIB_HW/Hw_I2C_IMU.c **** 				| ( 36 << 0 );		// FREQ = 36Mhz
+  58              		.loc 1 78 0
+  59 0016 2426     		movs	r6, #36
+  74:../LIB_HW/Hw_I2C_IMU.c **** 
+  60              		.loc 1 74 0
+  61 0018 1F60     		str	r7, [r3]
+  78:../LIB_HW/Hw_I2C_IMU.c **** 				| ( 36 << 0 );		// FREQ = 36Mhz
+  62              		.loc 1 78 0
+  63 001a 2E60     		str	r6, [r5]
+  90:../LIB_HW/Hw_I2C_IMU.c **** 
+  64              		.loc 1 90 0
+  65 001c 1460     		str	r4, [r2]
+  95:../LIB_HW/Hw_I2C_IMU.c **** 
+  66              		.loc 1 95 0
+  67 001e 0A68     		ldr	r2, [r1]
+ 102:../LIB_HW/Hw_I2C_IMU.c **** 	
+  68              		.loc 1 102 0
+  69 0020 0D4C     		ldr	r4, .L3+20
+  95:../LIB_HW/Hw_I2C_IMU.c **** 
+  70              		.loc 1 95 0
+  71 0022 42F40012 		orr	r2, r2, #2097152
+  72 0026 0A60     		str	r2, [r1]
+  98:../LIB_HW/Hw_I2C_IMU.c **** 	I2C1_CR1 |=   0x01 << 0;       //	SET_BIT( REG_I2C1_CR1, 0 );		// Peripheral enable	
+  73              		.loc 1 98 0
+  74 0028 1A68     		ldr	r2, [r3]
+  75              		.loc 1 106 0
+  76 002a A1F5DE31 		sub	r1, r1, #113664
+  98:../LIB_HW/Hw_I2C_IMU.c **** 	I2C1_CR1 |=   0x01 << 0;       //	SET_BIT( REG_I2C1_CR1, 0 );		// Peripheral enable	
+  77              		.loc 1 98 0
+  78 002e 22F00202 		bic	r2, r2, #2
+  79 0032 1A60     		str	r2, [r3]
+  99:../LIB_HW/Hw_I2C_IMU.c **** 
+  80              		.loc 1 99 0
+  81 0034 1A68     		ldr	r2, [r3]
+  82 0036 42F00102 		orr	r2, r2, #1
+  83 003a 1A60     		str	r2, [r3]
+ 101:../LIB_HW/Hw_I2C_IMU.c **** 	SR = REG_I2C1_SR2;
+  84              		.loc 1 101 0
+  85 003c 2B69     		ldr	r3, [r5, #16]
+ 102:../LIB_HW/Hw_I2C_IMU.c **** 	
+  86              		.loc 1 102 0
+  87 003e 2368     		ldr	r3, [r4]
+  88              		.loc 1 106 0
+  89 0040 0860     		str	r0, [r1]
+  90 0042 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+  91              	.L4:
+  92              		.align	2
+  93              	.L3:
+  94 0044 00000000 		.word	Hw_I2C_HW_IO_Setup
+  95 0048 00540040 		.word	1073763328
+  96 004c 04540040 		.word	1073763332
+  97 0050 20540040 		.word	1073763360
+  98 0054 1C100240 		.word	1073877020
+  99 0058 18540040 		.word	1073763352
+ 100              		.cfi_endproc
+ 101              	.LFE0:
+ 103              		.section	.text.Hw_I2C_IMU_Init,"ax",%progbits
+ 104              		.align	2
+ 105              		.global	Hw_I2C_IMU_Init
+ 106              		.thumb
+ 107              		.thumb_func
+ 109              	Hw_I2C_IMU_Init:
+ 110              	.LFB1:
+ 107:../LIB_HW/Hw_I2C_IMU.c **** 				| (  1 << 15 )		// Fast Mode I2C
+ 108:../LIB_HW/Hw_I2C_IMU.c **** 				| (  0 << 14 )		// Duty Tlow/Thig = 2
+ 109:../LIB_HW/Hw_I2C_IMU.c **** 				| ( 30 <<  0 );		// 30*27ns + 2*30*27ns = 400Khz
+ 110:../LIB_HW/Hw_I2C_IMU.c **** }
+ 111:../LIB_HW/Hw_I2C_IMU.c **** 
+ 112:../LIB_HW/Hw_I2C_IMU.c **** 
+ 113:../LIB_HW/Hw_I2C_IMU.c **** 
+ 114:../LIB_HW/Hw_I2C_IMU.c **** /*---------------------------------------------------------------------------
+ 115:../LIB_HW/Hw_I2C_IMU.c ****      TITLE   : Hw_I2C_IMU_Init
+ 116:../LIB_HW/Hw_I2C_IMU.c ****      WORK    : 
+ 117:../LIB_HW/Hw_I2C_IMU.c ****      ARG     : void
+ 118:../LIB_HW/Hw_I2C_IMU.c ****      RET     : void
+ 119:../LIB_HW/Hw_I2C_IMU.c **** ---------------------------------------------------------------------------*/
+ 120:../LIB_HW/Hw_I2C_IMU.c **** void Hw_I2C_IMU_Init( void )
+ 121:../LIB_HW/Hw_I2C_IMU.c **** {
+ 111              		.loc 1 121 0
+ 112              		.cfi_startproc
+ 113              		@ args = 0, pretend = 0, frame = 0
+ 114              		@ frame_needed = 0, uses_anonymous_args = 0
+ 115              		@ link register save eliminated.
+ 116 0000 7047     		bx	lr
+ 117              		.cfi_endproc
+ 118              	.LFE1:
+ 120 0002 00BF     		.section	.text.Hw_I2C_IMU_IO_Setup,"ax",%progbits
+ 121              		.align	2
+ 122              		.global	Hw_I2C_IMU_IO_Setup
+ 123              		.thumb
+ 124              		.thumb_func
+ 126              	Hw_I2C_IMU_IO_Setup:
+ 127              	.LFB2:
+ 122:../LIB_HW/Hw_I2C_IMU.c **** 	u32 SR;
+ 123:../LIB_HW/Hw_I2C_IMU.c **** 
+ 124:../LIB_HW/Hw_I2C_IMU.c **** 
+ 125:../LIB_HW/Hw_I2C_IMU.c **** 	//-- I/O 초기화
+ 126:../LIB_HW/Hw_I2C_IMU.c **** 	//
+ 127:../LIB_HW/Hw_I2C_IMU.c **** //	Hw_I2C_IMU_IO_Setup();	
+ 128:../LIB_HW/Hw_I2C_IMU.c **** 
+ 129:../LIB_HW/Hw_I2C_IMU.c **** 
+ 130:../LIB_HW/Hw_I2C_IMU.c **** //	I2C1_CR1 = 0;
+ 131:../LIB_HW/Hw_I2C_IMU.c **** 
+ 132:../LIB_HW/Hw_I2C_IMU.c **** 	//-- 1. I2C 클럭 입력 주파수 설정 
+ 133:../LIB_HW/Hw_I2C_IMU.c **** 	//
+ 134:../LIB_HW/Hw_I2C_IMU.c **** //	I2C1_CR2 = 0 
+ 135:../LIB_HW/Hw_I2C_IMU.c **** //				| ( 36 << 0 );		// FREQ = 36Mhz
+ 136:../LIB_HW/Hw_I2C_IMU.c **** 
+ 137:../LIB_HW/Hw_I2C_IMU.c **** 	//-- 2. Clock Control 
+ 138:../LIB_HW/Hw_I2C_IMU.c **** 	//
+ 139:../LIB_HW/Hw_I2C_IMU.c **** //	I2C1_CCR = 0 
+ 140:../LIB_HW/Hw_I2C_IMU.c **** //				| (  1 << 15 )		// Fast Mode I2C
+ 141:../LIB_HW/Hw_I2C_IMU.c **** //				| (  0 << 14 )		// Duty Tlow/Thig = 2
+ 142:../LIB_HW/Hw_I2C_IMU.c **** //				| ( 30 <<  0 );		// 30*27ns + 2*30*27ns = 400Khz
+ 143:../LIB_HW/Hw_I2C_IMU.c **** 
+ 144:../LIB_HW/Hw_I2C_IMU.c **** 	//-- 3. Maximum Rise Time  
+ 145:../LIB_HW/Hw_I2C_IMU.c **** 	//
+ 146:../LIB_HW/Hw_I2C_IMU.c **** //	I2C1_TRISE = 11;			// 300ns / 28ns + 1 = 11 
+ 147:../LIB_HW/Hw_I2C_IMU.c **** 
+ 148:../LIB_HW/Hw_I2C_IMU.c **** 
+ 149:../LIB_HW/Hw_I2C_IMU.c **** 	//-- Clock Enable
+ 150:../LIB_HW/Hw_I2C_IMU.c **** 	//
+ 151:../LIB_HW/Hw_I2C_IMU.c **** //	RCC_APB1ENR |= (1<<21);		// I2C1 Clock enable
+ 152:../LIB_HW/Hw_I2C_IMU.c **** 
+ 153:../LIB_HW/Hw_I2C_IMU.c **** 
+ 154:../LIB_HW/Hw_I2C_IMU.c **** //	I2C1_CR1 &= ~(0x01 << 1);      //CLR_BIT( I2C1_CR1, 1 );		// I2C Mode		
+ 155:../LIB_HW/Hw_I2C_IMU.c **** //	I2C1_CR1 |=   0x01 << 0;       //SET_BIT( I2C1_CR1, 0 );		// Peripheral enable	
+ 156:../LIB_HW/Hw_I2C_IMU.c **** 
+ 157:../LIB_HW/Hw_I2C_IMU.c **** //	SR = I2C1_SR1;
+ 158:../LIB_HW/Hw_I2C_IMU.c **** //	SR = I2C1_SR2;
+ 159:../LIB_HW/Hw_I2C_IMU.c **** 
+ 160:../LIB_HW/Hw_I2C_IMU.c **** 
+ 161:../LIB_HW/Hw_I2C_IMU.c **** //	power_on = TRUE;
+ 162:../LIB_HW/Hw_I2C_IMU.c **** }
+ 163:../LIB_HW/Hw_I2C_IMU.c **** 
+ 164:../LIB_HW/Hw_I2C_IMU.c **** 
+ 165:../LIB_HW/Hw_I2C_IMU.c **** 
+ 166:../LIB_HW/Hw_I2C_IMU.c **** 
+ 167:../LIB_HW/Hw_I2C_IMU.c **** 
+ 168:../LIB_HW/Hw_I2C_IMU.c **** /*---------------------------------------------------------------------------
+ 169:../LIB_HW/Hw_I2C_IMU.c ****      TITLE   : Hw_I2C_IMU_IO_Setup
+ 170:../LIB_HW/Hw_I2C_IMU.c ****      WORK    : 
+ 171:../LIB_HW/Hw_I2C_IMU.c ****      ARG     : void
+ 172:../LIB_HW/Hw_I2C_IMU.c ****      RET     : void
+ 173:../LIB_HW/Hw_I2C_IMU.c **** ---------------------------------------------------------------------------*/
+ 174:../LIB_HW/Hw_I2C_IMU.c **** void Hw_I2C_IMU_IO_Setup( void )
+ 175:../LIB_HW/Hw_I2C_IMU.c **** {
+ 128              		.loc 1 175 0
+ 129              		.cfi_startproc
+ 130              		@ args = 0, pretend = 0, frame = 0
+ 131              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132              		@ link register save eliminated.
+ 176:../LIB_HW/Hw_I2C_IMU.c **** 
+ 177:../LIB_HW/Hw_I2C_IMU.c **** 	//-- I2C1 Remap
+ 178:../LIB_HW/Hw_I2C_IMU.c **** 	//
+ 179:../LIB_HW/Hw_I2C_IMU.c **** 	AFIO_MAPR |=   0x01 << 1;         // SET_BIT( REG_AFIO_MAPR, 1 );	// SCL/PB8, SDA/PB9)
+ 133              		.loc 1 179 0
+ 134 0000 0F49     		ldr	r1, .L7
+ 180:../LIB_HW/Hw_I2C_IMU.c **** 
+ 181:../LIB_HW/Hw_I2C_IMU.c **** 	//-- SCL PB.8
+ 182:../LIB_HW/Hw_I2C_IMU.c **** 	//
+ 183:../LIB_HW/Hw_I2C_IMU.c **** 	GPIOB_CRH &= ~(0x0F << ( 0));	// Clear
+ 135              		.loc 1 183 0
+ 136 0002 104B     		ldr	r3, .L7+4
+ 179:../LIB_HW/Hw_I2C_IMU.c **** 
+ 137              		.loc 1 179 0
+ 138 0004 0A68     		ldr	r2, [r1]
+ 139 0006 42F00202 		orr	r2, r2, #2
+ 140 000a 0A60     		str	r2, [r1]
+ 141              		.loc 1 183 0
+ 142 000c 1A68     		ldr	r2, [r3]
+ 143 000e 22F00F02 		bic	r2, r2, #15
+ 144 0012 1A60     		str	r2, [r3]
+ 184:../LIB_HW/Hw_I2C_IMU.c **** 	GPIOB_CRH |=  (0x03 << ( 0));	// MODE, PB.8 Output mode, max speed 50Mhz
+ 145              		.loc 1 184 0
+ 146 0014 1A68     		ldr	r2, [r3]
+ 147 0016 42F00302 		orr	r2, r2, #3
+ 148 001a 1A60     		str	r2, [r3]
+ 185:../LIB_HW/Hw_I2C_IMU.c **** 	GPIOB_CRH |=  (0x03 << ( 2));	// CNF,  PB.8 Alternate function output Open-drain	
+ 149              		.loc 1 185 0
+ 150 001c 1A68     		ldr	r2, [r3]
+ 151 001e 42F00C02 		orr	r2, r2, #12
+ 152 0022 1A60     		str	r2, [r3]
+ 186:../LIB_HW/Hw_I2C_IMU.c **** 
+ 187:../LIB_HW/Hw_I2C_IMU.c **** 	//-- SDA PB.9
+ 188:../LIB_HW/Hw_I2C_IMU.c **** 	//
+ 189:../LIB_HW/Hw_I2C_IMU.c **** 	GPIOB_CRH &= ~(0x0F << ( 4));	// Clear
+ 153              		.loc 1 189 0
+ 154 0024 1A68     		ldr	r2, [r3]
+ 155 0026 22F0F002 		bic	r2, r2, #240
+ 156 002a 1A60     		str	r2, [r3]
+ 190:../LIB_HW/Hw_I2C_IMU.c **** 	GPIOB_CRH |=  (0x03 << ( 4));	// MODE, PB.9 Output mode, max speed 50Mhz
+ 157              		.loc 1 190 0
+ 158 002c 1A68     		ldr	r2, [r3]
+ 159 002e 42F03002 		orr	r2, r2, #48
+ 160 0032 1A60     		str	r2, [r3]
+ 191:../LIB_HW/Hw_I2C_IMU.c **** 	GPIOB_CRH |=  (0x03 << ( 6));	// CNF,  PB.9 Alternate function output Open-drain	
+ 161              		.loc 1 191 0
+ 162 0034 1A68     		ldr	r2, [r3]
+ 163 0036 42F0C002 		orr	r2, r2, #192
+ 164 003a 1A60     		str	r2, [r3]
+ 165 003c 7047     		bx	lr
+ 166              	.L8:
+ 167 003e 00BF     		.align	2
+ 168              	.L7:
+ 169 0040 04000140 		.word	1073807364
+ 170 0044 040C0140 		.word	1073810436
+ 171              		.cfi_endproc
+ 172              	.LFE2:
+ 174              		.section	.text.Hw_I2C_IMU_WaitForBitSet,"ax",%progbits
+ 175              		.align	2
+ 176              		.global	Hw_I2C_IMU_WaitForBitSet
+ 177              		.thumb
+ 178              		.thumb_func
+ 180              	Hw_I2C_IMU_WaitForBitSet:
+ 181              	.LFB5:
+ 192:../LIB_HW/Hw_I2C_IMU.c **** }
+ 193:../LIB_HW/Hw_I2C_IMU.c **** 
+ 194:../LIB_HW/Hw_I2C_IMU.c **** 
+ 195:../LIB_HW/Hw_I2C_IMU.c **** 
+ 196:../LIB_HW/Hw_I2C_IMU.c **** 
+ 197:../LIB_HW/Hw_I2C_IMU.c **** 
+ 198:../LIB_HW/Hw_I2C_IMU.c **** 
+ 199:../LIB_HW/Hw_I2C_IMU.c **** 
+ 200:../LIB_HW/Hw_I2C_IMU.c **** /*---------------------------------------------------------------------------
+ 201:../LIB_HW/Hw_I2C_IMU.c ****      TITLE   : Hw_I2C_IMU_WriteRegs
+ 202:../LIB_HW/Hw_I2C_IMU.c ****      WORK    : 
+ 203:../LIB_HW/Hw_I2C_IMU.c ****      ARG     : void
+ 204:../LIB_HW/Hw_I2C_IMU.c ****      RET     : void
+ 205:../LIB_HW/Hw_I2C_IMU.c **** ---------------------------------------------------------------------------*/
+ 206:../LIB_HW/Hw_I2C_IMU.c **** u16 Hw_I2C_IMU_WriteRegs( u16 i2c_addr, u8 reg_addr, u8 *ptr_data, u16 len )
+ 207:../LIB_HW/Hw_I2C_IMU.c **** {
+ 208:../LIB_HW/Hw_I2C_IMU.c ****     u16 Ret = 0;
+ 209:../LIB_HW/Hw_I2C_IMU.c ****     u16 Err = 0;
+ 210:../LIB_HW/Hw_I2C_IMU.c ****     u8  i;
+ 211:../LIB_HW/Hw_I2C_IMU.c ****     u32 TimeOut;
+ 212:../LIB_HW/Hw_I2C_IMU.c ****     u32 SR1;
+ 213:../LIB_HW/Hw_I2C_IMU.c ****     u32 SR2;
+ 214:../LIB_HW/Hw_I2C_IMU.c **** 
+ 215:../LIB_HW/Hw_I2C_IMU.c **** 
+ 216:../LIB_HW/Hw_I2C_IMU.c ****     while(1)
+ 217:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 218:../LIB_HW/Hw_I2C_IMU.c ****         //-- START
+ 219:../LIB_HW/Hw_I2C_IMU.c ****         //
+ 220:../LIB_HW/Hw_I2C_IMU.c ****         I2C1_CR1 |=   0x01 << 8;     // SET_BIT( I2C1_CR1, 8 );
+ 221:../LIB_HW/Hw_I2C_IMU.c **** 
+ 222:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 223:../LIB_HW/Hw_I2C_IMU.c ****         Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 0, 10000 );
+ 224:../LIB_HW/Hw_I2C_IMU.c ****         if( Ret != 0 )
+ 225:../LIB_HW/Hw_I2C_IMU.c ****         {
+ 226:../LIB_HW/Hw_I2C_IMU.c ****             Err = HW_I2C_ERR_START;
+ 227:../LIB_HW/Hw_I2C_IMU.c ****             break;
+ 228:../LIB_HW/Hw_I2C_IMU.c ****         }
+ 229:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 230:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 231:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 232:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 233:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 0)) break;
+ 234:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 235:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 236:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 237:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_START;
+ 238:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 239:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 240:../LIB_HW/Hw_I2C_IMU.c **** 
+ 241:../LIB_HW/Hw_I2C_IMU.c ****         //Lb_printf("S1 %x\n", I2C1_SR1);
+ 242:../LIB_HW/Hw_I2C_IMU.c ****         //Lb_printf("S1 %x\n", I2C1_SR2);
+ 243:../LIB_HW/Hw_I2C_IMU.c **** 
+ 244:../LIB_HW/Hw_I2C_IMU.c ****         //-- ADDR
+ 245:../LIB_HW/Hw_I2C_IMU.c ****         //
+ 246:../LIB_HW/Hw_I2C_IMU.c ****         I2C1_DR = i2c_addr<<1;	// ADDR Write 
+ 247:../LIB_HW/Hw_I2C_IMU.c **** 
+ 248:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 249:../LIB_HW/Hw_I2C_IMU.c ****         Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 1, 10000 );	// ADDR Sent
+ 250:../LIB_HW/Hw_I2C_IMU.c ****         SR2 = I2C1_SR2;
+ 251:../LIB_HW/Hw_I2C_IMU.c **** 
+ 252:../LIB_HW/Hw_I2C_IMU.c ****         if( Ret != 0 ) 
+ 253:../LIB_HW/Hw_I2C_IMU.c ****         {
+ 254:../LIB_HW/Hw_I2C_IMU.c ****             Err = HW_I2C_ERR_ADDR;
+ 255:../LIB_HW/Hw_I2C_IMU.c ****             break;
+ 256:../LIB_HW/Hw_I2C_IMU.c ****         }
+ 257:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 258:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 259:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 260:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 261:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 1)) break;
+ 262:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 263:../LIB_HW/Hw_I2C_IMU.c ****     SR2 = I2C1_SR2;
+ 264:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 265:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 266:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_ADDR;
+ 267:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 268:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 269:../LIB_HW/Hw_I2C_IMU.c **** 
+ 270:../LIB_HW/Hw_I2C_IMU.c **** 
+ 271:../LIB_HW/Hw_I2C_IMU.c ****         //Lb_printf("S2 %x\n", I2C1_SR1);
+ 272:../LIB_HW/Hw_I2C_IMU.c ****         //Lb_printf("S2 %x\n", I2C1_SR2);
+ 273:../LIB_HW/Hw_I2C_IMU.c **** 				
+ 274:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 275:../LIB_HW/Hw_I2C_IMU.c ****         Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 7, 10000 );	// TXE
+ 276:../LIB_HW/Hw_I2C_IMU.c ****         if( Ret != 0 )
+ 277:../LIB_HW/Hw_I2C_IMU.c ****         			{
+ 278:../LIB_HW/Hw_I2C_IMU.c ****             Err = HW_I2C_ERR_TXE;
+ 279:../LIB_HW/Hw_I2C_IMU.c ****             break;
+ 280:../LIB_HW/Hw_I2C_IMU.c ****         }
+ 281:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 282:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 283:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 284:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 285:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 7)) break;
+ 286:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 287:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 288:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 289:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_TXE;
+ 290:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 291:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 292:../LIB_HW/Hw_I2C_IMU.c **** 
+ 293:../LIB_HW/Hw_I2C_IMU.c **** 
+ 294:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 295:../LIB_HW/Hw_I2C_IMU.c ****         Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 7, 10000 );	// TXE
+ 296:../LIB_HW/Hw_I2C_IMU.c ****         if( Ret != 0 )
+ 297:../LIB_HW/Hw_I2C_IMU.c ****         {
+ 298:../LIB_HW/Hw_I2C_IMU.c ****             Err = HW_I2C_ERR_TXE;
+ 299:../LIB_HW/Hw_I2C_IMU.c ****             break;
+ 300:../LIB_HW/Hw_I2C_IMU.c ****         }
+ 301:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 302:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 303:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 304:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 305:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 7)) break;
+ 306:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 307:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 308:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 309:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_TXE;
+ 310:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 311:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 312:../LIB_HW/Hw_I2C_IMU.c **** 
+ 313:../LIB_HW/Hw_I2C_IMU.c ****         I2C1_DR = reg_addr;	
+ 314:../LIB_HW/Hw_I2C_IMU.c **** 
+ 315:../LIB_HW/Hw_I2C_IMU.c **** 
+ 316:../LIB_HW/Hw_I2C_IMU.c **** 
+ 317:../LIB_HW/Hw_I2C_IMU.c ****         for( i=0; i<len; i++ )
+ 318:../LIB_HW/Hw_I2C_IMU.c ****         {
+ 319:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 320:../LIB_HW/Hw_I2C_IMU.c ****             Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 7, 10000 );	// TXE
+ 321:../LIB_HW/Hw_I2C_IMU.c ****             if( Ret != 0 )
+ 322:../LIB_HW/Hw_I2C_IMU.c ****             {
+ 323:../LIB_HW/Hw_I2C_IMU.c ****                 Err = HW_I2C_ERR_TXE;
+ 324:../LIB_HW/Hw_I2C_IMU.c ****                 break;
+ 325:../LIB_HW/Hw_I2C_IMU.c ****             }
+ 326:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 327:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 328:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 329:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 330:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 7)) break;
+ 331:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 332:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 333:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 334:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_TXE;
+ 335:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 336:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 337:../LIB_HW/Hw_I2C_IMU.c **** 
+ 338:../LIB_HW/Hw_I2C_IMU.c ****             I2C1_DR = ptr_data[i];						
+ 339:../LIB_HW/Hw_I2C_IMU.c ****         }
+ 340:../LIB_HW/Hw_I2C_IMU.c **** 
+ 341:../LIB_HW/Hw_I2C_IMU.c **** 
+ 342:../LIB_HW/Hw_I2C_IMU.c ****         //-- STOP
+ 343:../LIB_HW/Hw_I2C_IMU.c ****         //
+ 344:../LIB_HW/Hw_I2C_IMU.c ****         if( len > 0 )
+ 345:../LIB_HW/Hw_I2C_IMU.c ****         {
+ 346:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 347:../LIB_HW/Hw_I2C_IMU.c ****             Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 2, 10000 );	// BTF
+ 348:../LIB_HW/Hw_I2C_IMU.c ****             if( Ret != 0 ) 
+ 349:../LIB_HW/Hw_I2C_IMU.c ****             {
+ 350:../LIB_HW/Hw_I2C_IMU.c ****                 Err = HW_I2C_ERR_STOP;
+ 351:../LIB_HW/Hw_I2C_IMU.c ****                 break;
+ 352:../LIB_HW/Hw_I2C_IMU.c ****             }
+ 353:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 354:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 355:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 356:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 357:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 2)) break;
+ 358:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 359:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 360:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 361:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_STOP;
+ 362:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 363:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 364:../LIB_HW/Hw_I2C_IMU.c ****         }
+ 365:../LIB_HW/Hw_I2C_IMU.c **** 
+ 366:../LIB_HW/Hw_I2C_IMU.c ****         I2C1_CR1 |=   0x01 << 9;     // SET_BIT( I2C1_CR1, 9 );	// STOP
+ 367:../LIB_HW/Hw_I2C_IMU.c ****         break;
+ 368:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 369:../LIB_HW/Hw_I2C_IMU.c **** 
+ 370:../LIB_HW/Hw_I2C_IMU.c **** 
+ 371:../LIB_HW/Hw_I2C_IMU.c ****     if( Err == 0 )
+ 372:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 373:../LIB_HW/Hw_I2C_IMU.c ****         Err = Hw_I2C_IMU_GetErrStatus();
+ 374:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 375:../LIB_HW/Hw_I2C_IMU.c **** 	
+ 376:../LIB_HW/Hw_I2C_IMU.c **** 
+ 377:../LIB_HW/Hw_I2C_IMU.c ****     return Err;
+ 378:../LIB_HW/Hw_I2C_IMU.c **** }
+ 379:../LIB_HW/Hw_I2C_IMU.c **** 
+ 380:../LIB_HW/Hw_I2C_IMU.c **** 
+ 381:../LIB_HW/Hw_I2C_IMU.c **** 
+ 382:../LIB_HW/Hw_I2C_IMU.c **** 
+ 383:../LIB_HW/Hw_I2C_IMU.c **** 
+ 384:../LIB_HW/Hw_I2C_IMU.c **** /*---------------------------------------------------------------------------
+ 385:../LIB_HW/Hw_I2C_IMU.c ****      TITLE   : Hw_I2C_IMU_ReadRegs
+ 386:../LIB_HW/Hw_I2C_IMU.c ****      WORK    : 
+ 387:../LIB_HW/Hw_I2C_IMU.c ****      ARG     : void
+ 388:../LIB_HW/Hw_I2C_IMU.c ****      RET     : void
+ 389:../LIB_HW/Hw_I2C_IMU.c **** ---------------------------------------------------------------------------*/
+ 390:../LIB_HW/Hw_I2C_IMU.c **** u16 Hw_I2C_IMU_ReadRegs( u16 i2c_addr, u8 reg_addr, u8 *ptr_reg, u16 len )
+ 391:../LIB_HW/Hw_I2C_IMU.c **** {
+ 392:../LIB_HW/Hw_I2C_IMU.c ****     u16 Ret = 0;
+ 393:../LIB_HW/Hw_I2C_IMU.c ****     u16 Err = 0;
+ 394:../LIB_HW/Hw_I2C_IMU.c **** 	u8  i;
+ 395:../LIB_HW/Hw_I2C_IMU.c **** 	u32 TimeOut;
+ 396:../LIB_HW/Hw_I2C_IMU.c **** 	volatile u32 SR1;
+ 397:../LIB_HW/Hw_I2C_IMU.c **** 	volatile u32 SR2;
+ 398:../LIB_HW/Hw_I2C_IMU.c **** 	u8  LastIndex = 0;
+ 399:../LIB_HW/Hw_I2C_IMU.c **** 
+ 400:../LIB_HW/Hw_I2C_IMU.c **** 
+ 401:../LIB_HW/Hw_I2C_IMU.c **** 	if( len > 0 ) LastIndex = len - 1;
+ 402:../LIB_HW/Hw_I2C_IMU.c **** 
+ 403:../LIB_HW/Hw_I2C_IMU.c **** 
+ 404:../LIB_HW/Hw_I2C_IMU.c **** 	while(1)
+ 405:../LIB_HW/Hw_I2C_IMU.c **** 	{
+ 406:../LIB_HW/Hw_I2C_IMU.c **** 
+ 407:../LIB_HW/Hw_I2C_IMU.c **** 			//Lb_printf("C1 %x\n", I2C1_CR1);
+ 408:../LIB_HW/Hw_I2C_IMU.c **** 
+ 409:../LIB_HW/Hw_I2C_IMU.c **** 			SR1 = I2C1_SR1;
+ 410:../LIB_HW/Hw_I2C_IMU.c **** 			SR2 = I2C1_SR2;
+ 411:../LIB_HW/Hw_I2C_IMU.c **** 
+ 412:../LIB_HW/Hw_I2C_IMU.c **** 
+ 413:../LIB_HW/Hw_I2C_IMU.c **** 			//Lb_printf("S1 %x\n", I2C1_SR1);
+ 414:../LIB_HW/Hw_I2C_IMU.c **** 			//Lb_printf("S1 %x\n", I2C1_SR2);
+ 415:../LIB_HW/Hw_I2C_IMU.c **** 
+ 416:../LIB_HW/Hw_I2C_IMU.c **** 			//-- START
+ 417:../LIB_HW/Hw_I2C_IMU.c **** 			//
+ 418:../LIB_HW/Hw_I2C_IMU.c **** 			I2C1_CR1 |=   0x01 << 8;     // SET_BIT( I2C1_CR1, 8 );
+ 419:../LIB_HW/Hw_I2C_IMU.c **** 
+ 420:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 421:../LIB_HW/Hw_I2C_IMU.c **** 			Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 0, 10000 );
+ 422:../LIB_HW/Hw_I2C_IMU.c **** 
+ 423:../LIB_HW/Hw_I2C_IMU.c **** 			//Lb_printf("S1 %x\n", I2C1_SR1);
+ 424:../LIB_HW/Hw_I2C_IMU.c **** 			//Lb_printf("S1 %x\n", I2C1_SR2);
+ 425:../LIB_HW/Hw_I2C_IMU.c **** 
+ 426:../LIB_HW/Hw_I2C_IMU.c **** 			if( Ret != 0 )
+ 427:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 428:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_START;
+ 429:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 430:../LIB_HW/Hw_I2C_IMU.c **** 			}
+ 431:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 432:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 433:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 434:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 435:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 0)) break;
+ 436:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 437:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 438:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 439:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_START;
+ 440:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 441:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 442:../LIB_HW/Hw_I2C_IMU.c **** 
+ 443:../LIB_HW/Hw_I2C_IMU.c **** 
+ 444:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 445:../LIB_HW/Hw_I2C_IMU.c **** 			Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR2, 0, 10000 );
+ 446:../LIB_HW/Hw_I2C_IMU.c **** 			if( Ret != 0 ) 
+ 447:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 448:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_START;
+ 449:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 450:../LIB_HW/Hw_I2C_IMU.c **** 			}
+ 451:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 452:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 453:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 454:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 455:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR2 & (0x01 << 0)) break;
+ 456:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 457:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 458:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 459:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_START;
+ 460:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 461:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 462:../LIB_HW/Hw_I2C_IMU.c **** 
+ 463:../LIB_HW/Hw_I2C_IMU.c **** 
+ 464:../LIB_HW/Hw_I2C_IMU.c **** 
+ 465:../LIB_HW/Hw_I2C_IMU.c **** 			//-- ADDR
+ 466:../LIB_HW/Hw_I2C_IMU.c **** 			//
+ 467:../LIB_HW/Hw_I2C_IMU.c **** 			I2C1_DR = i2c_addr<<1;	// ADDR Write 
+ 468:../LIB_HW/Hw_I2C_IMU.c **** 
+ 469:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 470:../LIB_HW/Hw_I2C_IMU.c **** 			Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 1, 10000 );	// ADDR Sent
+ 471:../LIB_HW/Hw_I2C_IMU.c **** 			SR2 = I2C1_SR2;
+ 472:../LIB_HW/Hw_I2C_IMU.c **** 
+ 473:../LIB_HW/Hw_I2C_IMU.c **** 			if( Ret != 0 ) 
+ 474:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 475:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_ADDR;
+ 476:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 477:../LIB_HW/Hw_I2C_IMU.c **** 			}
+ 478:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 479:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 480:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 481:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 482:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 1)) break;
+ 483:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 484:../LIB_HW/Hw_I2C_IMU.c ****     SR2 = I2C1_SR2;
+ 485:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 486:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 487:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_START;
+ 488:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 489:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 490:../LIB_HW/Hw_I2C_IMU.c **** 
+ 491:../LIB_HW/Hw_I2C_IMU.c **** 			
+ 492:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 493:../LIB_HW/Hw_I2C_IMU.c **** 			Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 7, 10000 );	// TXE
+ 494:../LIB_HW/Hw_I2C_IMU.c **** 			if( Ret != 0 )
+ 495:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 496:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_TXE;
+ 497:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 498:../LIB_HW/Hw_I2C_IMU.c **** 			}
+ 499:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 500:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 501:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 502:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 503:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 7)) break;
+ 504:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 505:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 506:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 507:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_TXE;
+ 508:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 509:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 510:../LIB_HW/Hw_I2C_IMU.c **** 
+ 511:../LIB_HW/Hw_I2C_IMU.c **** 
+ 512:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 513:../LIB_HW/Hw_I2C_IMU.c **** 			Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 7, 10000 );	// TXE
+ 514:../LIB_HW/Hw_I2C_IMU.c **** 			if( Ret != 0 )
+ 515:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 516:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_TXE;
+ 517:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 518:../LIB_HW/Hw_I2C_IMU.c **** 			}
+ 519:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 520:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 521:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 522:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 523:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 7)) break;
+ 524:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 525:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 526:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 527:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_TXE;
+ 528:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 529:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 530:../LIB_HW/Hw_I2C_IMU.c **** 
+ 531:../LIB_HW/Hw_I2C_IMU.c **** 			I2C1_DR = reg_addr;						
+ 532:../LIB_HW/Hw_I2C_IMU.c **** 
+ 533:../LIB_HW/Hw_I2C_IMU.c **** 
+ 534:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 535:../LIB_HW/Hw_I2C_IMU.c **** 			Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 2, 10000 );	// BTF
+ 536:../LIB_HW/Hw_I2C_IMU.c **** 			if( Ret != 0 ) 
+ 537:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 538:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_STOP;
+ 539:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 540:../LIB_HW/Hw_I2C_IMU.c **** 			}
+ 541:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 542:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 543:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 544:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 545:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 2)) break;
+ 546:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 547:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 548:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 549:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_STOP;
+ 550:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 551:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 552:../LIB_HW/Hw_I2C_IMU.c **** 
+ 553:../LIB_HW/Hw_I2C_IMU.c **** 
+ 554:../LIB_HW/Hw_I2C_IMU.c **** 
+ 555:../LIB_HW/Hw_I2C_IMU.c **** 			//-- START
+ 556:../LIB_HW/Hw_I2C_IMU.c **** 			//
+ 557:../LIB_HW/Hw_I2C_IMU.c **** 			I2C1_CR1 |=   0x01 << 8;     // SET_BIT( I2C1_CR1, 8 );
+ 558:../LIB_HW/Hw_I2C_IMU.c **** 
+ 559:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 560:../LIB_HW/Hw_I2C_IMU.c **** 			Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 0, 10000 );
+ 561:../LIB_HW/Hw_I2C_IMU.c **** 			if( Ret != 0 )
+ 562:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 563:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_START;
+ 564:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 565:../LIB_HW/Hw_I2C_IMU.c **** 			}
+ 566:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 567:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 568:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 569:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 570:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 0)) break;
+ 571:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 572:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 573:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 574:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_START;
+ 575:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 576:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 577:../LIB_HW/Hw_I2C_IMU.c **** 
+ 578:../LIB_HW/Hw_I2C_IMU.c **** 
+ 579:../LIB_HW/Hw_I2C_IMU.c **** 			//-- ADDR
+ 580:../LIB_HW/Hw_I2C_IMU.c **** 			//
+ 581:../LIB_HW/Hw_I2C_IMU.c **** 			I2C1_DR = (i2c_addr<<1) | (1<<0) ;	// ADDR Read
+ 582:../LIB_HW/Hw_I2C_IMU.c **** 
+ 583:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 584:../LIB_HW/Hw_I2C_IMU.c **** 			Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 1, 10000 );	// ADDR Sent
+ 585:../LIB_HW/Hw_I2C_IMU.c **** 			SR2 = I2C1_SR2;
+ 586:../LIB_HW/Hw_I2C_IMU.c **** 
+ 587:../LIB_HW/Hw_I2C_IMU.c **** 			if( Ret != 0 ) 
+ 588:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 589:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_ADDR;
+ 590:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 591:../LIB_HW/Hw_I2C_IMU.c **** 			}
+ 592:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 593:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 594:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 595:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 596:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 1)) break;
+ 597:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 598:../LIB_HW/Hw_I2C_IMU.c ****     SR2 = I2C1_SR2;
+ 599:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 600:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 601:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_ADDR;
+ 602:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 603:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 604:../LIB_HW/Hw_I2C_IMU.c **** 
+ 605:../LIB_HW/Hw_I2C_IMU.c **** 
+ 606:../LIB_HW/Hw_I2C_IMU.c **** 			//-- Read DATA
+ 607:../LIB_HW/Hw_I2C_IMU.c **** 			//
+ 608:../LIB_HW/Hw_I2C_IMU.c **** 			for( i=0; i<len; i++ )
+ 609:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 610:../LIB_HW/Hw_I2C_IMU.c **** 				if( i < LastIndex )
+ 611:../LIB_HW/Hw_I2C_IMU.c **** 				{
+ 612:../LIB_HW/Hw_I2C_IMU.c **** 					I2C1_CR1 |=   0x01 << 10;     // SET_BIT( I2C1_CR1, 10 );	// ACK Enable					
+ 613:../LIB_HW/Hw_I2C_IMU.c **** 				}
+ 614:../LIB_HW/Hw_I2C_IMU.c **** 				else
+ 615:../LIB_HW/Hw_I2C_IMU.c **** 				{
+ 616:../LIB_HW/Hw_I2C_IMU.c **** 					I2C1_CR1 &= ~(0x01 << 10);        // CLR_BIT( I2C1_CR1, 10 );	// ACK Disable
+ 617:../LIB_HW/Hw_I2C_IMU.c **** 					I2C1_CR1 |=   0x01 << 9;          // SET_BIT( I2C1_CR1, 9 );	// STOP
+ 618:../LIB_HW/Hw_I2C_IMU.c **** 				}
+ 619:../LIB_HW/Hw_I2C_IMU.c **** 
+ 620:../LIB_HW/Hw_I2C_IMU.c **** 
+ 621:../LIB_HW/Hw_I2C_IMU.c **** #if 0
+ 622:../LIB_HW/Hw_I2C_IMU.c **** 				Ret = Hw_I2C_IMU_WaitForBitSet( (u32 *)&I2C1_SR1, 6, 10000 );
+ 623:../LIB_HW/Hw_I2C_IMU.c **** 				if( Ret == 0 )
+ 624:../LIB_HW/Hw_I2C_IMU.c **** 				{
+ 625:../LIB_HW/Hw_I2C_IMU.c **** 					ptr_reg[i] = I2C1_DR;
+ 626:../LIB_HW/Hw_I2C_IMU.c **** 				}
+ 627:../LIB_HW/Hw_I2C_IMU.c **** 				else
+ 628:../LIB_HW/Hw_I2C_IMU.c **** 				{
+ 629:../LIB_HW/Hw_I2C_IMU.c **** 					Err = HW_I2C_ERR_RXE;
+ 630:../LIB_HW/Hw_I2C_IMU.c **** 					break;
+ 631:../LIB_HW/Hw_I2C_IMU.c **** 				}					 		
+ 632:../LIB_HW/Hw_I2C_IMU.c **** #endif
+ 633:../LIB_HW/Hw_I2C_IMU.c ****     Ret = 10000;
+ 634:../LIB_HW/Hw_I2C_IMU.c ****     while(Ret--)
+ 635:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 636:../LIB_HW/Hw_I2C_IMU.c ****         if(I2C1_SR1 & (0x01 << 6)) break;
+ 637:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 638:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 639:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 640:../LIB_HW/Hw_I2C_IMU.c **** 				Err = HW_I2C_ERR_RXE;
+ 641:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 642:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 643:../LIB_HW/Hw_I2C_IMU.c ****     else
+ 644:../LIB_HW/Hw_I2C_IMU.c **** 				ptr_reg[i] = I2C1_DR;
+ 645:../LIB_HW/Hw_I2C_IMU.c ****        
+ 646:../LIB_HW/Hw_I2C_IMU.c **** 			}
+ 647:../LIB_HW/Hw_I2C_IMU.c **** 
+ 648:../LIB_HW/Hw_I2C_IMU.c **** 			break;
+ 649:../LIB_HW/Hw_I2C_IMU.c **** 	}
+ 650:../LIB_HW/Hw_I2C_IMU.c **** 
+ 651:../LIB_HW/Hw_I2C_IMU.c **** 
+ 652:../LIB_HW/Hw_I2C_IMU.c **** 	if( Err == 0 )
+ 653:../LIB_HW/Hw_I2C_IMU.c **** 	{
+ 654:../LIB_HW/Hw_I2C_IMU.c **** 		Err = Hw_I2C_IMU_GetErrStatus();
+ 655:../LIB_HW/Hw_I2C_IMU.c **** 	}
+ 656:../LIB_HW/Hw_I2C_IMU.c **** 	
+ 657:../LIB_HW/Hw_I2C_IMU.c **** 
+ 658:../LIB_HW/Hw_I2C_IMU.c ****     return Err;
+ 659:../LIB_HW/Hw_I2C_IMU.c **** 
+ 660:../LIB_HW/Hw_I2C_IMU.c **** }
+ 661:../LIB_HW/Hw_I2C_IMU.c **** 
+ 662:../LIB_HW/Hw_I2C_IMU.c **** 
+ 663:../LIB_HW/Hw_I2C_IMU.c **** /*---------------------------------------------------------------------------
+ 664:../LIB_HW/Hw_I2C_IMU.c ****      TITLE   : Hw_I2C_IMU_WaitForBitSet
+ 665:../LIB_HW/Hw_I2C_IMU.c ****      WORK    : 
+ 666:../LIB_HW/Hw_I2C_IMU.c ****      ARG     : void
+ 667:../LIB_HW/Hw_I2C_IMU.c ****      RET     : void
+ 668:../LIB_HW/Hw_I2C_IMU.c **** ---------------------------------------------------------------------------*/
+ 669:../LIB_HW/Hw_I2C_IMU.c **** u16 Hw_I2C_IMU_WaitForBitSet( u32 *reg_addr, u32 reg_bit, u32 time_out )
+ 670:../LIB_HW/Hw_I2C_IMU.c **** {
+ 182              		.loc 1 670 0
+ 183              		.cfi_startproc
+ 184              		@ args = 0, pretend = 0, frame = 8
+ 185              		@ frame_needed = 0, uses_anonymous_args = 0
+ 186              		@ link register save eliminated.
+ 187              	.LVL1:
+ 671:../LIB_HW/Hw_I2C_IMU.c **** 	u32 Ret = 0;
+ 672:../LIB_HW/Hw_I2C_IMU.c **** 	volatile u32 Reg;
+ 673:../LIB_HW/Hw_I2C_IMU.c **** 
+ 674:../LIB_HW/Hw_I2C_IMU.c **** 
+ 675:../LIB_HW/Hw_I2C_IMU.c **** 	while( time_out )
+ 188              		.loc 1 675 0
+ 189 0000 D2B1     		cbz	r2, .L23
+ 670:../LIB_HW/Hw_I2C_IMU.c **** 	u32 Ret = 0;
+ 190              		.loc 1 670 0
+ 191 0002 10B4     		push	{r4}
+ 192              	.LCFI1:
+ 193              		.cfi_def_cfa_offset 4
+ 194              		.cfi_offset 4, -4
+ 676:../LIB_HW/Hw_I2C_IMU.c **** 	{
+ 677:../LIB_HW/Hw_I2C_IMU.c **** 		Reg = *reg_addr;
+ 195              		.loc 1 677 0
+ 196 0004 0068     		ldr	r0, [r0]
+ 197              	.LVL2:
+ 670:../LIB_HW/Hw_I2C_IMU.c **** 	u32 Ret = 0;
+ 198              		.loc 1 670 0
+ 199 0006 83B0     		sub	sp, sp, #12
+ 200              	.LCFI2:
+ 201              		.cfi_def_cfa_offset 16
+ 202              		.loc 1 677 0
+ 203 0008 0190     		str	r0, [sp, #4]
+ 678:../LIB_HW/Hw_I2C_IMU.c **** 
+ 679:../LIB_HW/Hw_I2C_IMU.c **** 		if( IS_SET_BIT( Reg, reg_bit ) ) break;
+ 204              		.loc 1 679 0
+ 205 000a 0123     		movs	r3, #1
+ 206 000c 019C     		ldr	r4, [sp, #4]
+ 207 000e 03FA01F1 		lsl	r1, r3, r1
+ 208              	.LVL3:
+ 209 0012 2142     		tst	r1, r4
+ 210 0014 04D0     		beq	.L14
+ 211 0016 0AE0     		b	.L13
+ 212              	.L15:
+ 677:../LIB_HW/Hw_I2C_IMU.c **** 
+ 213              		.loc 1 677 0
+ 214 0018 0190     		str	r0, [sp, #4]
+ 215              		.loc 1 679 0
+ 216 001a 019B     		ldr	r3, [sp, #4]
+ 217 001c 1942     		tst	r1, r3
+ 218 001e 06D1     		bne	.L13
+ 219              	.L14:
+ 220              	.LVL4:
+ 675:../LIB_HW/Hw_I2C_IMU.c **** 	{
+ 221              		.loc 1 675 0
+ 222 0020 013A     		subs	r2, r2, #1
+ 223              	.LVL5:
+ 224 0022 F9D1     		bne	.L15
+ 670:../LIB_HW/Hw_I2C_IMU.c **** 	u32 Ret = 0;
+ 225              		.loc 1 670 0
+ 226 0024 0120     		movs	r0, #1
+ 227              	.LVL6:
+ 680:../LIB_HW/Hw_I2C_IMU.c **** 
+ 681:../LIB_HW/Hw_I2C_IMU.c **** 		time_out--;
+ 682:../LIB_HW/Hw_I2C_IMU.c **** 	}
+ 683:../LIB_HW/Hw_I2C_IMU.c **** 			
+ 684:../LIB_HW/Hw_I2C_IMU.c **** 	if( time_out == 0 ) 
+ 685:../LIB_HW/Hw_I2C_IMU.c **** 	{
+ 686:../LIB_HW/Hw_I2C_IMU.c **** 		Ret = HW_I2C_ERR_TIMEOUT;
+ 687:../LIB_HW/Hw_I2C_IMU.c **** 	}
+ 688:../LIB_HW/Hw_I2C_IMU.c **** 
+ 689:../LIB_HW/Hw_I2C_IMU.c **** 	return Ret;
+ 690:../LIB_HW/Hw_I2C_IMU.c **** }
+ 228              		.loc 1 690 0
+ 229 0026 03B0     		add	sp, sp, #12
+ 230              	.LCFI3:
+ 231              		.cfi_remember_state
+ 232              		.cfi_def_cfa_offset 4
+ 233              		@ sp needed
+ 234 0028 5DF8044B 		ldr	r4, [sp], #4
+ 235              	.LCFI4:
+ 236              		.cfi_restore 4
+ 237              		.cfi_def_cfa_offset 0
+ 238 002c 7047     		bx	lr
+ 239              	.LVL7:
+ 240              	.L13:
+ 241              	.LCFI5:
+ 242              		.cfi_restore_state
+ 670:../LIB_HW/Hw_I2C_IMU.c **** 	u32 Ret = 0;
+ 243              		.loc 1 670 0
+ 244 002e 0020     		movs	r0, #0
+ 245              	.LVL8:
+ 246              		.loc 1 690 0
+ 247 0030 03B0     		add	sp, sp, #12
+ 248              	.LCFI6:
+ 249              		.cfi_def_cfa_offset 4
+ 250              		@ sp needed
+ 251 0032 5DF8044B 		ldr	r4, [sp], #4
+ 252              	.LCFI7:
+ 253              		.cfi_restore 4
+ 254              		.cfi_def_cfa_offset 0
+ 255 0036 7047     		bx	lr
+ 256              	.LVL9:
+ 257              	.L23:
+ 670:../LIB_HW/Hw_I2C_IMU.c **** 	u32 Ret = 0;
+ 258              		.loc 1 670 0
+ 259 0038 0120     		movs	r0, #1
+ 260              	.LVL10:
+ 261              		.loc 1 690 0
+ 262 003a 7047     		bx	lr
+ 263              		.cfi_endproc
+ 264              	.LFE5:
+ 266              		.section	.text.Hw_I2C_IMU_GetErrStatus,"ax",%progbits
+ 267              		.align	2
+ 268              		.global	Hw_I2C_IMU_GetErrStatus
+ 269              		.thumb
+ 270              		.thumb_func
+ 272              	Hw_I2C_IMU_GetErrStatus:
+ 273              	.LFB6:
+ 691:../LIB_HW/Hw_I2C_IMU.c **** 
+ 692:../LIB_HW/Hw_I2C_IMU.c **** 
+ 693:../LIB_HW/Hw_I2C_IMU.c **** 
+ 694:../LIB_HW/Hw_I2C_IMU.c **** 
+ 695:../LIB_HW/Hw_I2C_IMU.c **** 
+ 696:../LIB_HW/Hw_I2C_IMU.c **** /*---------------------------------------------------------------------------
+ 697:../LIB_HW/Hw_I2C_IMU.c ****      TITLE   : Hw_I2C_IMU_GetErrStatus
+ 698:../LIB_HW/Hw_I2C_IMU.c ****      WORK    : 
+ 699:../LIB_HW/Hw_I2C_IMU.c ****      ARG     : void
+ 700:../LIB_HW/Hw_I2C_IMU.c ****      RET     : void
+ 701:../LIB_HW/Hw_I2C_IMU.c **** ---------------------------------------------------------------------------*/
+ 702:../LIB_HW/Hw_I2C_IMU.c **** u16 Hw_I2C_IMU_GetErrStatus( void )
+ 703:../LIB_HW/Hw_I2C_IMU.c **** {
+ 274              		.loc 1 703 0
+ 275              		.cfi_startproc
+ 276              		@ args = 0, pretend = 0, frame = 0
+ 277              		@ frame_needed = 0, uses_anonymous_args = 0
+ 278              		@ link register save eliminated.
+ 279              	.LVL11:
+ 704:../LIB_HW/Hw_I2C_IMU.c **** 	u16 Err = 0;
+ 705:../LIB_HW/Hw_I2C_IMU.c **** 
+ 706:../LIB_HW/Hw_I2C_IMU.c **** 	if( IS_SET_BIT(I2C1_SR1, 11) ) Err = 11;
+ 280              		.loc 1 706 0
+ 281 0000 0B4B     		ldr	r3, .L36
+ 282 0002 1968     		ldr	r1, [r3]
+ 707:../LIB_HW/Hw_I2C_IMU.c **** 	if( IS_SET_BIT(I2C1_SR1, 10) ) Err = 10;
+ 283              		.loc 1 707 0
+ 284 0004 1A68     		ldr	r2, [r3]
+ 706:../LIB_HW/Hw_I2C_IMU.c **** 	if( IS_SET_BIT(I2C1_SR1, 10) ) Err = 10;
+ 285              		.loc 1 706 0
+ 286 0006 11F4006F 		tst	r1, #2048
+ 287 000a 14BF     		ite	ne
+ 288 000c 0B20     		movne	r0, #11
+ 289 000e 0020     		moveq	r0, #0
+ 290              	.LVL12:
+ 291              		.loc 1 707 0
+ 292 0010 12F4806F 		tst	r2, #1024
+ 708:../LIB_HW/Hw_I2C_IMU.c **** 	if( IS_SET_BIT(I2C1_SR1,  9) ) Err =  9;
+ 293              		.loc 1 708 0
+ 294 0014 1A68     		ldr	r2, [r3]
+ 709:../LIB_HW/Hw_I2C_IMU.c **** 	if( IS_SET_BIT(I2C1_SR1,  8) ) Err =  8;
+ 295              		.loc 1 709 0
+ 296 0016 1B68     		ldr	r3, [r3]
+ 707:../LIB_HW/Hw_I2C_IMU.c **** 	if( IS_SET_BIT(I2C1_SR1,  9) ) Err =  9;
+ 297              		.loc 1 707 0
+ 298 0018 18BF     		it	ne
+ 299 001a 0A20     		movne	r0, #10
+ 300              	.LVL13:
+ 708:../LIB_HW/Hw_I2C_IMU.c **** 	if( IS_SET_BIT(I2C1_SR1,  9) ) Err =  9;
+ 301              		.loc 1 708 0
+ 302 001c 12F4007F 		tst	r2, #512
+ 303 0020 18BF     		it	ne
+ 304 0022 0920     		movne	r0, #9
+ 305              	.LVL14:
+ 306              		.loc 1 709 0
+ 307 0024 13F4807F 		tst	r3, #256
+ 308              	.LVL15:
+ 710:../LIB_HW/Hw_I2C_IMU.c **** 
+ 711:../LIB_HW/Hw_I2C_IMU.c **** 	return Err;
+ 712:../LIB_HW/Hw_I2C_IMU.c **** }
+ 309              		.loc 1 712 0
+ 310 0028 18BF     		it	ne
+ 311 002a 0820     		movne	r0, #8
+ 312              	.LVL16:
+ 313 002c 7047     		bx	lr
+ 314              	.L37:
+ 315 002e 00BF     		.align	2
+ 316              	.L36:
+ 317 0030 14540040 		.word	1073763348
+ 318              		.cfi_endproc
+ 319              	.LFE6:
+ 321              		.section	.text.Hw_I2C_IMU_WriteRegs,"ax",%progbits
+ 322              		.align	2
+ 323              		.global	Hw_I2C_IMU_WriteRegs
+ 324              		.thumb
+ 325              		.thumb_func
+ 327              	Hw_I2C_IMU_WriteRegs:
+ 328              	.LFB3:
+ 207:../LIB_HW/Hw_I2C_IMU.c ****     u16 Ret = 0;
+ 329              		.loc 1 207 0
+ 330              		.cfi_startproc
+ 331              		@ args = 0, pretend = 0, frame = 0
+ 332              		@ frame_needed = 0, uses_anonymous_args = 0
+ 333              	.LVL17:
+ 334 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 335              	.LCFI8:
+ 336              		.cfi_def_cfa_offset 24
+ 337              		.cfi_offset 3, -24
+ 338              		.cfi_offset 4, -20
+ 339              		.cfi_offset 5, -16
+ 340              		.cfi_offset 6, -12
+ 341              		.cfi_offset 7, -8
+ 342              		.cfi_offset 14, -4
+ 220:../LIB_HW/Hw_I2C_IMU.c **** 
+ 343              		.loc 1 220 0
+ 344 0002 464E     		ldr	r6, .L98
+ 231:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 345              		.loc 1 231 0
+ 346 0004 42F20F74 		movw	r4, #9999
+ 220:../LIB_HW/Hw_I2C_IMU.c **** 
+ 347              		.loc 1 220 0
+ 348 0008 3568     		ldr	r5, [r6]
+ 231:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 349              		.loc 1 231 0
+ 350 000a 4FF6FF7E 		movw	lr, #65535
+ 220:../LIB_HW/Hw_I2C_IMU.c **** 
+ 351              		.loc 1 220 0
+ 352 000e 45F48075 		orr	r5, r5, #256
+ 233:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 353              		.loc 1 233 0
+ 354 0012 434F     		ldr	r7, .L98+4
+ 220:../LIB_HW/Hw_I2C_IMU.c **** 
+ 355              		.loc 1 220 0
+ 356 0014 3560     		str	r5, [r6]
+ 357              	.LVL18:
+ 358 0016 02E0     		b	.L40
+ 359              	.LVL19:
+ 360              	.L91:
+ 231:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 361              		.loc 1 231 0
+ 362 0018 B4B2     		uxth	r4, r6
+ 363              	.LVL20:
+ 364 001a 7445     		cmp	r4, lr
+ 365 001c 06D0     		beq	.L41
+ 366              	.LVL21:
+ 367              	.L40:
+ 233:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 368              		.loc 1 233 0
+ 369 001e 3D68     		ldr	r5, [r7]
+ 231:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 370              		.loc 1 231 0
+ 371 0020 661E     		subs	r6, r4, #1
+ 233:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 372              		.loc 1 233 0
+ 373 0022 ED07     		lsls	r5, r5, #31
+ 374 0024 F8D5     		bpl	.L91
+ 235:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 375              		.loc 1 235 0
+ 376 0026 0CB9     		cbnz	r4, .L41
+ 237:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 377              		.loc 1 237 0
+ 378 0028 0220     		movs	r0, #2
+ 379              	.LVL22:
+ 380 002a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 381              	.LVL23:
+ 382              	.L41:
+ 246:../LIB_HW/Hw_I2C_IMU.c **** 
+ 383              		.loc 1 246 0
+ 384 002c 3D4D     		ldr	r5, .L98+8
+ 385 002e 4000     		lsls	r0, r0, #1
+ 386              	.LVL24:
+ 259:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 387              		.loc 1 259 0
+ 388 0030 42F20F74 		movw	r4, #9999
+ 389              	.LVL25:
+ 390 0034 4FF6FF77 		movw	r7, #65535
+ 261:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 391              		.loc 1 261 0
+ 392 0038 394E     		ldr	r6, .L98+4
+ 246:../LIB_HW/Hw_I2C_IMU.c **** 
+ 393              		.loc 1 246 0
+ 394 003a 2860     		str	r0, [r5]
+ 395              	.LVL26:
+ 396 003c 02E0     		b	.L44
+ 397              	.LVL27:
+ 398              	.L93:
+ 259:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 399              		.loc 1 259 0
+ 400 003e ACB2     		uxth	r4, r5
+ 401              	.LVL28:
+ 402 0040 BC42     		cmp	r4, r7
+ 403 0042 53D0     		beq	.L92
+ 404              	.LVL29:
+ 405              	.L44:
+ 261:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 406              		.loc 1 261 0
+ 407 0044 3068     		ldr	r0, [r6]
+ 259:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 408              		.loc 1 259 0
+ 409 0046 651E     		subs	r5, r4, #1
+ 261:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 410              		.loc 1 261 0
+ 411 0048 8007     		lsls	r0, r0, #30
+ 412 004a F8D5     		bpl	.L93
+ 263:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 413              		.loc 1 263 0
+ 414 004c 3648     		ldr	r0, .L98+12
+ 415 004e 0068     		ldr	r0, [r0]
+ 264:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 416              		.loc 1 264 0
+ 417 0050 0CB9     		cbnz	r4, .L94
+ 266:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 418              		.loc 1 266 0
+ 419 0052 0320     		movs	r0, #3
+ 420 0054 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 421              	.LVL30:
+ 422              	.L94:
+ 423 0056 42F20F70 		movw	r0, #9999
+ 424              	.LVL31:
+ 425              	.L47:
+ 283:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 426              		.loc 1 283 0
+ 427 005a 4FF6FF77 		movw	r7, #65535
+ 285:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 428              		.loc 1 285 0
+ 429 005e 304E     		ldr	r6, .L98+4
+ 430 0060 02E0     		b	.L73
+ 431              	.LVL32:
+ 432              	.L95:
+ 283:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 433              		.loc 1 283 0
+ 434 0062 A8B2     		uxth	r0, r5
+ 435              	.LVL33:
+ 436 0064 B842     		cmp	r0, r7
+ 437 0066 06D0     		beq	.L86
+ 438              	.LVL34:
+ 439              	.L73:
+ 285:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 440              		.loc 1 285 0
+ 441 0068 3468     		ldr	r4, [r6]
+ 283:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 442              		.loc 1 283 0
+ 443 006a 451E     		subs	r5, r0, #1
+ 285:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 444              		.loc 1 285 0
+ 445 006c 2406     		lsls	r4, r4, #24
+ 446 006e F8D5     		bpl	.L95
+ 287:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 447              		.loc 1 287 0
+ 448 0070 08B9     		cbnz	r0, .L86
+ 449              	.L67:
+ 289:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 450              		.loc 1 289 0
+ 451 0072 0420     		movs	r0, #4
+ 452              	.LVL35:
+ 453 0074 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 454              	.LVL36:
+ 455              	.L86:
+ 456 0076 42F20F70 		movw	r0, #9999
+ 457              	.LVL37:
+ 303:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 458              		.loc 1 303 0
+ 459 007a 4FF6FF77 		movw	r7, #65535
+ 305:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 460              		.loc 1 305 0
+ 461 007e 284E     		ldr	r6, .L98+4
+ 462 0080 02E0     		b	.L72
+ 463              	.LVL38:
+ 464              	.L96:
+ 303:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 465              		.loc 1 303 0
+ 466 0082 A8B2     		uxth	r0, r5
+ 467              	.LVL39:
+ 468 0084 B842     		cmp	r0, r7
+ 469 0086 05D0     		beq	.L50
+ 470              	.LVL40:
+ 471              	.L72:
+ 305:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 472              		.loc 1 305 0
+ 473 0088 3468     		ldr	r4, [r6]
+ 303:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 474              		.loc 1 303 0
+ 475 008a 451E     		subs	r5, r0, #1
+ 305:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 476              		.loc 1 305 0
+ 477 008c 2406     		lsls	r4, r4, #24
+ 478 008e F8D5     		bpl	.L96
+ 307:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 479              		.loc 1 307 0
+ 480 0090 0028     		cmp	r0, #0
+ 481 0092 EED0     		beq	.L67
+ 482              	.L50:
+ 313:../LIB_HW/Hw_I2C_IMU.c **** 
+ 483              		.loc 1 313 0
+ 484 0094 2348     		ldr	r0, .L98+8
+ 485              	.LVL41:
+ 486 0096 0160     		str	r1, [r0]
+ 487              	.LVL42:
+ 317:../LIB_HW/Hw_I2C_IMU.c ****         {
+ 488              		.loc 1 317 0
+ 489 0098 002B     		cmp	r3, #0
+ 490 009a 38D0     		beq	.L97
+ 338:../LIB_HW/Hw_I2C_IMU.c ****         }
+ 491              		.loc 1 338 0
+ 492 009c 8646     		mov	lr, r0
+ 328:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 493              		.loc 1 328 0
+ 494 009e 4FF6FF76 		movw	r6, #65535
+ 330:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 495              		.loc 1 330 0
+ 496 00a2 1F4D     		ldr	r5, .L98+4
+ 317:../LIB_HW/Hw_I2C_IMU.c ****         {
+ 497              		.loc 1 317 0
+ 498 00a4 0027     		movs	r7, #0
+ 499              	.LVL43:
+ 500              	.L51:
+ 328:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 501              		.loc 1 328 0
+ 502 00a6 42F20F71 		movw	r1, #9999
+ 503 00aa 02E0     		b	.L55
+ 504              	.LVL44:
+ 505              	.L83:
+ 506 00ac A1B2     		uxth	r1, r4
+ 507              	.LVL45:
+ 508 00ae B142     		cmp	r1, r6
+ 509 00b0 04D0     		beq	.L56
+ 510              	.LVL46:
+ 511              	.L55:
+ 330:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 512              		.loc 1 330 0
+ 513 00b2 2868     		ldr	r0, [r5]
+ 328:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 514              		.loc 1 328 0
+ 515 00b4 4C1E     		subs	r4, r1, #1
+ 330:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 516              		.loc 1 330 0
+ 517 00b6 0006     		lsls	r0, r0, #24
+ 518 00b8 F8D5     		bpl	.L83
+ 332:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 519              		.loc 1 332 0
+ 520 00ba 31B3     		cbz	r1, .L69
+ 521              	.L56:
+ 338:../LIB_HW/Hw_I2C_IMU.c ****         }
+ 522              		.loc 1 338 0 discriminator 2
+ 523 00bc D15D     		ldrb	r1, [r2, r7]	@ zero_extendqisi2
+ 524              	.LVL47:
+ 317:../LIB_HW/Hw_I2C_IMU.c ****         {
+ 525              		.loc 1 317 0 discriminator 2
+ 526 00be 0137     		adds	r7, r7, #1
+ 527              	.LVL48:
+ 528 00c0 FFB2     		uxtb	r7, r7
+ 529              	.LVL49:
+ 530 00c2 9F42     		cmp	r7, r3
+ 338:../LIB_HW/Hw_I2C_IMU.c ****         }
+ 531              		.loc 1 338 0 discriminator 2
+ 532 00c4 CEF80010 		str	r1, [lr]
+ 317:../LIB_HW/Hw_I2C_IMU.c ****         {
+ 533              		.loc 1 317 0 discriminator 2
+ 534 00c8 EDD3     		bcc	.L51
+ 209:../LIB_HW/Hw_I2C_IMU.c ****     u8  i;
+ 535              		.loc 1 209 0
+ 536 00ca 0020     		movs	r0, #0
+ 537              	.L57:
+ 538              	.LVL50:
+ 355:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 539              		.loc 1 355 0
+ 540 00cc 42F20F73 		movw	r3, #9999
+ 541              	.LVL51:
+ 357:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 542              		.loc 1 357 0
+ 543 00d0 134C     		ldr	r4, .L98+4
+ 355:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 544              		.loc 1 355 0
+ 545 00d2 4FF6FF75 		movw	r5, #65535
+ 546 00d6 02E0     		b	.L60
+ 547              	.LVL52:
+ 548              	.L84:
+ 549 00d8 8BB2     		uxth	r3, r1
+ 550              	.LVL53:
+ 551 00da AB42     		cmp	r3, r5
+ 552 00dc 0BD0     		beq	.L61
+ 553              	.LVL54:
+ 554              	.L60:
+ 357:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 555              		.loc 1 357 0
+ 556 00de 2268     		ldr	r2, [r4]
+ 355:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 557              		.loc 1 355 0
+ 558 00e0 591E     		subs	r1, r3, #1
+ 357:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 559              		.loc 1 357 0
+ 560 00e2 5207     		lsls	r2, r2, #29
+ 561 00e4 F8D5     		bpl	.L84
+ 359:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 562              		.loc 1 359 0
+ 563 00e6 33B9     		cbnz	r3, .L61
+ 361:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 564              		.loc 1 361 0
+ 565 00e8 0620     		movs	r0, #6
+ 566              	.LVL55:
+ 567 00ea F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 568              	.LVL56:
+ 569              	.L92:
+ 263:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 570              		.loc 1 263 0
+ 571 00ec 0E4C     		ldr	r4, .L98+12
+ 572              	.LVL57:
+ 573 00ee 42F20F70 		movw	r0, #9999
+ 574 00f2 2468     		ldr	r4, [r4]
+ 575 00f4 B1E7     		b	.L47
+ 576              	.LVL58:
+ 577              	.L61:
+ 366:../LIB_HW/Hw_I2C_IMU.c ****         break;
+ 578              		.loc 1 366 0
+ 579 00f6 094A     		ldr	r2, .L98
+ 580 00f8 1368     		ldr	r3, [r2]
+ 581              	.LVL59:
+ 582 00fa 43F40073 		orr	r3, r3, #512
+ 583 00fe 1360     		str	r3, [r2]
+ 371:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 584              		.loc 1 371 0
+ 585 0100 10B9     		cbnz	r0, .L71
+ 586              	.LVL60:
+ 587              	.L63:
+ 373:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 588              		.loc 1 373 0
+ 589 0102 0A4B     		ldr	r3, .L98+16
+ 590 0104 9847     		blx	r3
+ 591              	.LVL61:
+ 592 0106 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 593              	.LVL62:
+ 594              	.L71:
+ 378:../LIB_HW/Hw_I2C_IMU.c **** 
+ 595              		.loc 1 378 0
+ 596 0108 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 597              	.LVL63:
+ 598              	.L69:
+ 334:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 599              		.loc 1 334 0
+ 600 010a 0420     		movs	r0, #4
+ 601 010c DEE7     		b	.L57
+ 602              	.LVL64:
+ 603              	.L97:
+ 366:../LIB_HW/Hw_I2C_IMU.c ****         break;
+ 604              		.loc 1 366 0
+ 605 010e 034A     		ldr	r2, .L98
+ 606              	.LVL65:
+ 607 0110 1368     		ldr	r3, [r2]
+ 608              	.LVL66:
+ 609 0112 43F40073 		orr	r3, r3, #512
+ 610 0116 1360     		str	r3, [r2]
+ 611 0118 F3E7     		b	.L63
+ 612              	.L99:
+ 613 011a 00BF     		.align	2
+ 614              	.L98:
+ 615 011c 00540040 		.word	1073763328
+ 616 0120 14540040 		.word	1073763348
+ 617 0124 10540040 		.word	1073763344
+ 618 0128 18540040 		.word	1073763352
+ 619 012c 00000000 		.word	Hw_I2C_IMU_GetErrStatus
+ 620              		.cfi_endproc
+ 621              	.LFE3:
+ 623              		.section	.text.Hw_I2C_IMU_ReadRegs,"ax",%progbits
+ 624              		.align	2
+ 625              		.global	Hw_I2C_IMU_ReadRegs
+ 626              		.thumb
+ 627              		.thumb_func
+ 629              	Hw_I2C_IMU_ReadRegs:
+ 630              	.LFB4:
+ 391:../LIB_HW/Hw_I2C_IMU.c ****     u16 Ret = 0;
+ 631              		.loc 1 391 0
+ 632              		.cfi_startproc
+ 633              		@ args = 0, pretend = 0, frame = 8
+ 634              		@ frame_needed = 0, uses_anonymous_args = 0
+ 635              	.LVL67:
+ 636 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 637              	.LCFI9:
+ 638              		.cfi_def_cfa_offset 24
+ 639              		.cfi_offset 4, -24
+ 640              		.cfi_offset 5, -20
+ 641              		.cfi_offset 6, -16
+ 642              		.cfi_offset 7, -12
+ 643              		.cfi_offset 8, -8
+ 644              		.cfi_offset 14, -4
+ 645 0004 82B0     		sub	sp, sp, #8
+ 646              	.LCFI10:
+ 647              		.cfi_def_cfa_offset 32
+ 401:../LIB_HW/Hw_I2C_IMU.c **** 
+ 648              		.loc 1 401 0
+ 649 0006 03B3     		cbz	r3, .L137
+ 401:../LIB_HW/Hw_I2C_IMU.c **** 
+ 650              		.loc 1 401 0 is_stmt 0 discriminator 1
+ 651 0008 03F1FF3C 		add	ip, r3, #-1
+ 652 000c 5FFA8CFC 		uxtb	ip, ip
+ 653              	.LVL68:
+ 654              	.L101:
+ 409:../LIB_HW/Hw_I2C_IMU.c **** 			SR2 = I2C1_SR2;
+ 655              		.loc 1 409 0 is_stmt 1
+ 656 0010 6C4D     		ldr	r5, .L190
+ 433:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 657              		.loc 1 433 0
+ 658 0012 42F20F74 		movw	r4, #9999
+ 409:../LIB_HW/Hw_I2C_IMU.c **** 			SR2 = I2C1_SR2;
+ 659              		.loc 1 409 0
+ 660 0016 2E68     		ldr	r6, [r5]
+ 435:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 661              		.loc 1 435 0
+ 662 0018 2F46     		mov	r7, r5
+ 409:../LIB_HW/Hw_I2C_IMU.c **** 			SR2 = I2C1_SR2;
+ 663              		.loc 1 409 0
+ 664 001a 0096     		str	r6, [sp]
+ 410:../LIB_HW/Hw_I2C_IMU.c **** 
+ 665              		.loc 1 410 0
+ 666 001c 0435     		adds	r5, r5, #4
+ 667 001e 2D68     		ldr	r5, [r5]
+ 418:../LIB_HW/Hw_I2C_IMU.c **** 
+ 668              		.loc 1 418 0
+ 669 0020 694E     		ldr	r6, .L190+4
+ 410:../LIB_HW/Hw_I2C_IMU.c **** 
+ 670              		.loc 1 410 0
+ 671 0022 0195     		str	r5, [sp, #4]
+ 418:../LIB_HW/Hw_I2C_IMU.c **** 
+ 672              		.loc 1 418 0
+ 673 0024 3568     		ldr	r5, [r6]
+ 433:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 674              		.loc 1 433 0
+ 675 0026 4FF6FF7E 		movw	lr, #65535
+ 418:../LIB_HW/Hw_I2C_IMU.c **** 
+ 676              		.loc 1 418 0
+ 677 002a 45F48075 		orr	r5, r5, #256
+ 678 002e 3560     		str	r5, [r6]
+ 679              	.LVL69:
+ 680 0030 02E0     		b	.L103
+ 681              	.LVL70:
+ 682              	.L180:
+ 433:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 683              		.loc 1 433 0
+ 684 0032 B4B2     		uxth	r4, r6
+ 685              	.LVL71:
+ 686 0034 7445     		cmp	r4, lr
+ 687 0036 0AD0     		beq	.L175
+ 688              	.LVL72:
+ 689              	.L103:
+ 435:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 690              		.loc 1 435 0
+ 691 0038 3D68     		ldr	r5, [r7]
+ 433:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 692              		.loc 1 433 0
+ 693 003a 661E     		subs	r6, r4, #1
+ 435:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 694              		.loc 1 435 0
+ 695 003c ED07     		lsls	r5, r5, #31
+ 696 003e F8D5     		bpl	.L180
+ 437:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 697              		.loc 1 437 0
+ 698 0040 2CB9     		cbnz	r4, .L175
+ 699              	.LVL73:
+ 700              	.L105:
+ 439:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 701              		.loc 1 439 0
+ 702 0042 0220     		movs	r0, #2
+ 703              	.LVL74:
+ 704              	.L173:
+ 660:../LIB_HW/Hw_I2C_IMU.c **** 
+ 705              		.loc 1 660 0
+ 706 0044 02B0     		add	sp, sp, #8
+ 707              	.LCFI11:
+ 708              		.cfi_remember_state
+ 709              		.cfi_def_cfa_offset 24
+ 710              		@ sp needed
+ 711 0046 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 712              	.LVL75:
+ 713              	.L137:
+ 714              	.LCFI12:
+ 715              		.cfi_restore_state
+ 398:../LIB_HW/Hw_I2C_IMU.c **** 
+ 716              		.loc 1 398 0
+ 717 004a 9C46     		mov	ip, r3
+ 718 004c E0E7     		b	.L101
+ 719              	.LVL76:
+ 720              	.L175:
+ 721 004e 42F20F74 		movw	r4, #9999
+ 722              	.LVL77:
+ 453:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 723              		.loc 1 453 0
+ 724 0052 4FF6FF7E 		movw	lr, #65535
+ 455:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 725              		.loc 1 455 0
+ 726 0056 5D4F     		ldr	r7, .L190+8
+ 727 0058 02E0     		b	.L154
+ 728              	.LVL78:
+ 729              	.L181:
+ 453:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 730              		.loc 1 453 0
+ 731 005a B4B2     		uxth	r4, r6
+ 732              	.LVL79:
+ 733 005c 7445     		cmp	r4, lr
+ 734 005e 05D0     		beq	.L107
+ 735              	.LVL80:
+ 736              	.L154:
+ 455:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 737              		.loc 1 455 0
+ 738 0060 3D68     		ldr	r5, [r7]
+ 453:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 739              		.loc 1 453 0
+ 740 0062 661E     		subs	r6, r4, #1
+ 455:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 741              		.loc 1 455 0
+ 742 0064 ED07     		lsls	r5, r5, #31
+ 743 0066 F8D5     		bpl	.L181
+ 457:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 744              		.loc 1 457 0
+ 745 0068 002C     		cmp	r4, #0
+ 746 006a EAD0     		beq	.L105
+ 747              	.L107:
+ 467:../LIB_HW/Hw_I2C_IMU.c **** 
+ 748              		.loc 1 467 0
+ 749 006c 584D     		ldr	r5, .L190+12
+ 750 006e 4000     		lsls	r0, r0, #1
+ 751              	.LVL81:
+ 480:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 752              		.loc 1 480 0
+ 753 0070 42F20F74 		movw	r4, #9999
+ 754              	.LVL82:
+ 755 0074 4FF6FF7E 		movw	lr, #65535
+ 482:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 756              		.loc 1 482 0
+ 757 0078 524F     		ldr	r7, .L190
+ 467:../LIB_HW/Hw_I2C_IMU.c **** 
+ 758              		.loc 1 467 0
+ 759 007a 2860     		str	r0, [r5]
+ 760              	.LVL83:
+ 761 007c 02E0     		b	.L109
+ 762              	.LVL84:
+ 763              	.L183:
+ 480:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 764              		.loc 1 480 0
+ 765 007e B4B2     		uxth	r4, r6
+ 766              	.LVL85:
+ 767 0080 7445     		cmp	r4, lr
+ 768 0082 39D0     		beq	.L182
+ 769              	.LVL86:
+ 770              	.L109:
+ 482:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 771              		.loc 1 482 0
+ 772 0084 3D68     		ldr	r5, [r7]
+ 480:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 773              		.loc 1 480 0
+ 774 0086 661E     		subs	r6, r4, #1
+ 482:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 775              		.loc 1 482 0
+ 776 0088 AD07     		lsls	r5, r5, #30
+ 777 008a F8D5     		bpl	.L183
+ 484:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 778              		.loc 1 484 0
+ 779 008c 4F4D     		ldr	r5, .L190+8
+ 780 008e 2D68     		ldr	r5, [r5]
+ 781 0090 0195     		str	r5, [sp, #4]
+ 485:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 782              		.loc 1 485 0
+ 783 0092 002C     		cmp	r4, #0
+ 784 0094 D5D0     		beq	.L105
+ 785              	.LVL87:
+ 786              	.L111:
+ 501:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 787              		.loc 1 501 0
+ 788 0096 42F20F74 		movw	r4, #9999
+ 503:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 789              		.loc 1 503 0
+ 790 009a 4A4F     		ldr	r7, .L190
+ 501:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 791              		.loc 1 501 0
+ 792 009c 4FF6FF7E 		movw	lr, #65535
+ 793 00a0 02E0     		b	.L114
+ 794              	.LVL88:
+ 795              	.L171:
+ 796 00a2 B4B2     		uxth	r4, r6
+ 797              	.LVL89:
+ 798 00a4 7445     		cmp	r4, lr
+ 799 00a6 06D0     		beq	.L176
+ 800              	.LVL90:
+ 801              	.L114:
+ 503:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 802              		.loc 1 503 0
+ 803 00a8 3D68     		ldr	r5, [r7]
+ 501:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 804              		.loc 1 501 0
+ 805 00aa 661E     		subs	r6, r4, #1
+ 503:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 806              		.loc 1 503 0
+ 807 00ac 2D06     		lsls	r5, r5, #24
+ 808 00ae F8D5     		bpl	.L171
+ 505:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 809              		.loc 1 505 0
+ 810 00b0 0CB9     		cbnz	r4, .L176
+ 811              	.L139:
+ 507:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 812              		.loc 1 507 0
+ 813 00b2 0420     		movs	r0, #4
+ 814 00b4 C6E7     		b	.L173
+ 815              	.L176:
+ 816 00b6 42F20F74 		movw	r4, #9999
+ 817              	.LVL91:
+ 521:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 818              		.loc 1 521 0
+ 819 00ba 4FF6FF7E 		movw	lr, #65535
+ 523:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 820              		.loc 1 523 0
+ 821 00be 414F     		ldr	r7, .L190
+ 822 00c0 02E0     		b	.L153
+ 823              	.LVL92:
+ 824              	.L184:
+ 521:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 825              		.loc 1 521 0
+ 826 00c2 B4B2     		uxth	r4, r6
+ 827              	.LVL93:
+ 828 00c4 7445     		cmp	r4, lr
+ 829 00c6 05D0     		beq	.L118
+ 830              	.LVL94:
+ 831              	.L153:
+ 523:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 832              		.loc 1 523 0
+ 833 00c8 3D68     		ldr	r5, [r7]
+ 521:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 834              		.loc 1 521 0
+ 835 00ca 661E     		subs	r6, r4, #1
+ 523:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 836              		.loc 1 523 0
+ 837 00cc 2D06     		lsls	r5, r5, #24
+ 838 00ce F8D5     		bpl	.L184
+ 525:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 839              		.loc 1 525 0
+ 840 00d0 002C     		cmp	r4, #0
+ 841 00d2 EED0     		beq	.L139
+ 842              	.L118:
+ 531:../LIB_HW/Hw_I2C_IMU.c **** 
+ 843              		.loc 1 531 0
+ 844 00d4 3E4D     		ldr	r5, .L190+12
+ 543:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 845              		.loc 1 543 0
+ 846 00d6 42F20F74 		movw	r4, #9999
+ 847              	.LVL95:
+ 848 00da 4FF6FF77 		movw	r7, #65535
+ 545:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 849              		.loc 1 545 0
+ 850 00de 394E     		ldr	r6, .L190
+ 531:../LIB_HW/Hw_I2C_IMU.c **** 
+ 851              		.loc 1 531 0
+ 852 00e0 2960     		str	r1, [r5]
+ 853              	.LVL96:
+ 854 00e2 02E0     		b	.L120
+ 855              	.LVL97:
+ 856              	.L185:
+ 543:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 857              		.loc 1 543 0
+ 858 00e4 ACB2     		uxth	r4, r5
+ 859              	.LVL98:
+ 860 00e6 BC42     		cmp	r4, r7
+ 861 00e8 0AD0     		beq	.L121
+ 862              	.LVL99:
+ 863              	.L120:
+ 545:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 864              		.loc 1 545 0
+ 865 00ea 3168     		ldr	r1, [r6]
+ 543:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 866              		.loc 1 543 0
+ 867 00ec 651E     		subs	r5, r4, #1
+ 545:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 868              		.loc 1 545 0
+ 869 00ee 4907     		lsls	r1, r1, #29
+ 870 00f0 F8D5     		bpl	.L185
+ 547:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 871              		.loc 1 547 0
+ 872 00f2 2CB9     		cbnz	r4, .L121
+ 549:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 873              		.loc 1 549 0
+ 874 00f4 0620     		movs	r0, #6
+ 875 00f6 A5E7     		b	.L173
+ 876              	.LVL100:
+ 877              	.L182:
+ 484:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 878              		.loc 1 484 0
+ 879 00f8 344C     		ldr	r4, .L190+8
+ 880              	.LVL101:
+ 881 00fa 2468     		ldr	r4, [r4]
+ 882 00fc 0194     		str	r4, [sp, #4]
+ 883 00fe CAE7     		b	.L111
+ 884              	.LVL102:
+ 885              	.L121:
+ 557:../LIB_HW/Hw_I2C_IMU.c **** 
+ 886              		.loc 1 557 0
+ 887 0100 314D     		ldr	r5, .L190+4
+ 568:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 888              		.loc 1 568 0
+ 889 0102 42F20F71 		movw	r1, #9999
+ 557:../LIB_HW/Hw_I2C_IMU.c **** 
+ 890              		.loc 1 557 0
+ 891 0106 2C68     		ldr	r4, [r5]
+ 892              	.LVL103:
+ 568:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 893              		.loc 1 568 0
+ 894 0108 4FF6FF77 		movw	r7, #65535
+ 557:../LIB_HW/Hw_I2C_IMU.c **** 
+ 895              		.loc 1 557 0
+ 896 010c 44F48074 		orr	r4, r4, #256
+ 570:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 897              		.loc 1 570 0
+ 898 0110 2C4E     		ldr	r6, .L190
+ 557:../LIB_HW/Hw_I2C_IMU.c **** 
+ 899              		.loc 1 557 0
+ 900 0112 2C60     		str	r4, [r5]
+ 901              	.LVL104:
+ 902 0114 02E0     		b	.L123
+ 903              	.LVL105:
+ 904              	.L186:
+ 568:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 905              		.loc 1 568 0
+ 906 0116 A9B2     		uxth	r1, r5
+ 907              	.LVL106:
+ 908 0118 B942     		cmp	r1, r7
+ 909 011a 05D0     		beq	.L124
+ 910              	.LVL107:
+ 911              	.L123:
+ 570:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 912              		.loc 1 570 0
+ 913 011c 3468     		ldr	r4, [r6]
+ 568:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 914              		.loc 1 568 0
+ 915 011e 4D1E     		subs	r5, r1, #1
+ 570:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 916              		.loc 1 570 0
+ 917 0120 E407     		lsls	r4, r4, #31
+ 918 0122 F8D5     		bpl	.L186
+ 572:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 919              		.loc 1 572 0
+ 920 0124 0029     		cmp	r1, #0
+ 921 0126 8CD0     		beq	.L105
+ 922              	.L124:
+ 581:../LIB_HW/Hw_I2C_IMU.c **** 
+ 923              		.loc 1 581 0
+ 924 0128 294C     		ldr	r4, .L190+12
+ 925 012a 40F00100 		orr	r0, r0, #1
+ 594:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 926              		.loc 1 594 0
+ 927 012e 42F20F71 		movw	r1, #9999
+ 928              	.LVL108:
+ 929 0132 4FF6FF76 		movw	r6, #65535
+ 596:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 930              		.loc 1 596 0
+ 931 0136 234D     		ldr	r5, .L190
+ 581:../LIB_HW/Hw_I2C_IMU.c **** 
+ 932              		.loc 1 581 0
+ 933 0138 2060     		str	r0, [r4]
+ 934              	.LVL109:
+ 935 013a 02E0     		b	.L126
+ 936              	.LVL110:
+ 937              	.L188:
+ 594:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 938              		.loc 1 594 0
+ 939 013c 81B2     		uxth	r1, r0
+ 940              	.LVL111:
+ 941 013e B142     		cmp	r1, r6
+ 942 0140 09D0     		beq	.L187
+ 943              	.LVL112:
+ 944              	.L126:
+ 596:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 945              		.loc 1 596 0
+ 946 0142 2C68     		ldr	r4, [r5]
+ 594:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 947              		.loc 1 594 0
+ 948 0144 481E     		subs	r0, r1, #1
+ 596:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 949              		.loc 1 596 0
+ 950 0146 A407     		lsls	r4, r4, #30
+ 951 0148 F8D5     		bpl	.L188
+ 598:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 952              		.loc 1 598 0
+ 953 014a 2048     		ldr	r0, .L190+8
+ 954 014c 0068     		ldr	r0, [r0]
+ 955 014e 0190     		str	r0, [sp, #4]
+ 599:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 956              		.loc 1 599 0
+ 957 0150 21B9     		cbnz	r1, .L135
+ 601:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 958              		.loc 1 601 0
+ 959 0152 0320     		movs	r0, #3
+ 960 0154 76E7     		b	.L173
+ 961              	.L187:
+ 598:../LIB_HW/Hw_I2C_IMU.c ****     if(Ret == 0)
+ 962              		.loc 1 598 0
+ 963 0156 1D49     		ldr	r1, .L190+8
+ 964              	.LVL113:
+ 965 0158 0968     		ldr	r1, [r1]
+ 966 015a 0191     		str	r1, [sp, #4]
+ 967              	.LVL114:
+ 968              	.L135:
+ 608:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 969              		.loc 1 608 0 discriminator 1
+ 970 015c 0BB3     		cbz	r3, .L128
+ 634:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 971              		.loc 1 634 0
+ 972 015e 4FF6FF76 		movw	r6, #65535
+ 616:../LIB_HW/Hw_I2C_IMU.c **** 					I2C1_CR1 |=   0x01 << 9;          // SET_BIT( I2C1_CR1, 9 );	// STOP
+ 973              		.loc 1 616 0
+ 974 0162 DFF864E0 		ldr	lr, .L190+4
+ 636:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 975              		.loc 1 636 0
+ 976 0166 174D     		ldr	r5, .L190
+ 644:../LIB_HW/Hw_I2C_IMU.c ****        
+ 977              		.loc 1 644 0
+ 978 0168 DFF86480 		ldr	r8, .L190+12
+ 608:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 979              		.loc 1 608 0
+ 980 016c 0027     		movs	r7, #0
+ 981              	.LVL115:
+ 982              	.L134:
+ 610:../LIB_HW/Hw_I2C_IMU.c **** 				{
+ 983              		.loc 1 610 0
+ 984 016e BC45     		cmp	ip, r7
+ 612:../LIB_HW/Hw_I2C_IMU.c **** 				}
+ 985              		.loc 1 612 0
+ 986 0170 DEF80010 		ldr	r1, [lr]
+ 610:../LIB_HW/Hw_I2C_IMU.c **** 				{
+ 987              		.loc 1 610 0
+ 988 0174 18D9     		bls	.L129
+ 612:../LIB_HW/Hw_I2C_IMU.c **** 				}
+ 989              		.loc 1 612 0
+ 990 0176 41F48061 		orr	r1, r1, #1024
+ 991 017a CEF80010 		str	r1, [lr]
+ 992              	.L130:
+ 993              	.LVL116:
+ 634:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 994              		.loc 1 634 0
+ 995 017e 42F20F71 		movw	r1, #9999
+ 996 0182 02E0     		b	.L132
+ 997              	.LVL117:
+ 998              	.L189:
+ 999 0184 A1B2     		uxth	r1, r4
+ 1000              	.LVL118:
+ 1001 0186 B142     		cmp	r1, r6
+ 1002 0188 04D0     		beq	.L133
+ 1003              	.LVL119:
+ 1004              	.L132:
+ 636:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 1005              		.loc 1 636 0
+ 1006 018a 2868     		ldr	r0, [r5]
+ 634:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 1007              		.loc 1 634 0
+ 1008 018c 4C1E     		subs	r4, r1, #1
+ 636:../LIB_HW/Hw_I2C_IMU.c ****     }
+ 1009              		.loc 1 636 0
+ 1010 018e 4006     		lsls	r0, r0, #25
+ 1011 0190 F8D5     		bpl	.L189
+ 638:../LIB_HW/Hw_I2C_IMU.c ****     {
+ 1012              		.loc 1 638 0
+ 1013 0192 A1B1     		cbz	r1, .L142
+ 1014              	.L133:
+ 644:../LIB_HW/Hw_I2C_IMU.c ****        
+ 1015              		.loc 1 644 0 discriminator 2
+ 1016 0194 D8F80000 		ldr	r0, [r8]
+ 608:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 1017              		.loc 1 608 0 discriminator 2
+ 1018 0198 791C     		adds	r1, r7, #1
+ 1019              	.LVL120:
+ 644:../LIB_HW/Hw_I2C_IMU.c ****        
+ 1020              		.loc 1 644 0 discriminator 2
+ 1021 019a D055     		strb	r0, [r2, r7]
+ 608:../LIB_HW/Hw_I2C_IMU.c **** 			{
+ 1022              		.loc 1 608 0 discriminator 2
+ 1023 019c CFB2     		uxtb	r7, r1
+ 1024              	.LVL121:
+ 1025 019e BB42     		cmp	r3, r7
+ 1026 01a0 E5D8     		bhi	.L134
+ 1027              	.LVL122:
+ 1028              	.L128:
+ 654:../LIB_HW/Hw_I2C_IMU.c **** 	}
+ 1029              		.loc 1 654 0
+ 1030 01a2 0C4B     		ldr	r3, .L190+16
+ 1031              	.LVL123:
+ 1032 01a4 9847     		blx	r3
+ 1033              	.LVL124:
+ 1034 01a6 4DE7     		b	.L173
+ 1035              	.LVL125:
+ 1036              	.L129:
+ 616:../LIB_HW/Hw_I2C_IMU.c **** 					I2C1_CR1 |=   0x01 << 9;          // SET_BIT( I2C1_CR1, 9 );	// STOP
+ 1037              		.loc 1 616 0
+ 1038 01a8 21F48061 		bic	r1, r1, #1024
+ 1039 01ac CEF80010 		str	r1, [lr]
+ 617:../LIB_HW/Hw_I2C_IMU.c **** 				}
+ 1040              		.loc 1 617 0
+ 1041 01b0 DEF80010 		ldr	r1, [lr]
+ 1042 01b4 41F40071 		orr	r1, r1, #512
+ 1043 01b8 CEF80010 		str	r1, [lr]
+ 1044 01bc DFE7     		b	.L130
+ 1045              	.LVL126:
+ 1046              	.L142:
+ 640:../LIB_HW/Hw_I2C_IMU.c **** 				break;
+ 1047              		.loc 1 640 0
+ 1048 01be 0520     		movs	r0, #5
+ 1049              	.LVL127:
+ 1050 01c0 40E7     		b	.L173
+ 1051              	.L191:
+ 1052 01c2 00BF     		.align	2
+ 1053              	.L190:
+ 1054 01c4 14540040 		.word	1073763348
+ 1055 01c8 00540040 		.word	1073763328
+ 1056 01cc 18540040 		.word	1073763352
+ 1057 01d0 10540040 		.word	1073763344
+ 1058 01d4 00000000 		.word	Hw_I2C_IMU_GetErrStatus
+ 1059              		.cfi_endproc
+ 1060              	.LFE4:
+ 1062              		.section	.text.Hw_MPU6050_Init,"ax",%progbits
+ 1063              		.align	2
+ 1064              		.global	Hw_MPU6050_Init
+ 1065              		.thumb
+ 1066              		.thumb_func
+ 1068              	Hw_MPU6050_Init:
+ 1069              	.LFB7:
+ 713:../LIB_HW/Hw_I2C_IMU.c **** 
+ 714:../LIB_HW/Hw_I2C_IMU.c **** 
+ 715:../LIB_HW/Hw_I2C_IMU.c **** 
+ 716:../LIB_HW/Hw_I2C_IMU.c **** 
+ 717:../LIB_HW/Hw_I2C_IMU.c **** 
+ 718:../LIB_HW/Hw_I2C_IMU.c **** 
+ 719:../LIB_HW/Hw_I2C_IMU.c **** //----------------------------------------------------------------------------
+ 720:../LIB_HW/Hw_I2C_IMU.c **** //    프로그램명 	: I2C MPU6050 관련 함수
+ 721:../LIB_HW/Hw_I2C_IMU.c **** //
+ 722:../LIB_HW/Hw_I2C_IMU.c **** //    만든이     	: 
+ 723:../LIB_HW/Hw_I2C_IMU.c **** //
+ 724:../LIB_HW/Hw_I2C_IMU.c **** //    날  짜     	: 
+ 725:../LIB_HW/Hw_I2C_IMU.c **** //    
+ 726:../LIB_HW/Hw_I2C_IMU.c **** //    최종 수정  	:
+ 727:../LIB_HW/Hw_I2C_IMU.c **** //
+ 728:../LIB_HW/Hw_I2C_IMU.c **** //    MPU_Type		:
+ 729:../LIB_HW/Hw_I2C_IMU.c **** //
+ 730:../LIB_HW/Hw_I2C_IMU.c **** //    파일명     	: Hw_MPU6050.c
+ 731:../LIB_HW/Hw_I2C_IMU.c **** //----------------------------------------------------------------------------
+ 732:../LIB_HW/Hw_I2C_IMU.c **** 
+ 733:../LIB_HW/Hw_I2C_IMU.c **** 
+ 734:../LIB_HW/Hw_I2C_IMU.c **** //----- 헤더파일 열기
+ 735:../LIB_HW/Hw_I2C_IMU.c **** //
+ 736:../LIB_HW/Hw_I2C_IMU.c **** 
+ 737:../LIB_HW/Hw_I2C_IMU.c **** 
+ 738:../LIB_HW/Hw_I2C_IMU.c **** #include "Lb_Printf.h"
+ 739:../LIB_HW/Hw_I2C_IMU.c **** 
+ 740:../LIB_HW/Hw_I2C_IMU.c **** 
+ 741:../LIB_HW/Hw_I2C_IMU.c **** 
+ 742:../LIB_HW/Hw_I2C_IMU.c **** 
+ 743:../LIB_HW/Hw_I2C_IMU.c **** typedef struct
+ 744:../LIB_HW/Hw_I2C_IMU.c **** {
+ 745:../LIB_HW/Hw_I2C_IMU.c **** 	u8	X_Acc_H;
+ 746:../LIB_HW/Hw_I2C_IMU.c **** 	u8	X_Acc_L;
+ 747:../LIB_HW/Hw_I2C_IMU.c **** 	u8	Y_Acc_H;
+ 748:../LIB_HW/Hw_I2C_IMU.c **** 	u8	Y_Acc_L;
+ 749:../LIB_HW/Hw_I2C_IMU.c **** 	u8	Z_Acc_H;
+ 750:../LIB_HW/Hw_I2C_IMU.c **** 	u8	Z_Acc_L;
+ 751:../LIB_HW/Hw_I2C_IMU.c **** 
+ 752:../LIB_HW/Hw_I2C_IMU.c **** 	u8	Temp_H;
+ 753:../LIB_HW/Hw_I2C_IMU.c **** 	u8	Temp_L;
+ 754:../LIB_HW/Hw_I2C_IMU.c **** 
+ 755:../LIB_HW/Hw_I2C_IMU.c **** 	u8	X_Gyro_H;
+ 756:../LIB_HW/Hw_I2C_IMU.c **** 	u8	X_Gyro_L;
+ 757:../LIB_HW/Hw_I2C_IMU.c **** 	u8	Y_Gyro_H;
+ 758:../LIB_HW/Hw_I2C_IMU.c **** 	u8	Y_Gyro_L;
+ 759:../LIB_HW/Hw_I2C_IMU.c **** 	u8	Z_Gyro_H;
+ 760:../LIB_HW/Hw_I2C_IMU.c **** 	u8	Z_Gyro_L;
+ 761:../LIB_HW/Hw_I2C_IMU.c **** 
+ 762:../LIB_HW/Hw_I2C_IMU.c **** } HW_MPU6050_RAW_DATA_OBJ;
+ 763:../LIB_HW/Hw_I2C_IMU.c **** 
+ 764:../LIB_HW/Hw_I2C_IMU.c **** 
+ 765:../LIB_HW/Hw_I2C_IMU.c **** 
+ 766:../LIB_HW/Hw_I2C_IMU.c **** /*---------------------------------------------------------------------------
+ 767:../LIB_HW/Hw_I2C_IMU.c ****      TITLE   : Hw_MPU6050_Init
+ 768:../LIB_HW/Hw_I2C_IMU.c ****      WORK    : 
+ 769:../LIB_HW/Hw_I2C_IMU.c ****      ARG     : void
+ 770:../LIB_HW/Hw_I2C_IMU.c ****      RET     : void
+ 771:../LIB_HW/Hw_I2C_IMU.c **** ---------------------------------------------------------------------------*/
+ 772:../LIB_HW/Hw_I2C_IMU.c **** u8 Hw_MPU6050_Init( void )
+ 773:../LIB_HW/Hw_I2C_IMU.c **** {
+ 1070              		.loc 1 773 0
+ 1071              		.cfi_startproc
+ 1072              		@ args = 0, pretend = 0, frame = 24
+ 1073              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1074              	.LVL128:
+ 1075 0000 30B5     		push	{r4, r5, lr}
+ 1076              	.LCFI13:
+ 1077              		.cfi_def_cfa_offset 12
+ 1078              		.cfi_offset 4, -12
+ 1079              		.cfi_offset 5, -8
+ 1080              		.cfi_offset 14, -4
+ 1081 0002 87B0     		sub	sp, sp, #28
+ 1082              	.LCFI14:
+ 1083              		.cfi_def_cfa_offset 40
+ 774:../LIB_HW/Hw_I2C_IMU.c **** 	u8  Ret = TRUE;
+ 775:../LIB_HW/Hw_I2C_IMU.c **** 	u16 Err = 0;
+ 776:../LIB_HW/Hw_I2C_IMU.c **** 	u8  RegData[20];
+ 777:../LIB_HW/Hw_I2C_IMU.c **** 
+ 778:../LIB_HW/Hw_I2C_IMU.c **** 
+ 779:../LIB_HW/Hw_I2C_IMU.c **** 
+ 780:../LIB_HW/Hw_I2C_IMU.c **** 	//-- I2C 초기화
+ 781:../LIB_HW/Hw_I2C_IMU.c **** 	//
+ 782:../LIB_HW/Hw_I2C_IMU.c **** //	Hw_I2C_IMU_Init();	
+ 783:../LIB_HW/Hw_I2C_IMU.c **** 
+ 784:../LIB_HW/Hw_I2C_IMU.c **** 
+ 785:../LIB_HW/Hw_I2C_IMU.c **** 	while(1)
+ 786:../LIB_HW/Hw_I2C_IMU.c **** 	{
+ 787:../LIB_HW/Hw_I2C_IMU.c **** 
+ 788:../LIB_HW/Hw_I2C_IMU.c **** 		//Err = Hw_I2C_IMU_MPU6050_ReadReg( MPU6050_RA_WHO_AM_I, RegData );
+ 789:../LIB_HW/Hw_I2C_IMU.c ****     Err = Hw_I2C_IMU_ReadRegs( HW_I2C_IMU_ADDR_MPU6050, MPU6050_RA_WHO_AM_I, RegData, 1 );
+ 1084              		.loc 1 789 0
+ 1085 0004 0F4C     		ldr	r4, .L200
+ 1086 0006 01AA     		add	r2, sp, #4
+ 1087 0008 6820     		movs	r0, #104
+ 1088 000a 7521     		movs	r1, #117
+ 1089 000c 0123     		movs	r3, #1
+ 1090 000e A047     		blx	r4
+ 1091              	.LVL129:
+ 790:../LIB_HW/Hw_I2C_IMU.c **** 		if( Err != 0 )
+ 1092              		.loc 1 790 0
+ 1093 0010 0446     		mov	r4, r0
+ 1094 0012 28B1     		cbz	r0, .L193
+ 791:../LIB_HW/Hw_I2C_IMU.c **** 		{
+ 792:../LIB_HW/Hw_I2C_IMU.c **** 			Lb_printf("Can't find MPU6050 \n");
+ 1095              		.loc 1 792 0
+ 1096 0014 0C48     		ldr	r0, .L200+4
+ 1097              	.LVL130:
+ 1098 0016 0D4B     		ldr	r3, .L200+8
+ 1099 0018 9847     		blx	r3
+ 1100              	.LVL131:
+ 1101              	.L194:
+ 793:../LIB_HW/Hw_I2C_IMU.c **** 			break;
+ 794:../LIB_HW/Hw_I2C_IMU.c **** 		}
+ 795:../LIB_HW/Hw_I2C_IMU.c **** 
+ 796:../LIB_HW/Hw_I2C_IMU.c ****     RegData[0] = 0x00;
+ 797:../LIB_HW/Hw_I2C_IMU.c **** 		//Err = Hw_I2C_IMU_MPU6050_WriteReg( MPU6050_RA_PWR_MGMT_1, 0x00 );	// 내부 오실레이터, SL
+ 798:../LIB_HW/Hw_I2C_IMU.c ****     Err = Hw_I2C_IMU_WriteRegs( HW_I2C_IMU_ADDR_MPU6050, MPU6050_RA_PWR_MGMT_1, RegData, 1 );
+ 799:../LIB_HW/Hw_I2C_IMU.c **** 
+ 800:../LIB_HW/Hw_I2C_IMU.c **** 		if( Err != 0 )
+ 801:../LIB_HW/Hw_I2C_IMU.c **** 		{
+ 802:../LIB_HW/Hw_I2C_IMU.c **** 			Lb_printf("Err write MPU6050_RA_PWR_MGMT_1 : %d\n", Err);
+ 803:../LIB_HW/Hw_I2C_IMU.c **** 			break;
+ 804:../LIB_HW/Hw_I2C_IMU.c **** 		}
+ 805:../LIB_HW/Hw_I2C_IMU.c **** 
+ 806:../LIB_HW/Hw_I2C_IMU.c **** 		break;
+ 807:../LIB_HW/Hw_I2C_IMU.c **** 	}
+ 808:../LIB_HW/Hw_I2C_IMU.c **** 
+ 809:../LIB_HW/Hw_I2C_IMU.c **** 
+ 810:../LIB_HW/Hw_I2C_IMU.c **** 	if( Err != 0 ) Ret = FALSE;
+ 1102              		.loc 1 810 0
+ 1103 001a 0020     		movs	r0, #0
+ 1104              	.LVL132:
+ 811:../LIB_HW/Hw_I2C_IMU.c **** 
+ 812:../LIB_HW/Hw_I2C_IMU.c **** 
+ 813:../LIB_HW/Hw_I2C_IMU.c **** 	return Ret;
+ 814:../LIB_HW/Hw_I2C_IMU.c **** }
+ 1105              		.loc 1 814 0
+ 1106 001c 07B0     		add	sp, sp, #28
+ 1107              	.LCFI15:
+ 1108              		.cfi_remember_state
+ 1109              		.cfi_def_cfa_offset 12
+ 1110              		@ sp needed
+ 1111 001e 30BD     		pop	{r4, r5, pc}
+ 1112              	.LVL133:
+ 1113              	.L193:
+ 1114              	.LCFI16:
+ 1115              		.cfi_restore_state
+ 798:../LIB_HW/Hw_I2C_IMU.c **** 
+ 1116              		.loc 1 798 0
+ 1117 0020 01AA     		add	r2, sp, #4
+ 1118 0022 6820     		movs	r0, #104
+ 1119              	.LVL134:
+ 1120 0024 6B21     		movs	r1, #107
+ 1121 0026 0123     		movs	r3, #1
+ 1122 0028 094D     		ldr	r5, .L200+12
+ 796:../LIB_HW/Hw_I2C_IMU.c **** 		//Err = Hw_I2C_IMU_MPU6050_WriteReg( MPU6050_RA_PWR_MGMT_1, 0x00 );	// 내부 오실레이터, SL
+ 1123              		.loc 1 796 0
+ 1124 002a 8DF80440 		strb	r4, [sp, #4]
+ 798:../LIB_HW/Hw_I2C_IMU.c **** 
+ 1125              		.loc 1 798 0
+ 1126 002e A847     		blx	r5
+ 1127              	.LVL135:
+ 800:../LIB_HW/Hw_I2C_IMU.c **** 		{
+ 1128              		.loc 1 800 0
+ 1129 0030 10B9     		cbnz	r0, .L199
+ 774:../LIB_HW/Hw_I2C_IMU.c **** 	u16 Err = 0;
+ 1130              		.loc 1 774 0
+ 1131 0032 0120     		movs	r0, #1
+ 1132              	.LVL136:
+ 1133              		.loc 1 814 0
+ 1134 0034 07B0     		add	sp, sp, #28
+ 1135              	.LCFI17:
+ 1136              		.cfi_remember_state
+ 1137              		.cfi_def_cfa_offset 12
+ 1138              		@ sp needed
+ 1139 0036 30BD     		pop	{r4, r5, pc}
+ 1140              	.LVL137:
+ 1141              	.L199:
+ 1142              	.LCFI18:
+ 1143              		.cfi_restore_state
+ 802:../LIB_HW/Hw_I2C_IMU.c **** 			break;
+ 1144              		.loc 1 802 0
+ 1145 0038 0146     		mov	r1, r0
+ 1146 003a 044B     		ldr	r3, .L200+8
+ 1147 003c 0548     		ldr	r0, .L200+16
+ 1148              	.LVL138:
+ 1149 003e 9847     		blx	r3
+ 1150              	.LVL139:
+ 803:../LIB_HW/Hw_I2C_IMU.c **** 		}
+ 1151              		.loc 1 803 0
+ 1152 0040 EBE7     		b	.L194
+ 1153              	.L201:
+ 1154 0042 00BF     		.align	2
+ 1155              	.L200:
+ 1156 0044 00000000 		.word	Hw_I2C_IMU_ReadRegs
+ 1157 0048 00000000 		.word	.LC0
+ 1158 004c 00000000 		.word	Lb_printf
+ 1159 0050 00000000 		.word	Hw_I2C_IMU_WriteRegs
+ 1160 0054 18000000 		.word	.LC1
+ 1161              		.cfi_endproc
+ 1162              	.LFE7:
+ 1164              		.section	.text.Hw_MPU6050_GetData,"ax",%progbits
+ 1165              		.align	2
+ 1166              		.global	Hw_MPU6050_GetData
+ 1167              		.thumb
+ 1168              		.thumb_func
+ 1170              	Hw_MPU6050_GetData:
+ 1171              	.LFB8:
+ 815:../LIB_HW/Hw_I2C_IMU.c **** 
+ 816:../LIB_HW/Hw_I2C_IMU.c **** 
+ 817:../LIB_HW/Hw_I2C_IMU.c **** 
+ 818:../LIB_HW/Hw_I2C_IMU.c **** 
+ 819:../LIB_HW/Hw_I2C_IMU.c **** 
+ 820:../LIB_HW/Hw_I2C_IMU.c **** /*---------------------------------------------------------------------------
+ 821:../LIB_HW/Hw_I2C_IMU.c ****      TITLE   : Hw_MPU6050_GetData
+ 822:../LIB_HW/Hw_I2C_IMU.c ****      WORK    : 
+ 823:../LIB_HW/Hw_I2C_IMU.c ****      ARG     : void
+ 824:../LIB_HW/Hw_I2C_IMU.c ****      RET     : void
+ 825:../LIB_HW/Hw_I2C_IMU.c **** ---------------------------------------------------------------------------*/
+ 826:../LIB_HW/Hw_I2C_IMU.c **** u16 Hw_MPU6050_GetData( HW_MPU6050_DATA_OBJ *ptr_data )
+ 827:../LIB_HW/Hw_I2C_IMU.c **** {
+ 1172              		.loc 1 827 0
+ 1173              		.cfi_startproc
+ 1174              		@ args = 0, pretend = 0, frame = 16
+ 1175              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1176              	.LVL140:
+ 1177 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1178              	.LCFI19:
+ 1179              		.cfi_def_cfa_offset 36
+ 1180              		.cfi_offset 4, -36
+ 1181              		.cfi_offset 5, -32
+ 1182              		.cfi_offset 6, -28
+ 1183              		.cfi_offset 7, -24
+ 1184              		.cfi_offset 8, -20
+ 1185              		.cfi_offset 9, -16
+ 1186              		.cfi_offset 10, -12
+ 1187              		.cfi_offset 11, -8
+ 1188              		.cfi_offset 14, -4
+ 1189 0004 85B0     		sub	sp, sp, #20
+ 1190              	.LCFI20:
+ 1191              		.cfi_def_cfa_offset 56
+ 1192              		.loc 1 827 0
+ 1193 0006 0446     		mov	r4, r0
+ 828:../LIB_HW/Hw_I2C_IMU.c **** 	u16 Err;
+ 829:../LIB_HW/Hw_I2C_IMU.c **** 	s16 Temp;
+ 830:../LIB_HW/Hw_I2C_IMU.c **** 
+ 831:../LIB_HW/Hw_I2C_IMU.c **** 	HW_MPU6050_RAW_DATA_OBJ raw_data;
+ 832:../LIB_HW/Hw_I2C_IMU.c **** 
+ 833:../LIB_HW/Hw_I2C_IMU.c **** 
+ 834:../LIB_HW/Hw_I2C_IMU.c **** //	Err = Hw_I2C_IMU_MPU6050_ReadRegs( MPU6050_RA_ACCEL_XOUT_H, (u8 *)&raw_data, 14 );
+ 835:../LIB_HW/Hw_I2C_IMU.c **** 	Err = Hw_I2C_IMU_ReadRegs( HW_I2C_IMU_ADDR_MPU6050, MPU6050_RA_ACCEL_XOUT_H, (u8 *)&raw_data, 14 )
+ 1194              		.loc 1 835 0
+ 1195 0008 3B21     		movs	r1, #59
+ 1196 000a 6820     		movs	r0, #104
+ 1197              	.LVL141:
+ 1198 000c 6A46     		mov	r2, sp
+ 1199 000e 0E23     		movs	r3, #14
+ 1200 0010 204D     		ldr	r5, .L205
+ 1201 0012 A847     		blx	r5
+ 1202              	.LVL142:
+ 836:../LIB_HW/Hw_I2C_IMU.c **** 
+ 837:../LIB_HW/Hw_I2C_IMU.c **** 	if( Err == 0 )
+ 1203              		.loc 1 837 0
+ 1204 0014 0028     		cmp	r0, #0
+ 1205 0016 39D1     		bne	.L203
+ 838:../LIB_HW/Hw_I2C_IMU.c **** 	{
+ 839:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->X_Acc = (s16)((raw_data.X_Acc_H<<8) | (raw_data.X_Acc_L<<0));	
+ 840:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Y_Acc = (s16)((raw_data.Y_Acc_H<<8) | (raw_data.Y_Acc_L<<0));	
+ 841:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Z_Acc = (s16)((raw_data.Z_Acc_H<<8) | (raw_data.Z_Acc_L<<0));	
+ 842:../LIB_HW/Hw_I2C_IMU.c **** 
+ 843:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->X_Gyro = (s16)((raw_data.X_Gyro_H<<8) | (raw_data.X_Gyro_L<<0));	
+ 844:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Y_Gyro = (s16)((raw_data.Y_Gyro_H<<8) | (raw_data.Y_Gyro_L<<0));	
+ 845:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Z_Gyro = (s16)((raw_data.Z_Gyro_H<<8) | (raw_data.Z_Gyro_L<<0));	
+ 846:../LIB_HW/Hw_I2C_IMU.c **** 
+ 847:../LIB_HW/Hw_I2C_IMU.c **** 		Temp = (s16)((raw_data.Temp_H<<8) | (raw_data.Temp_L<<0));	
+ 1206              		.loc 1 847 0
+ 1207 0018 9DF80630 		ldrb	r3, [sp, #6]	@ zero_extendqisi2
+ 1208 001c 9DF80720 		ldrb	r2, [sp, #7]	@ zero_extendqisi2
+ 848:../LIB_HW/Hw_I2C_IMU.c **** 		Temp = Temp/340 + 36;
+ 1209              		.loc 1 848 0
+ 1210 0020 1D49     		ldr	r1, .L205+4
+ 847:../LIB_HW/Hw_I2C_IMU.c **** 		Temp = Temp/340 + 36;
+ 1211              		.loc 1 847 0
+ 1212 0022 42EA0322 		orr	r2, r2, r3, lsl #8
+ 1213              		.loc 1 848 0
+ 1214 0026 13B2     		sxth	r3, r2
+ 1215 0028 81FB032E 		smull	r2, lr, r1, r3
+ 839:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Y_Acc = (s16)((raw_data.Y_Acc_H<<8) | (raw_data.Y_Acc_L<<0));	
+ 1216              		.loc 1 839 0
+ 1217 002c 9DF800B0 		ldrb	fp, [sp]	@ zero_extendqisi2
+ 1218 0030 9DF80170 		ldrb	r7, [sp, #1]	@ zero_extendqisi2
+ 1219              		.loc 1 848 0
+ 1220 0034 DB17     		asrs	r3, r3, #31
+ 1221 0036 C3EBEE13 		rsb	r3, r3, lr, asr #7
+ 839:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Y_Acc = (s16)((raw_data.Y_Acc_H<<8) | (raw_data.Y_Acc_L<<0));	
+ 1222              		.loc 1 839 0
+ 1223 003a 47EA0B27 		orr	r7, r7, fp, lsl #8
+ 840:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Z_Acc = (s16)((raw_data.Z_Acc_H<<8) | (raw_data.Z_Acc_L<<0));	
+ 1224              		.loc 1 840 0
+ 1225 003e 9DF802A0 		ldrb	r10, [sp, #2]	@ zero_extendqisi2
+ 1226 0042 9DF80360 		ldrb	r6, [sp, #3]	@ zero_extendqisi2
+ 841:../LIB_HW/Hw_I2C_IMU.c **** 
+ 1227              		.loc 1 841 0
+ 1228 0046 9DF80490 		ldrb	r9, [sp, #4]	@ zero_extendqisi2
+ 1229 004a 9DF80550 		ldrb	r5, [sp, #5]	@ zero_extendqisi2
+ 843:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Y_Gyro = (s16)((raw_data.Y_Gyro_H<<8) | (raw_data.Y_Gyro_L<<0));	
+ 1230              		.loc 1 843 0
+ 1231 004e 9DF80880 		ldrb	r8, [sp, #8]	@ zero_extendqisi2
+ 1232 0052 9DF80910 		ldrb	r1, [sp, #9]	@ zero_extendqisi2
+ 844:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Z_Gyro = (s16)((raw_data.Z_Gyro_H<<8) | (raw_data.Z_Gyro_L<<0));	
+ 1233              		.loc 1 844 0
+ 1234 0056 9DF80AC0 		ldrb	ip, [sp, #10]	@ zero_extendqisi2
+ 1235 005a 9DF80B20 		ldrb	r2, [sp, #11]	@ zero_extendqisi2
+ 845:../LIB_HW/Hw_I2C_IMU.c **** 
+ 1236              		.loc 1 845 0
+ 1237 005e 9DF80CE0 		ldrb	lr, [sp, #12]	@ zero_extendqisi2
+ 1238 0062 9DF80DB0 		ldrb	fp, [sp, #13]	@ zero_extendqisi2
+ 1239              		.loc 1 848 0
+ 1240 0066 2433     		adds	r3, r3, #36
+ 840:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Z_Acc = (s16)((raw_data.Z_Acc_H<<8) | (raw_data.Z_Acc_L<<0));	
+ 1241              		.loc 1 840 0
+ 1242 0068 46EA0A26 		orr	r6, r6, r10, lsl #8
+ 841:../LIB_HW/Hw_I2C_IMU.c **** 
+ 1243              		.loc 1 841 0
+ 1244 006c 45EA0925 		orr	r5, r5, r9, lsl #8
+ 843:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Y_Gyro = (s16)((raw_data.Y_Gyro_H<<8) | (raw_data.Y_Gyro_L<<0));	
+ 1245              		.loc 1 843 0
+ 1246 0070 41EA0821 		orr	r1, r1, r8, lsl #8
+ 844:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Z_Gyro = (s16)((raw_data.Z_Gyro_H<<8) | (raw_data.Z_Gyro_L<<0));	
+ 1247              		.loc 1 844 0
+ 1248 0074 42EA0C22 		orr	r2, r2, ip, lsl #8
+ 845:../LIB_HW/Hw_I2C_IMU.c **** 
+ 1249              		.loc 1 845 0
+ 1250 0078 4BEA0E2E 		orr	lr, fp, lr, lsl #8
+ 849:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Temp = Temp;
+ 1251              		.loc 1 849 0
+ 1252 007c E380     		strh	r3, [r4, #6]	@ movhi
+ 839:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Y_Acc = (s16)((raw_data.Y_Acc_H<<8) | (raw_data.Y_Acc_L<<0));	
+ 1253              		.loc 1 839 0
+ 1254 007e 2780     		strh	r7, [r4]	@ movhi
+ 840:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Z_Acc = (s16)((raw_data.Z_Acc_H<<8) | (raw_data.Z_Acc_L<<0));	
+ 1255              		.loc 1 840 0
+ 1256 0080 6680     		strh	r6, [r4, #2]	@ movhi
+ 841:../LIB_HW/Hw_I2C_IMU.c **** 
+ 1257              		.loc 1 841 0
+ 1258 0082 A580     		strh	r5, [r4, #4]	@ movhi
+ 843:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Y_Gyro = (s16)((raw_data.Y_Gyro_H<<8) | (raw_data.Y_Gyro_L<<0));	
+ 1259              		.loc 1 843 0
+ 1260 0084 2181     		strh	r1, [r4, #8]	@ movhi
+ 844:../LIB_HW/Hw_I2C_IMU.c **** 		ptr_data->Z_Gyro = (s16)((raw_data.Z_Gyro_H<<8) | (raw_data.Z_Gyro_L<<0));	
+ 1261              		.loc 1 844 0
+ 1262 0086 6281     		strh	r2, [r4, #10]	@ movhi
+ 845:../LIB_HW/Hw_I2C_IMU.c **** 
+ 1263              		.loc 1 845 0
+ 1264 0088 A4F80CE0 		strh	lr, [r4, #12]	@ movhi
+ 1265              	.LVL143:
+ 1266              	.L203:
+ 850:../LIB_HW/Hw_I2C_IMU.c **** 	}
+ 851:../LIB_HW/Hw_I2C_IMU.c **** 
+ 852:../LIB_HW/Hw_I2C_IMU.c **** 	return Err;
+ 853:../LIB_HW/Hw_I2C_IMU.c **** }
+ 1267              		.loc 1 853 0
+ 1268 008c 05B0     		add	sp, sp, #20
+ 1269              	.LCFI21:
+ 1270              		.cfi_def_cfa_offset 36
+ 1271              		@ sp needed
+ 1272 008e BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1273              	.LVL144:
+ 1274              	.L206:
+ 1275 0092 00BF     		.align	2
+ 1276              	.L205:
+ 1277 0094 00000000 		.word	Hw_I2C_IMU_ReadRegs
+ 1278 0098 61606060 		.word	1616928865
+ 1279              		.cfi_endproc
+ 1280              	.LFE8:
+ 1282              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 1283              		.align	2
+ 1284              	.LC0:
+ 1285 0000 43616E27 		.ascii	"Can't find MPU6050 \012\000"
+ 1285      74206669 
+ 1285      6E64204D 
+ 1285      50553630 
+ 1285      3530200A 
+ 1286 0015 000000   		.space	3
+ 1287              	.LC1:
+ 1288 0018 45727220 		.ascii	"Err write MPU6050_RA_PWR_MGMT_1 : %d\012\000"
+ 1288      77726974 
+ 1288      65204D50 
+ 1288      55363035 
+ 1288      305F5241 
+ 1289 003e 0000     		.text
+ 1290              	.Letext0:
+ 1291              		.file 2 "../LIB_HW/Hw_Define.h"
+ 1292              		.file 3 "../LIB_HW/Hw_I2C_IMU.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 Hw_I2C_IMU.c
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:19     .text.Hw_I2C_HW_Init:00000000 $t
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:24     .text.Hw_I2C_HW_Init:00000000 Hw_I2C_HW_Init
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:94     .text.Hw_I2C_HW_Init:00000044 $d
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:104    .text.Hw_I2C_IMU_Init:00000000 $t
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:109    .text.Hw_I2C_IMU_Init:00000000 Hw_I2C_IMU_Init
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:121    .text.Hw_I2C_IMU_IO_Setup:00000000 $t
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:126    .text.Hw_I2C_IMU_IO_Setup:00000000 Hw_I2C_IMU_IO_Setup
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:169    .text.Hw_I2C_IMU_IO_Setup:00000040 $d
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:175    .text.Hw_I2C_IMU_WaitForBitSet:00000000 $t
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:180    .text.Hw_I2C_IMU_WaitForBitSet:00000000 Hw_I2C_IMU_WaitForBitSet
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:267    .text.Hw_I2C_IMU_GetErrStatus:00000000 $t
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:272    .text.Hw_I2C_IMU_GetErrStatus:00000000 Hw_I2C_IMU_GetErrStatus
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:317    .text.Hw_I2C_IMU_GetErrStatus:00000030 $d
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:322    .text.Hw_I2C_IMU_WriteRegs:00000000 $t
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:327    .text.Hw_I2C_IMU_WriteRegs:00000000 Hw_I2C_IMU_WriteRegs
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:615    .text.Hw_I2C_IMU_WriteRegs:0000011c $d
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:624    .text.Hw_I2C_IMU_ReadRegs:00000000 $t
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:629    .text.Hw_I2C_IMU_ReadRegs:00000000 Hw_I2C_IMU_ReadRegs
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:1054   .text.Hw_I2C_IMU_ReadRegs:000001c4 $d
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:1063   .text.Hw_MPU6050_Init:00000000 $t
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:1068   .text.Hw_MPU6050_Init:00000000 Hw_MPU6050_Init
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:1156   .text.Hw_MPU6050_Init:00000044 $d
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:1165   .text.Hw_MPU6050_GetData:00000000 $t
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:1170   .text.Hw_MPU6050_GetData:00000000 Hw_MPU6050_GetData
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:1277   .text.Hw_MPU6050_GetData:00000094 $d
+C:\Users\CNHthree\AppData\Local\Temp\ccJxCKDl.s:1283   .rodata.str1.4:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+Hw_I2C_HW_IO_Setup
+Lb_printf
