@@ -5,6 +5,7 @@
 
 
 __IO uint32_t StartUpCounter = 0;
+RCC_ClocksTypeDef  rcc_clocks;
 
 HW_DEF void RCC_Configuration(void)
 {
