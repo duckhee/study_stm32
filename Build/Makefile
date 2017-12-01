@@ -33,7 +33,8 @@ SRC_HW = ../LIB_HW/Hw_Core/$(STARTUP_C)              \
 		 ../LIB_HW/Hw_Core/Hw_NVIC.c                 \
 		 ../LIB_HW/Hw_Core/Hw_EXT_IRQHandler.c       \
 		 ../LIB_HW/Hw_Core/Hw_Systick.c              \
-		 ../LIB_HW/Hw_Core/Hw_Adc.c                  \
+		 ../LIB_HW/Hw_Core/Hw_ADC.c                  \
+		 ../LIB_HW/Hw_Core/Hw_DAC.c                  \
 		 ../LIB_HW/Hw_Core/Hw_DMA.c                  \
 		 ../LIB_HW/Hw_Lib/Hw_Led.c                   \
 		 ../LIB_HW/Hw_Lib/Hw_Key.c                   \
@@ -160,6 +161,7 @@ $(foreach src, $(SRC), $(eval $(call COMPILE_C_TEMPLATE, $(src))))
 $(SRC:.c=.s) : %.s : %.c
 	@echo $(MSG_ASMFROMC) $< to $@
 	$(CC) $(THUMB) -S $(CFLAGS) $(CONLYFLAGS) $< -o $@
+	
 
 ###################################################################################################
 ###################################################################################################

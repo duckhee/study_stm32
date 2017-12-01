@@ -1,6 +1,6 @@
 #define ADC_LOCAL
 
-#include "Hw_Adc.h"
+#include "Hw_ADC.h"
 
 
 ADC_DEF void ADC_Init()

@@ -19,7 +19,8 @@
 #include "Hw_Systick.h"
 #include "Hw_EXT_IRQHandler.h"
 #include "Hw_DMA.h"
-#include "Hw_Adc.h"
+#include "Hw_ADC.h"
+#include "Hw_DAC.h"
 
 
 //HW LIB
