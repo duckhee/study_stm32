@@ -5,15 +5,27 @@ typedef void (*const intfunc)(void);
 //WEAK key word assemble
 #define WEAK __attribute__ ((weak))
 
-//link pointer get LINKERSCRIPT
-extern unsigned long _ld_stack_address;
-extern unsigned long _ld_ram_start;
-extern unsigned long _ld_text_start;
-extern unsigned long _ld_text_end;
-extern unsigned long _ld_data_start;
-extern unsigned long _ld_data_end;
-extern unsigned long _ld_bss_start;
-extern unsigned long _ld_bss_end;
+// //link pointer get LINKERSCRIPT
+// extern unsigned long _ld_stack_address;
+// extern unsigned long _ld_ram_start;
+// extern unsigned long _ld_text_start;
+// extern unsigned long _ld_text_end;
+// extern unsigned long _ld_data_start;
+// extern unsigned long _ld_data_end;
+// extern unsigned long _ld_bss_start;
+// extern unsigned long _ld_bss_end;
+
+//-- init value for the stack pointer. defined in linker script 
+//
+extern unsigned long _estack;
+extern unsigned long _sidata;    /*!< Start address for the initialization 
+                                      values of the .data section.            */
+extern unsigned long _sdata;     /*!< Start address for the .data section     */    
+extern unsigned long _edata;     /*!< End address for the .data section       */    
+extern unsigned long _sbss;      /*!< Start address for the .bss section      */
+extern unsigned long _ebss;      /*!< End address for the .bss section        */      
+extern void 	     _eram;      /*!< End address for ram                     */
+
 //--------  Private function prototypes ------------------------------------------------------------------
 void Reset_Handler(void) __attribute__((__interrupt__));
 extern int main();
@@ -103,8 +115,8 @@ __attribute__((section(".isr_vectorsflash")))
 
 void (*g_pfnVectors[])(void) = 
 {
-    (intfunc)((unsigned long)&_ld_stack_address),
-    Reset_Handler,              /* Reset Handler */
+	(intfunc)((unsigned long)&_estack),	
+    // (intfunc)((unsigned long)&_ld_stack_address), //the stack pointer after relocation flass 영역에 위치한 링크 스크립트 가르치는 것이다. data section을 가르치는 것?
     Reset_Handler,						//  2.Reset Handler
 	NMI_Handler,						//  3.NMI Handler
 	HardFault_Handler,					//  4.Hard Fault Handler
@@ -120,7 +132,6 @@ void (*g_pfnVectors[])(void) =
 	0,									// 14.Reserved
 	PendSV_Handler,						// 15.PendSV Handler
 	SysTick_Handler,					// 16.SysTick Handler
-	
 	// External Interrupts //
 	WWDG_IRQHandler,					//  1.Window Watchdog
 	PVD_IRQHandler,						//  2.PVD through EXTI Line detect
@@ -183,8 +194,44 @@ void Reset_Handler(void)
 {
     unsigned long HSIStatus = 0, StartUpCounter = 0;
     //unsigned long HSEStatus = 0, StartUpCounter = 0;
-    Init_Data();
-    
+    //Init_Data();
+      
+	/* Zero fill the bss segment.  This is done with inline assembly since this
+	   will clear the value of pulDest if it is not kept in a register. */
+		unsigned long *pulSrc, *pulDest;	
+	
+		// Copy the data segment initializers from flash to SRAM
+	pulSrc = &_sidata;
+
+	for(pulDest = &_sdata; pulDest < &_edata; )
+	{
+		*(pulDest++) = *(pulSrc++);
+	}
+		__asm("  ldr     r0, =_sbss\n"
+          "  ldr     r1, =_ebss\n"
+          "  mov     r2, #0\n"
+          "  .thumb_func\n"
+          "zero_loop:\n"
+          "    cmp     r0, r1\n"
+          "    it      lt\n"
+          "    strlt   r2, [r0], #4\n"
+          "    blt     zero_loop");
+        	
+	/*
+	
+	__asm("  ldr     r0, =_ld_bss_start\n"
+          "  ldr     r1, =_ld_bss_end\n"
+          "  mov     r2, #0\n"
+          "  .thumb_func\n"
+          "zero_loop:\n"
+          "    cmp     r0, r1\n"
+          "    it      lt\n"
+          "    strlt   r2, [r0], #4\n"
+          "    blt     zero_loop");
+        	
+	
+	*/
+	
     //HSI On 
     *(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
     //HSE ON
@@ -201,23 +248,17 @@ void Reset_Handler(void)
     }while((HSIStatus == 0) && (StartUpCounter != 0x0500));
     
     ///////////////// FLASH Memory Latency move code RAM sections ////////////////////////////////////
+	*(volatile unsigned long *)0x40022000 |= (1<<4);     //prefetch buffer enable
     *(volatile unsigned long *)0x40022000 |= 0x10; //bit PRETBE = 1 Set
     *(volatile unsigned long *)0x40022000 &= ~(0x7); //bit 2, 1, 0 clear 0, 0, 0
     *(volatile unsigned long *)0x40022000 |= 0x2; //bit 2, 1, 0 = 0, 1, 0
     //////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	//PLL reset first
-	*(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
-	//PLLMUL
-    // reset setting PLL PLLMUL = 18, PLL SRC = 16, PLL XTPRE reset = 17, ADC PRE = 14
-    *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16 | 0x1 << 14); //18 bit set 0, 17 bit set 0, 16 bit set 0
-	//PLL not use HSE, HSI
-	*(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
-	//PLL use HSE
-	// *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ?? HSE use maybe...
-	//PLL use HSE
-    // *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
     
+    // reset setting PLL 
+    *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16); //18 bit set 0, 17 bit set 0, 16 bit set 0
+    *(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
+    // *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ??
+    // *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
     *(volatile unsigned long *) 0x40021000 |= 0x01 << 24/*0x1000000*/;                       //PLLON
     while( ((*(volatile unsigned long *) 0x40021000) & 0x01 << 25/*0x2000000*/) == 0);       //PLLRDY
     /////////// PLL Seting System clock ///////////////////////////////
@@ -228,26 +269,20 @@ void Reset_Handler(void)
         10: PLL selected as system clock <------------- use this
         11: not allowed (not use system clock PLL)
     */
-	*(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
-	//use hsi clock as system 
-	// *(volatile unsigned long *)0x40021004 |= 0x00;
-	//use hse clock as system
-	// *(volatile unsigned long *)0x40021004 |= 0x01;
-	*(volatile unsigned long *)0x40021004 |= 0x2; //set system clcok PLL
-	//use system clock 찾아보기 
-	//while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x00); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 HSI
-	//while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x04); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 HSE
-	while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 PLL
-	/* 
-		
-	RCC_CFGR |= ( 0<< 7 | 0<<11 | 0<<10 | 0<<10 );	// HPRE 0XXX HCLK	= 72MHZ
-	//xxxx xxxx xxxx xxxx xxxx xxxx 0XXX xxxx
-	RCC_CFGR |= ( 0<<13 | 0<<12 | 0<<11 );			// PPRE2 0XX PCLK2	= 72MHZ
-	//xxxx xxxx xxxx xxxx xx0X Xxxx xxxx xxxx
-	RCC_CFGR |= ( 1<<10 | 0<< 9 | 0<< 8 );			// PPRE1 100 PCLK1	= 36MHz	
-	//xxxx xxxx xxxx xxxx xxxx x100 xxxx xxxx		//(PCLK1 has to be <= 36MHz)
-	*/
-    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN / ADC EN    APB2ENR
+    *(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
+    *(volatile unsigned long *)0x40021004 |= 0x2; //set system clcok PLL
+	//////////////////////////////////////////////////////////////////
+	//APB1 PCLK1 36hz
+	//*(volatile unsigned long *)0x40021004 &= ~(0x7<<8);
+	//*(volatile unsigned long *)0x40021004 |= (0x4<<8);
+	//APB2 PLCK2 72hz
+	//*(volatile unsigned long *)0x40021004 &= ~(0x7<<11);
+	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
+	//////////////////////////////////////////////////////////////////
+    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+	//AHBENR enable
+	*(volatile unsigned long *)0x40021014 |= 0x1 << 0 | 0x1 << 1; //DMA1 clock enable
+    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
     *(volatile unsigned long *)0x40010804 = 0x888444B4; //GPIO A CRH bit
 
    
@@ -278,27 +313,27 @@ void Reset_Handler(void)
 }
 
 
-void Init_Data()
-{
-    unsigned long *pulSrc, *pulDest;
+// void Init_Data()
+// {
+//     unsigned long *pulSrc, *pulDest;
 
-    pulSrc = &_ld_data_start;
-    pulDest = &_ld_ram_start;
+//     pulSrc = &_ld_data_start;
+//     pulDest = &_ld_ram_start;
 
-    if(pulSrc != pulDest)
-    {
-        for(;pulDest < &_ld_data_end; )
-        {
-            *(pulDest++) = *(pulSrc++);
+//     if(pulSrc != pulDest)
+//     {
+//         for(;pulDest < &_ld_data_end; )
+//         {
+//             *(pulDest++) = *(pulSrc++);
 
-        }
-    }
+//         }
+//     }
 
-    for(pulDest = &_ld_bss_start; pulDest <  &_ld_bss_end; )
-    {
-        *(pulDest++) = 0;
-    }
-}
+//     for(pulDest = &_ld_bss_start; pulDest <  &_ld_bss_end; )
+//     {
+//         *(pulDest++) = 0;
+//     }
+// }
 //code move ram section 
 
 

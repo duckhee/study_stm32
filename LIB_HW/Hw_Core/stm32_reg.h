@@ -197,6 +197,107 @@ typedef struct
   __IO uint32_t LCKR;
 } GPIO_TypeDef;
 
+
+typedef struct
+{
+  __IO uint32_t SR;
+  __IO uint32_t CR1;
+  __IO uint32_t CR2;
+  __IO uint32_t SMPR1;
+  __IO uint32_t SMPR2;
+  __IO uint32_t JOFR1;
+  __IO uint32_t JOFR2;
+  __IO uint32_t JOFR3;
+  __IO uint32_t JOFR4;
+  __IO uint32_t HTR;
+  __IO uint32_t LTR;
+  __IO uint32_t SQR1;
+  __IO uint32_t SQR2;
+  __IO uint32_t SQR3;
+  __IO uint32_t JSQR;
+  __IO uint32_t JDR1;
+  __IO uint32_t JDR2;
+  __IO uint32_t JDR3;
+  __IO uint32_t JDR4;
+  __IO uint32_t DR;
+} ADC_TypeDef;
+/* STM32F10X ADC type set */
+
+/** 
+  * @brief DMA Controller
+  */
+
+typedef struct
+{
+  __IO uint32_t CCR;
+  __IO uint32_t CNDTR;
+  __IO uint32_t CPAR;
+  __IO uint32_t CMAR;
+} DMA_Channel_TypeDef;
+
+typedef struct
+{
+  __IO uint32_t ISR;
+  __IO uint32_t IFCR;
+} DMA_TypeDef;
+
+
+/* DMA set end */
+
+/** 
+  * @brief Inter Integrated Circuit Interface
+  */
+
+typedef struct
+{
+  __IO uint16_t CR1;
+  uint16_t  RESERVED0;
+  __IO uint16_t CR2;
+  uint16_t  RESERVED1;
+  __IO uint16_t OAR1;
+  uint16_t  RESERVED2;
+  __IO uint16_t OAR2;
+  uint16_t  RESERVED3;
+  __IO uint16_t DR;
+  uint16_t  RESERVED4;
+  __IO uint16_t SR1;
+  uint16_t  RESERVED5;
+  __IO uint16_t SR2;
+  uint16_t  RESERVED6;
+  __IO uint16_t CCR;
+  uint16_t  RESERVED7;
+  __IO uint16_t TRISE;
+  uint16_t  RESERVED8;
+} I2C_TypeDef;
+/* I2C set end */
+
+/** 
+  * @brief Serial Peripheral Interface
+  */
+
+typedef struct
+{
+  __IO uint16_t CR1;
+  uint16_t  RESERVED0;
+  __IO uint16_t CR2;
+  uint16_t  RESERVED1;
+  __IO uint16_t SR;
+  uint16_t  RESERVED2;
+  __IO uint16_t DR;
+  uint16_t  RESERVED3;
+  __IO uint16_t CRCPR;
+  uint16_t  RESERVED4;
+  __IO uint16_t RXCRCR;
+  uint16_t  RESERVED5;
+  __IO uint16_t TXCRCR;
+  uint16_t  RESERVED6;
+  __IO uint16_t I2SCFGR;
+  uint16_t  RESERVED7;
+  __IO uint16_t I2SPR;
+  uint16_t  RESERVED8;  
+} SPI_TypeDef;
+/* SPI set end */
+
 typedef struct
 {
   __IO uint16_t SR;
@@ -384,8 +485,51 @@ typedef struct
 #define GPIOG_BASE            (APB2PERIPH_BASE + 0x2000)
 #define USART1_BASE           (APB2PERIPH_BASE + 0x3800)
 
+/* ADD FUNCTION BASE */
+#define I2C1_BASE             (APB1PERIPH_BASE + 0x5400)
+#define I2C2_BASE             (APB1PERIPH_BASE + 0x5800)
+#define SPI2_BASE             (APB1PERIPH_BASE + 0x3800)
+#define SPI3_BASE             (APB1PERIPH_BASE + 0x3C00)
+#define TIM2_BASE             (APB1PERIPH_BASE + 0x0000)
+#define TIM3_BASE             (APB1PERIPH_BASE + 0x0400)
+#define TIM4_BASE             (APB1PERIPH_BASE + 0x0800)
+#define TIM5_BASE             (APB1PERIPH_BASE + 0x0C00)
+#define TIM6_BASE             (APB1PERIPH_BASE + 0x1000)
+#define TIM7_BASE             (APB1PERIPH_BASE + 0x1400)
+#define TIM12_BASE            (APB1PERIPH_BASE + 0x1800)
+#define TIM13_BASE            (APB1PERIPH_BASE + 0x1C00)
+#define TIM14_BASE            (APB1PERIPH_BASE + 0x2000)
+#define RTC_BASE              (APB1PERIPH_BASE + 0x2800)
+#define ADC1_BASE             (APB2PERIPH_BASE + 0x2400)
+#define ADC2_BASE             (APB2PERIPH_BASE + 0x2800)
+#define TIM1_BASE             (APB2PERIPH_BASE + 0x2C00)
+#define SPI1_BASE             (APB2PERIPH_BASE + 0x3000)
+#define TIM8_BASE             (APB2PERIPH_BASE + 0x3400)
+#define ADC3_BASE             (APB2PERIPH_BASE + 0x3C00)
+#define TIM15_BASE            (APB2PERIPH_BASE + 0x4000)
+#define TIM16_BASE            (APB2PERIPH_BASE + 0x4400)
+#define TIM17_BASE            (APB2PERIPH_BASE + 0x4800)
+#define TIM9_BASE             (APB2PERIPH_BASE + 0x4C00)
+#define TIM10_BASE            (APB2PERIPH_BASE + 0x5000)
+#define TIM11_BASE            (APB2PERIPH_BASE + 0x5400)
+
+#define DMA1_BASE             (AHBPERIPH_BASE + 0x0000)
+#define DMA1_Channel1_BASE    (AHBPERIPH_BASE + 0x0008)
+#define DMA1_Channel2_BASE    (AHBPERIPH_BASE + 0x001C)
+#define DMA1_Channel3_BASE    (AHBPERIPH_BASE + 0x0030)
+#define DMA1_Channel4_BASE    (AHBPERIPH_BASE + 0x0044)
+#define DMA1_Channel5_BASE    (AHBPERIPH_BASE + 0x0058)
+#define DMA1_Channel6_BASE    (AHBPERIPH_BASE + 0x006C)
+#define DMA1_Channel7_BASE    (AHBPERIPH_BASE + 0x0080)
+#define DMA2_BASE             (AHBPERIPH_BASE + 0x0400)
+#define DMA2_Channel1_BASE    (AHBPERIPH_BASE + 0x0408)
+#define DMA2_Channel2_BASE    (AHBPERIPH_BASE + 0x041C)
+#define DMA2_Channel3_BASE    (AHBPERIPH_BASE + 0x0430)
+#define DMA2_Channel4_BASE    (AHBPERIPH_BASE + 0x0444)
+#define DMA2_Channel5_BASE    (AHBPERIPH_BASE + 0x0458)
 #define RCC_BASE              (AHBPERIPH_BASE + 0x1000)
 #define FLASH_R_BASE          (AHBPERIPH_BASE + 0x2000) /*!< Flash registers base address */
+#define CRC_BASE              (AHBPERIPH_BASE + 0x3000)
 
 #define RCC                 ((RCC_TypeDef *) RCC_BASE)
 #define FLASH               ((FLASH_TypeDef *) FLASH_R_BASE)
@@ -577,7 +721,6 @@ typedef enum IRQn
   USBWakeUp_IRQn              = 42,     /*!< USB Device WakeUp from suspend through EXTI Line Interrupt */  
 } IRQn_Type;
 
-uint32_t SysTick_Config(uint32_t ticks);
 
 typedef struct
 {

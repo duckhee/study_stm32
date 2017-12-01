@@ -1,7 +1,10 @@
 #ifndef __HW_H__
 #define __HW_H__
 
+
+
 #include <stdint.h>
+
 
 #include "stm32_reg.h"
 
@@ -13,6 +16,11 @@
 #include "Hw_Usart.h"
 #include "Hw_HSE.h"
 #include "Hw_NVIC.h"
+#include "Hw_Systick.h"
+#include "Hw_EXT_IRQHandler.h"
+#include "Hw_DMA.h"
+#include "Hw_ADC.h"
+#include "Hw_DAC.h"
 
 
 //HW LIB
@@ -35,7 +43,7 @@
 
 
 HW_DEF void Hw_Init();
-
+HW_DEF void RCC_Configuration(void);
 
 
 #endif

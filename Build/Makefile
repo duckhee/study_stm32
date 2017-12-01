@@ -25,15 +25,20 @@ SRC_LB = ../LIB/Ld_Printf.c                \
 SRC_AP = ../LIB_AP/Ap_Core/Get_clock.c      \
          ../Main/main.c                     \
 
-SRC_HW = ../LIB_HW/Hw_Core/$(STARTUP_C)    \
-		 ../LIB_HW/Hw_Core/Hw.c            \
-		 ../LIB_HW/Hw_Core/Hw_Gpio.c       \
-		 ../LIB_HW/Hw_Core/Hw_Usart.c      \
-		 ../LIB_HW/Hw_Core/Hw_HSE.c        \
-		 ../LIB_HW/Hw_Core/Hw_NVIC.c       \
-		 ../LIB_HW/Hw_Lib/Hw_Led.c         \
-		 ../LIB_HW/Hw_Lib/Hw_Key.c         \
-         ../LIB_HW/Hw_Lib/Hw_Segment.c     \
+SRC_HW = ../LIB_HW/Hw_Core/$(STARTUP_C)              \
+		 ../LIB_HW/Hw_Core/Hw.c                      \
+		 ../LIB_HW/Hw_Core/Hw_Gpio.c                 \
+		 ../LIB_HW/Hw_Core/Hw_Usart.c                \
+		 ../LIB_HW/Hw_Core/Hw_HSE.c                  \
+		 ../LIB_HW/Hw_Core/Hw_NVIC.c                 \
+		 ../LIB_HW/Hw_Core/Hw_EXT_IRQHandler.c       \
+		 ../LIB_HW/Hw_Core/Hw_Systick.c              \
+		 ../LIB_HW/Hw_Core/Hw_ADC.c                  \
+		 ../LIB_HW/Hw_Core/Hw_DAC.c                  \
+		 ../LIB_HW/Hw_Core/Hw_DMA.c                  \
+		 ../LIB_HW/Hw_Lib/Hw_Led.c                   \
+		 ../LIB_HW/Hw_Lib/Hw_Key.c                   \
+         ../LIB_HW/Hw_Lib/Hw_Segment.c               \
 
 SRC_MENU = ../Menu/Key_Menu.c              \
            ../Menu/Led_Menu.c              \
@@ -55,6 +60,7 @@ OBJNM = $(PREFIX)nm
 SIZE = $(PREFIX)size
 REMOVE = $(REMOVE_CMD) -rf
 
+
 CFLAGS  = -gdwarf-2 -O2 -mcpu=cortex-m3 -mthumb-interwork -DSTM32F10X_MD 
 #CFLAGS += $(INCLUDE) -mlong-calls -ffunction-sections -fdata-sections -fpromote-loop-indices -Wall -Wextra -Wimplicit -Wcast-align -Wpointer-arith -Wredundant-decls 
 CFLAGS += $(INCLUDE) -mlong-calls -ffunction-sections -fdata-sections -Wall -Wextra -Wimplicit -Wcast-align -Wpointer-arith -Wredundant-decls 
@@ -64,7 +70,7 @@ CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CONLYFLAGS += -Wnested-externs 
 CONLYFLAGS += -std=gnu99
 #이게 맞는지?
-LDFLAGS = -static -nostdlib -nostartfiles -Wl,-Map=$(TARGET).map,--cref,--gc-sections -L./ -lc  -lm  -lc -lgcc -T.//stm32f10x.ld
+LDFLAGS = -static -nostdlib -nostartfiles -Wl,-Map=$(TARGET).map,--cref,--gc-sections -L./ -lc  -lm  -lc -lgcc -T.//STM32F10x_128k_20k_flash.ld
 #ELF32_LDFLAGS = -Wl,-T,stm32f10x.ld
 
 ELFSIZE = $(SIZE) -A $(TARGET).elf
@@ -89,7 +95,7 @@ ALLOBJ = $(addsuffix .o, $(ALLSRCBASE))
 
 
 # Default target.
-all: createdirs build sizeinfo
+all: createdirs build sizeinfo gcc_version
 
 elf: $(TARGET).elf
 lss: $(TARGET).lss 
@@ -102,7 +108,11 @@ build: elf hex bin lss sym
 
 sizeinfo:
 	@echo code size $@
-	$(ELFSIZE) 
+	$(ELFSIZE)
+
+gcc_version:
+	@echo gcc version make $@
+	$(CC) --version
 
 # Create output directories.
 createdirs:
@@ -151,6 +161,7 @@ $(foreach src, $(SRC), $(eval $(call COMPILE_C_TEMPLATE, $(src))))
 $(SRC:.c=.s) : %.s : %.c
 	@echo $(MSG_ASMFROMC) $< to $@
 	$(CC) $(THUMB) -S $(CFLAGS) $(CONLYFLAGS) $< -o $@
+	
 
 ###################################################################################################
 ###################################################################################################

@@ -14,3 +14,12 @@ HW_SYSTICK_DEF uint32_t SysTick_Config(uint32_t ticks)
   SysTick->CTRL = (1 << SYSTICK_CLKSOURCE) | (1<<SYSTICK_ENABLE) | (1<<SYSTICK_TICKINT); /* Enable SysTick IRQ and SysTick Timer */
   return (0);                                                                            /* Function successful */
 }
+
+
+HW_SYSTICK_DEF void SysTick_Handler(void)
+{
+  	/* Go into an infinite loop. */
+	while (1)
+	{
+	}
+}

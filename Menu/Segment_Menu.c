@@ -6,8 +6,8 @@
 
 SEG_MENU_DEF int Seg_Main(void);
 SEG_MENU_DEF int Seg_main_menu(void);
-static unsigned short flag;
 
+static unsigned short flag;
 
 SEG_MENU_DEF int Seg_Main(void)
 {
@@ -15,6 +15,7 @@ SEG_MENU_DEF int Seg_Main(void)
 
     while((key = Seg_main_menu()) != 0)
     {
+        printf("key : %d\n", key);
             switch(key)
             {
                 case '1':
@@ -106,7 +107,7 @@ SEG_MENU_DEF int Seg_Main(void)
     
                 case 'h':
                     printf("No.h\n");
-           
+                    
                 break;
     
                 case 'i':
@@ -157,7 +158,7 @@ SEG_MENU_DEF int Seg_main_menu(void)
         printf("-------------------------------------------------\n");
         printf("\n\n");
         char a = '1';
-        printf("SELECT THE COMMAND NUMBER : ");
+        printf("SELECT THE COMMAND NUMBER : \n");
         key=get_byte();
 
         return key;

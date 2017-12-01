@@ -28,7 +28,7 @@ KEY_MENU_DEF int Key_Main(void)
                 
                 case '3':
                     printf("No.3\n");
-                    Ld_System_Information();
+                    System_Information();
                 break;
     
                 case '4':
