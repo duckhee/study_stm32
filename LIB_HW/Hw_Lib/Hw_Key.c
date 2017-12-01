@@ -27,7 +27,7 @@ KEY_DEF void Key_Test(void)
         }
         else
         {
-            RedLed_Red_Off_Off();
+            Led_Red_Off();
         }
         if(GPIO_ReadInputDataBit(GPIO_KEY, GPIO_KEY2_PIN) == Bit_SET)
         {

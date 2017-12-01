@@ -8,6 +8,11 @@ int main()
     RCC_ClocksTypeDef  rcc_clocks;
 
     NVIC_Configuration();
+    
+
+    /* EXTI configuration */
+    EXTI_Configuration();
+
     Hw_Init();
 
     // /* Setup SysTick Timer for 1 msec interrupts  */
@@ -18,7 +23,7 @@ int main()
     //     /* Capture error */ 
     //     while (1);
     // }
-
+    //Key_Main();
     Seg_Main();
     
 }

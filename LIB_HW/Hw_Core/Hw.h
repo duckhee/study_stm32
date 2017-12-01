@@ -17,6 +17,7 @@
 #include "Hw_HSE.h"
 #include "Hw_NVIC.h"
 #include "Hw_Systick.h"
+#include "Hw_EXT_IRQHandler.h"
 
 
 //HW LIB
