@@ -2,6 +2,7 @@
 
 typedef void (*const intfunc)(void);
 // Private define ----------------------------------------------------------------------------------------
+//WEAK key word assemble
 #define WEAK __attribute__ ((weak))
 
 // //link pointer get LINKERSCRIPT
@@ -252,11 +253,25 @@ void Reset_Handler(void)
     *(volatile unsigned long *)0x40022000 &= ~(0x7); //bit 2, 1, 0 clear 0, 0, 0
     *(volatile unsigned long *)0x40022000 |= 0x2; //bit 2, 1, 0 = 0, 1, 0
     //////////////////////////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
     
     // reset setting PLL 
     *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16); //18 bit set 0, 17 bit set 0, 16 bit set 0
     *(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
     // *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ??
+=======
+	
+	//PLL reset first
+	*(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
+	//PLLMUL
+    // reset setting PLL PLLMUL = 18, PLL SRC = 16, PLL XTPRE reset = 17, ADC PRE = 14
+    *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16 | 0x1 << 14); //18 bit set 0, 17 bit set 0, 16 bit set 0
+	//PLL not use HSE, HSI
+	*(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
+	//PLL use HSE
+	// *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ?? HSE use maybe...
+	//PLL use HSE
+>>>>>>> development
     // *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
     *(volatile unsigned long *) 0x40021000 |= 0x01 << 24/*0x1000000*/;                       //PLLON
     while( ((*(volatile unsigned long *) 0x40021000) & 0x01 << 25/*0x2000000*/) == 0);       //PLLRDY
@@ -268,6 +283,7 @@ void Reset_Handler(void)
         10: PLL selected as system clock <------------- use this
         11: not allowed (not use system clock PLL)
     */
+<<<<<<< HEAD
     *(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
     *(volatile unsigned long *)0x40021004 |= 0x2; //set system clcok PLL
 	//////////////////////////////////////////////////////////////////
@@ -282,6 +298,28 @@ void Reset_Handler(void)
 	//AHBENR enable
 	*(volatile unsigned long *)0x40021014 |= 0x1 << 0 | 0x1 << 1; //DMA1 clock enable
     *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
+=======
+	*(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
+	//use hsi clock as system 
+	// *(volatile unsigned long *)0x40021004 |= 0x00;
+	//use hse clock as system
+	// *(volatile unsigned long *)0x40021004 |= 0x01;
+	*(volatile unsigned long *)0x40021004 |= 0x2; //set system clcok PLL
+	//use system clock 찾아보기 
+	//while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x00); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 HSI
+	//while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x04); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 HSE
+	while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // system clock switch status 시스템 클럭 신호로 사용이 가능한 상태인지 확인 PLL
+	/* 
+		
+	RCC_CFGR |= ( 0<< 7 | 0<<11 | 0<<10 | 0<<10 );	// HPRE 0XXX HCLK	= 72MHZ
+	//xxxx xxxx xxxx xxxx xxxx xxxx 0XXX xxxx
+	RCC_CFGR |= ( 0<<13 | 0<<12 | 0<<11 );			// PPRE2 0XX PCLK2	= 72MHZ
+	//xxxx xxxx xxxx xxxx xx0X Xxxx xxxx xxxx
+	RCC_CFGR |= ( 1<<10 | 0<< 9 | 0<< 8 );			// PPRE1 100 PCLK1	= 36MHz	
+	//xxxx xxxx xxxx xxxx xxxx x100 xxxx xxxx		//(PCLK1 has to be <= 36MHz)
+	*/
+    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN / ADC EN    APB2ENR
+>>>>>>> development
     *(volatile unsigned long *)0x40010804 = 0x888444B4; //GPIO A CRH bit
 
    
