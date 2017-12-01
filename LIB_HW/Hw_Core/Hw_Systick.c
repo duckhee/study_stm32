@@ -18,5 +18,8 @@ HW_SYSTICK_DEF uint32_t SysTick_Config(uint32_t ticks)
 
 HW_SYSTICK_DEF void SysTick_Handler(void)
 {
-  
+  	/* Go into an infinite loop. */
+	while (1)
+	{
+	}
 }
