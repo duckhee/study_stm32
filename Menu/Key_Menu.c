@@ -134,7 +134,7 @@ KEY_MENU_DEF int Key_Main_Menu()
     
         printf("\n\n");
         printf("-------------------------------------------------\n");
-        printf("                 LED MAIN MENU\n");
+        printf("                 KEY MAIN MENU\n");
         printf("-------------------------------------------------\n");
         printf(" 1. Key Test                                         \n");
         printf(" 2. Led Test                                         \n");
@@ -147,7 +147,7 @@ KEY_MENU_DEF int Key_Main_Menu()
         printf(" 9. Test                                         \n");
         printf(" 0. Test                                         \n");
         printf("-------------------------------------------------\n");
-        printf(" q. LED Menu QUIT\n");
+        printf(" q. KEY Menu QUIT\n");
         printf("-------------------------------------------------\n");
         printf("\n\n");
     
