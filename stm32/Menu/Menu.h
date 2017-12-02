@@ -8,6 +8,6 @@
 #include "Led_Menu.h"
 #include "Key_Menu.h"
 #include "Segment_Menu.h"
-
+#include "Middle_Menu.h"
 
 #endif
