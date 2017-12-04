@@ -191,9 +191,8 @@ void (*g_pfnVectors[])(void) =
 
 void Reset_Handler(void)
 {
-    unsigned long HSIStatus = 0, StartUpCounter = 0;
-    //unsigned long HSEStatus = 0, StartUpCounter = 0;
-    //Init_Data();
+    //unsigned long HSIStatus = 0, StartUpCounter = 0;
+    unsigned long HSEStatus = 0, StartUpCounter = 0;
       
 	/* Zero fill the bss segment.  This is done with inline assembly since this
 	   will clear the value of pulDest if it is not kept in a register. */
@@ -218,19 +217,19 @@ void Reset_Handler(void)
         	
 	
     //HSI On 
-    *(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
+    //*(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
     //HSE ON
-    //*(volatile unsigned long *)0x40021000 |= 0x1 << 16;
+    *(volatile unsigned long *)0x40021000 |= 0x1 << 16;
     
     //check HSI Or HSE READY
     do
     {
         //HSI check
-        HSIStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 1); //HSI RDY check bit
+        //HSIStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 1); //HSI RDY check bit
         //HSE check
-        //HSEStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 17); //HSE RDY check bit
+        HSEStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 17); //HSE RDY check bit
         StartUpCounter++;
-    }while((HSIStatus == 0) && (StartUpCounter != 0x0500));
+    }while((HSEStatus == 0) && (StartUpCounter != 0x0500));
     
     ///////////////// FLASH Memory Latency move code RAM sections ////////////////////////////////////
 	*(volatile unsigned long *)0x40022000 |= (1<<4);     //prefetch buffer enable
@@ -283,8 +282,8 @@ void Reset_Handler(void)
     *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
     *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
     *(volatile unsigned long *) 0x40013814 = 0x0;
-    *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; //OSC 32MHz 115200bps Setting
-    //*(volatile unsigned long *)0x40013808 = 39 << 4 | 1; //OSC 72MHz 115200bps Setting
+    //*(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; //OSC 32MHz 115200bps Setting
+    *(volatile unsigned long *)0x40013808 = 39 << 4 | 1; //OSC 72MHz 115200bps Setting
     *(volatile unsigned long *) 0x4001380C |= 0x2000;
 
     main(); //jump main function
