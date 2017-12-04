@@ -1,0 +1,109 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 2
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"main.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.startup.main,"ax",%progbits
+  19              		.align	2
+  20              		.global	main
+  21              		.thumb
+  22              		.thumb_func
+  24              	main:
+  25              	.LFB0:
+  26              		.file 1 "../Main/main.c"
+   1:../Main/main.c **** 
+   2:../Main/main.c **** 
+   3:../Main/main.c **** 
+   4:../Main/main.c **** #include "main.h"
+   5:../Main/main.c **** 
+   6:../Main/main.c **** 
+   7:../Main/main.c **** int main()
+   8:../Main/main.c **** {
+  27              		.loc 1 8 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+   9:../Main/main.c ****     Hw_Init();
+  36              		.loc 1 9 0
+  37 0002 034B     		ldr	r3, .L3
+  38 0004 9847     		blx	r3
+  39              	.LVL0:
+  10:../Main/main.c ****     
+  11:../Main/main.c ****     System_Information();
+  40              		.loc 1 11 0
+  41 0006 034B     		ldr	r3, .L3+4
+  42 0008 9847     		blx	r3
+  43              	.LVL1:
+  12:../Main/main.c **** }...
+  44              		.loc 1 12 0
+  45 000a 0020     		movs	r0, #0
+  46 000c 08BD     		pop	{r3, pc}
+  47              	.L4:
+  48 000e 00BF     		.align	2
+  49              	.L3:
+  50 0010 00000000 		.word	Hw_Init
+  51 0014 00000000 		.word	System_Information
+  52              		.cfi_endproc
+  53              	.LFE0:
+  55              		.section	.data.ADCPrescTable,"aw",%progbits
+  56              		.align	2
+  59              	ADCPrescTable:
+  60 0000 02       		.byte	2
+  61 0001 04       		.byte	4
+  62 0002 06       		.byte	6
+  63 0003 08       		.byte	8
+  64              		.section	.data.APBAHBPrescTable,"aw",%progbits
+  65              		.align	2
+  68              	APBAHBPrescTable:
+  69 0000 00       		.byte	0
+  70 0001 00       		.byte	0
+  71 0002 00       		.byte	0
+  72 0003 00       		.byte	0
+  73 0004 00       		.byte	0
+  74 0005 00       		.byte	0
+  75 0006 00       		.byte	0
+  76 0007 00       		.byte	0
+  77 0008 01       		.byte	1
+  78 0009 02       		.byte	2
+  79 000a 03       		.byte	3
+  80 000b 04       		.byte	4
+  81 000c 06       		.byte	6
+  82 000d 07       		.byte	7
+  83 000e 08       		.byte	8
+  84 000f 09       		.byte	9
+  85              		.text
+  86              	.Letext0:
+  87              		.file 2 "c:\\program files (x86)\\gnu tools arm embedded\\4.9 2015q1\\arm-none-eabi\\include\\mach
+  88              		.file 3 "c:\\program files (x86)\\gnu tools arm embedded\\4.9 2015q1\\arm-none-eabi\\include\\stdi
+  89              		.file 4 "../LIB_AP/Ap_Core/Get_clock.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\CANDH\AppData\Local\Temp\ccu8qNec.s:19     .text.startup.main:00000000 $t
+C:\Users\CANDH\AppData\Local\Temp\ccu8qNec.s:24     .text.startup.main:00000000 main
+C:\Users\CANDH\AppData\Local\Temp\ccu8qNec.s:50     .text.startup.main:00000010 $d
+C:\Users\CANDH\AppData\Local\Temp\ccu8qNec.s:56     .data.ADCPrescTable:00000000 $d
+C:\Users\CANDH\AppData\Local\Temp\ccu8qNec.s:59     .data.ADCPrescTable:00000000 ADCPrescTable
+C:\Users\CANDH\AppData\Local\Temp\ccu8qNec.s:65     .data.APBAHBPrescTable:00000000 $d
+C:\Users\CANDH\AppData\Local\Temp\ccu8qNec.s:68     .data.APBAHBPrescTable:00000000 APBAHBPrescTable
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+Hw_Init
+System_Information

@@ -21,9 +21,10 @@
 #define GET_CLOCK_DEF
 #else
 #define GET_CLOCK_DEF                   extern
+#endif
 
-CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks);
-CLOCK_DEF void System_Information();
+GET_CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks);
+GET_CLOCK_DEF void System_Information(void);
 
 
 

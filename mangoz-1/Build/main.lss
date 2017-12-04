@@ -1,0 +1,2515 @@
+
+main.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000a18  08000000  08000000  00008000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000014  20000000  08000a18  00010000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000004  20000014  08000a2c  00010014  2**2
+                  ALLOC
+  3 ._usrstack    00000100  20000018  08000a30  00010014  2**0
+                  ALLOC
+  4 .debug_info   000015a0  00000000  00000000  00010014  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_abbrev 00000850  00000000  00000000  000115b4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_loc    0000190a  00000000  00000000  00011e04  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_aranges 00000138  00000000  00000000  0001370e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_ranges 000001c0  00000000  00000000  00013846  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_line   00000cc0  00000000  00000000  00013a06  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000697  00000000  00000000  000146c6  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .comment      00000070  00000000  00000000  00014d5d  2**0
+                  CONTENTS, READONLY
+ 12 .ARM.attributes 00000033  00000000  00000000  00014dcd  2**0
+                  CONTENTS, READONLY
+ 13 .debug_frame  00000328  00000000  00000000  00014e00  2**2
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+08000000 <g_pfnVectors>:
+ 8000000:	00 50 00 20 0d 01 00 08 00 00 00 00 00 00 00 00     .P. ............
+ 8000010:	09 01 00 08 09 01 00 08 09 01 00 08 00 00 00 00     ................
+	...
+ 800002c:	09 01 00 08 09 01 00 08 00 00 00 00 09 01 00 08     ................
+ 800003c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800004c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800005c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800006c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800007c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800008c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800009c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 80000ac:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 80000bc:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 80000cc:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 80000dc:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+	...
+
+08000108 <Default_Handler>:
+void Default_Handler(void)
+{
+	/* Go into an infinite loop. */
+	while (1)
+	{
+	}
+ 8000108:	e7fe      	b.n	8000108 <Default_Handler>
+ 800010a:	bf00      	nop
+
+0800010c <Reset_Handler>:
+ * @param  None
+ * @retval : None
+*/
+
+void Reset_Handler(void)
+{
+ 800010c:	4668      	mov	r0, sp
+ 800010e:	f020 0107 	bic.w	r1, r0, #7
+ 8000112:	468d      	mov	sp, r1
+		unsigned long *pulSrc, *pulDest;	
+	
+		// Copy the data segment initializers from flash to SRAM
+	pulSrc = &_sidata;
+
+	for(pulDest = &_sdata; pulDest < &_edata; )
+ 8000114:	4a44      	ldr	r2, [pc, #272]	; (8000228 <zero_loop+0xe4>)
+ * @param  None
+ * @retval : None
+*/
+
+void Reset_Handler(void)
+{
+ 8000116:	e92d 41f9 	stmdb	sp!, {r0, r3, r4, r5, r6, r7, r8, lr}
+		unsigned long *pulSrc, *pulDest;	
+	
+		// Copy the data segment initializers from flash to SRAM
+	pulSrc = &_sidata;
+
+	for(pulDest = &_sdata; pulDest < &_edata; )
+ 800011a:	4b44      	ldr	r3, [pc, #272]	; (800022c <zero_loop+0xe8>)
+ 800011c:	429a      	cmp	r2, r3
+ 800011e:	d20d      	bcs.n	800013c <Reset_Handler+0x30>
+ 8000120:	43d0      	mvns	r0, r2
+ 8000122:	4943      	ldr	r1, [pc, #268]	; (8000230 <zero_loop+0xec>)
+ 8000124:	4418      	add	r0, r3
+ 8000126:	460b      	mov	r3, r1
+ 8000128:	f020 0003 	bic.w	r0, r0, #3
+ 800012c:	3004      	adds	r0, #4
+ 800012e:	4408      	add	r0, r1
+	{
+		*(pulDest++) = *(pulSrc++);
+ 8000130:	f853 1b04 	ldr.w	r1, [r3], #4
+		unsigned long *pulSrc, *pulDest;	
+	
+		// Copy the data segment initializers from flash to SRAM
+	pulSrc = &_sidata;
+
+	for(pulDest = &_sdata; pulDest < &_edata; )
+ 8000134:	4283      	cmp	r3, r0
+	{
+		*(pulDest++) = *(pulSrc++);
+ 8000136:	f842 1b04 	str.w	r1, [r2], #4
+		unsigned long *pulSrc, *pulDest;	
+	
+		// Copy the data segment initializers from flash to SRAM
+	pulSrc = &_sidata;
+
+	for(pulDest = &_sdata; pulDest < &_edata; )
+ 800013a:	d1f9      	bne.n	8000130 <Reset_Handler+0x24>
+	{
+		*(pulDest++) = *(pulSrc++);
+	}
+		__asm("  ldr     r0, =_sbss\n"
+ 800013c:	4848      	ldr	r0, [pc, #288]	; (8000260 <zero_loop+0x11c>)
+ 800013e:	4949      	ldr	r1, [pc, #292]	; (8000264 <zero_loop+0x120>)
+ 8000140:	f04f 0200 	mov.w	r2, #0
+
+08000144 <zero_loop>:
+ 8000144:	4288      	cmp	r0, r1
+ 8000146:	bfb8      	it	lt
+ 8000148:	f840 2b04 	strlt.w	r2, [r0], #4
+ 800014c:	dbfa      	blt.n	8000144 <zero_loop>
+          "    strlt   r2, [r0], #4\n"
+          "    blt     zero_loop");
+        	
+	
+    //HSI On 
+    *(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
+ 800014e:	4a39      	ldr	r2, [pc, #228]	; (8000234 <zero_loop+0xf0>)
+ 8000150:	f44f 63a0 	mov.w	r3, #1280	; 0x500
+ 8000154:	6810      	ldr	r0, [r2, #0]
+    
+    //check HSI Or HSE READY
+    do
+    {
+        //HSI check
+        HSIStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 1); //HSI RDY check bit
+ 8000156:	4611      	mov	r1, r2
+          "    strlt   r2, [r0], #4\n"
+          "    blt     zero_loop");
+        	
+	
+    //HSI On 
+    *(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
+ 8000158:	f040 0001 	orr.w	r0, r0, #1
+ 800015c:	6010      	str	r0, [r2, #0]
+ 800015e:	e001      	b.n	8000164 <zero_loop+0x20>
+        //HSI check
+        HSIStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 1); //HSI RDY check bit
+        //HSE check
+        //HSEStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 17); //HSE RDY check bit
+        StartUpCounter++;
+    }while((HSIStatus == 0) && (StartUpCounter != 0x0500));
+ 8000160:	3b01      	subs	r3, #1
+ 8000162:	d002      	beq.n	800016a <zero_loop+0x26>
+    
+    //check HSI Or HSE READY
+    do
+    {
+        //HSI check
+        HSIStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 1); //HSI RDY check bit
+ 8000164:	680a      	ldr	r2, [r1, #0]
+        //HSE check
+        //HSEStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 17); //HSE RDY check bit
+        StartUpCounter++;
+    }while((HSIStatus == 0) && (StartUpCounter != 0x0500));
+ 8000166:	0792      	lsls	r2, r2, #30
+ 8000168:	d5fa      	bpl.n	8000160 <zero_loop+0x1c>
+    // reset setting PLL 
+    *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16); //18 bit set 0, 17 bit set 0, 16 bit set 0
+    *(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
+    // *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ??
+    // *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
+    *(volatile unsigned long *) 0x40021000 |= 0x01 << 24/*0x1000000*/;                       //PLLON
+ 800016a:	4832      	ldr	r0, [pc, #200]	; (8000234 <zero_loop+0xf0>)
+        //HSEStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 17); //HSE RDY check bit
+        StartUpCounter++;
+    }while((HSIStatus == 0) && (StartUpCounter != 0x0500));
+    
+    ///////////////// FLASH Memory Latency move code RAM sections ////////////////////////////////////
+	*(volatile unsigned long *)0x40022000 |= (1<<4);     //prefetch buffer enable
+ 800016c:	4b32      	ldr	r3, [pc, #200]	; (8000238 <zero_loop+0xf4>)
+    *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16); //18 bit set 0, 17 bit set 0, 16 bit set 0
+    *(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
+    // *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ??
+    // *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
+    *(volatile unsigned long *) 0x40021000 |= 0x01 << 24/*0x1000000*/;                       //PLLON
+    while( ((*(volatile unsigned long *) 0x40021000) & 0x01 << 25/*0x2000000*/) == 0);       //PLLRDY
+ 800016e:	4602      	mov	r2, r0
+        //HSEStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 17); //HSE RDY check bit
+        StartUpCounter++;
+    }while((HSIStatus == 0) && (StartUpCounter != 0x0500));
+    
+    ///////////////// FLASH Memory Latency move code RAM sections ////////////////////////////////////
+	*(volatile unsigned long *)0x40022000 |= (1<<4);     //prefetch buffer enable
+ 8000170:	681c      	ldr	r4, [r3, #0]
+    *(volatile unsigned long *)0x40022000 &= ~(0x7); //bit 2, 1, 0 clear 0, 0, 0
+    *(volatile unsigned long *)0x40022000 |= 0x2; //bit 2, 1, 0 = 0, 1, 0
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // reset setting PLL 
+    *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16); //18 bit set 0, 17 bit set 0, 16 bit set 0
+ 8000172:	4932      	ldr	r1, [pc, #200]	; (800023c <zero_loop+0xf8>)
+        //HSEStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 17); //HSE RDY check bit
+        StartUpCounter++;
+    }while((HSIStatus == 0) && (StartUpCounter != 0x0500));
+    
+    ///////////////// FLASH Memory Latency move code RAM sections ////////////////////////////////////
+	*(volatile unsigned long *)0x40022000 |= (1<<4);     //prefetch buffer enable
+ 8000174:	f044 0410 	orr.w	r4, r4, #16
+ 8000178:	601c      	str	r4, [r3, #0]
+    *(volatile unsigned long *)0x40022000 |= 0x10; //bit PRETBE = 1 Set
+ 800017a:	681c      	ldr	r4, [r3, #0]
+ 800017c:	f044 0410 	orr.w	r4, r4, #16
+ 8000180:	601c      	str	r4, [r3, #0]
+    *(volatile unsigned long *)0x40022000 &= ~(0x7); //bit 2, 1, 0 clear 0, 0, 0
+ 8000182:	681c      	ldr	r4, [r3, #0]
+ 8000184:	f024 0407 	bic.w	r4, r4, #7
+ 8000188:	601c      	str	r4, [r3, #0]
+    *(volatile unsigned long *)0x40022000 |= 0x2; //bit 2, 1, 0 = 0, 1, 0
+ 800018a:	681c      	ldr	r4, [r3, #0]
+ 800018c:	f044 0402 	orr.w	r4, r4, #2
+ 8000190:	601c      	str	r4, [r3, #0]
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // reset setting PLL 
+    *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16); //18 bit set 0, 17 bit set 0, 16 bit set 0
+ 8000192:	680b      	ldr	r3, [r1, #0]
+ 8000194:	f423 137c 	bic.w	r3, r3, #4128768	; 0x3f0000
+ 8000198:	600b      	str	r3, [r1, #0]
+    *(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
+ 800019a:	680b      	ldr	r3, [r1, #0]
+ 800019c:	f443 13e0 	orr.w	r3, r3, #1835008	; 0x1c0000
+ 80001a0:	600b      	str	r3, [r1, #0]
+    // *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ??
+    // *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
+    *(volatile unsigned long *) 0x40021000 |= 0x01 << 24/*0x1000000*/;                       //PLLON
+ 80001a2:	6803      	ldr	r3, [r0, #0]
+ 80001a4:	f043 7380 	orr.w	r3, r3, #16777216	; 0x1000000
+ 80001a8:	6003      	str	r3, [r0, #0]
+    while( ((*(volatile unsigned long *) 0x40021000) & 0x01 << 25/*0x2000000*/) == 0);       //PLLRDY
+ 80001aa:	6813      	ldr	r3, [r2, #0]
+ 80001ac:	019b      	lsls	r3, r3, #6
+ 80001ae:	d5fc      	bpl.n	80001aa <zero_loop+0x66>
+        00: HSI selected as system clock(PLL)
+        01: HSE selected as system clock(PLL)
+        10: PLL selected as system clock <------------- use this
+        11: not allowed (not use system clock PLL)
+    */
+    *(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
+ 80001b0:	4b22      	ldr	r3, [pc, #136]	; (800023c <zero_loop+0xf8>)
+	//*(volatile unsigned long *)0x40021004 |= (0x4<<8);
+	//APB2 PLCK2 72hz
+	//*(volatile unsigned long *)0x40021004 &= ~(0x7<<11);
+	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
+	//////////////////////////////////////////////////////////////////
+    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+ 80001b2:	461a      	mov	r2, r3
+        00: HSI selected as system clock(PLL)
+        01: HSE selected as system clock(PLL)
+        10: PLL selected as system clock <------------- use this
+        11: not allowed (not use system clock PLL)
+    */
+    *(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
+ 80001b4:	6819      	ldr	r1, [r3, #0]
+ 80001b6:	f021 0103 	bic.w	r1, r1, #3
+ 80001ba:	6019      	str	r1, [r3, #0]
+    *(volatile unsigned long *)0x40021004 |= 0x2; //set system clcok PLL
+ 80001bc:	6819      	ldr	r1, [r3, #0]
+ 80001be:	f041 0102 	orr.w	r1, r1, #2
+ 80001c2:	6019      	str	r1, [r3, #0]
+	//*(volatile unsigned long *)0x40021004 |= (0x4<<8);
+	//APB2 PLCK2 72hz
+	//*(volatile unsigned long *)0x40021004 &= ~(0x7<<11);
+	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
+	//////////////////////////////////////////////////////////////////
+    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+ 80001c4:	6813      	ldr	r3, [r2, #0]
+ 80001c6:	f003 030c 	and.w	r3, r3, #12
+ 80001ca:	2b08      	cmp	r3, #8
+ 80001cc:	d1fa      	bne.n	80001c4 <zero_loop+0x80>
+    	 - No parity
+    	 - Hardware flow control disabled (RTS and CTS signals)
+    	 - Receive and transmit enabled
+    	*/
+    *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
+    *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
+ 80001ce:	f242 070c 	movw	r7, #8204	; 0x200c
+	//*(volatile unsigned long *)0x40021004 &= ~(0x7<<11);
+	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
+	//////////////////////////////////////////////////////////////////
+    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+	//AHBENR enable
+	*(volatile unsigned long *)0x40021014 |= 0x1 << 0 | 0x1 << 1; //DMA1 clock enable
+ 80001d2:	4a1b      	ldr	r2, [pc, #108]	; (8000240 <zero_loop+0xfc>)
+    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
+ 80001d4:	481b      	ldr	r0, [pc, #108]	; (8000244 <zero_loop+0x100>)
+	//*(volatile unsigned long *)0x40021004 &= ~(0x7<<11);
+	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
+	//////////////////////////////////////////////////////////////////
+    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+	//AHBENR enable
+	*(volatile unsigned long *)0x40021014 |= 0x1 << 0 | 0x1 << 1; //DMA1 clock enable
+ 80001d6:	6813      	ldr	r3, [r2, #0]
+    	 - One Stop Bit
+    	 - No parity
+    	 - Hardware flow control disabled (RTS and CTS signals)
+    	 - Receive and transmit enabled
+    	*/
+    *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
+ 80001d8:	f8df e078 	ldr.w	lr, [pc, #120]	; 8000254 <zero_loop+0x110>
+	//*(volatile unsigned long *)0x40021004 &= ~(0x7<<11);
+	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
+	//////////////////////////////////////////////////////////////////
+    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+	//AHBENR enable
+	*(volatile unsigned long *)0x40021014 |= 0x1 << 0 | 0x1 << 1; //DMA1 clock enable
+ 80001dc:	f043 0303 	orr.w	r3, r3, #3
+ 80001e0:	6013      	str	r3, [r2, #0]
+    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
+ 80001e2:	6803      	ldr	r3, [r0, #0]
+    	 - No parity
+    	 - Hardware flow control disabled (RTS and CTS signals)
+    	 - Receive and transmit enabled
+    	*/
+    *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
+    *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
+ 80001e4:	f5a2 4258 	sub.w	r2, r2, #55296	; 0xd800
+	//////////////////////////////////////////////////////////////////
+    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+	//AHBENR enable
+	*(volatile unsigned long *)0x40021014 |= 0x1 << 0 | 0x1 << 1; //DMA1 clock enable
+    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
+    *(volatile unsigned long *)0x40010804 = 0x888444B4; //GPIO A CRH bit
+ 80001e8:	f8df c06c 	ldr.w	ip, [pc, #108]	; 8000258 <zero_loop+0x114>
+ 80001ec:	f8df 806c 	ldr.w	r8, [pc, #108]	; 800025c <zero_loop+0x118>
+    	 - Hardware flow control disabled (RTS and CTS signals)
+    	 - Receive and transmit enabled
+    	*/
+    *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
+    *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
+    *(volatile unsigned long *) 0x40013814 = 0x0;
+ 80001f0:	4e15      	ldr	r6, [pc, #84]	; (8000248 <zero_loop+0x104>)
+    *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; //OSC 32MHz 115200bps Setting
+ 80001f2:	4c16      	ldr	r4, [pc, #88]	; (800024c <zero_loop+0x108>)
+	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
+	//////////////////////////////////////////////////////////////////
+    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+	//AHBENR enable
+	*(volatile unsigned long *)0x40021014 |= 0x1 << 0 | 0x1 << 1; //DMA1 clock enable
+    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
+ 80001f4:	f443 4384 	orr.w	r3, r3, #16896	; 0x4200
+    	 - No parity
+    	 - Hardware flow control disabled (RTS and CTS signals)
+    	 - Receive and transmit enabled
+    	*/
+    *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
+    *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
+ 80001f8:	3a08      	subs	r2, #8
+    	 - One Stop Bit
+    	 - No parity
+    	 - Hardware flow control disabled (RTS and CTS signals)
+    	 - Receive and transmit enabled
+    	*/
+    *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
+ 80001fa:	2100      	movs	r1, #0
+	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
+	//////////////////////////////////////////////////////////////////
+    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+	//AHBENR enable
+	*(volatile unsigned long *)0x40021014 |= 0x1 << 0 | 0x1 << 1; //DMA1 clock enable
+    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
+ 80001fc:	f043 0305 	orr.w	r3, r3, #5
+    	 - Receive and transmit enabled
+    	*/
+    *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
+    *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
+    *(volatile unsigned long *) 0x40013814 = 0x0;
+    *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; //OSC 32MHz 115200bps Setting
+ 8000200:	f44f 759c 	mov.w	r5, #312	; 0x138
+	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
+	//////////////////////////////////////////////////////////////////
+    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+	//AHBENR enable
+	*(volatile unsigned long *)0x40021014 |= 0x1 << 0 | 0x1 << 1; //DMA1 clock enable
+    *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
+ 8000204:	6003      	str	r3, [r0, #0]
+    *(volatile unsigned long *)0x40010804 = 0x888444B4; //GPIO A CRH bit
+ 8000206:	f8cc 8000 	str.w	r8, [ip]
+    	 - One Stop Bit
+    	 - No parity
+    	 - Hardware flow control disabled (RTS and CTS signals)
+    	 - Receive and transmit enabled
+    	*/
+    *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
+ 800020a:	f8ce 1000 	str.w	r1, [lr]
+    *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
+ 800020e:	6017      	str	r7, [r2, #0]
+    *(volatile unsigned long *) 0x40013814 = 0x0;
+ 8000210:	6031      	str	r1, [r6, #0]
+    *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; //OSC 32MHz 115200bps Setting
+ 8000212:	6025      	str	r5, [r4, #0]
+    //*(volatile unsigned long *)0x40013808 = 39 << 4 | 1; //OSC 72MHz 115200bps Setting
+    *(volatile unsigned long *) 0x4001380C |= 0x2000;
+ 8000214:	6813      	ldr	r3, [r2, #0]
+
+    main(); //jump main function
+ 8000216:	490e      	ldr	r1, [pc, #56]	; (8000250 <zero_loop+0x10c>)
+    *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
+    *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
+    *(volatile unsigned long *) 0x40013814 = 0x0;
+    *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; //OSC 32MHz 115200bps Setting
+    //*(volatile unsigned long *)0x40013808 = 39 << 4 | 1; //OSC 72MHz 115200bps Setting
+    *(volatile unsigned long *) 0x4001380C |= 0x2000;
+ 8000218:	f443 5300 	orr.w	r3, r3, #8192	; 0x2000
+ 800021c:	6013      	str	r3, [r2, #0]
+
+    main(); //jump main function
+ 800021e:	4788      	blx	r1
+
+        printf("failed load ..");
+
+    #endif
+
+}
+ 8000220:	e8bd 41f9 	ldmia.w	sp!, {r0, r3, r4, r5, r6, r7, r8, lr}
+ 8000224:	4685      	mov	sp, r0
+ 8000226:	4770      	bx	lr
+ 8000228:	20000000 	.word	0x20000000
+ 800022c:	20000014 	.word	0x20000014
+ 8000230:	08000a18 	.word	0x08000a18
+ 8000234:	40021000 	.word	0x40021000
+ 8000238:	40022000 	.word	0x40022000
+ 800023c:	40021004 	.word	0x40021004
+ 8000240:	40021014 	.word	0x40021014
+ 8000244:	40021018 	.word	0x40021018
+ 8000248:	40013814 	.word	0x40013814
+ 800024c:	40013808 	.word	0x40013808
+ 8000250:	08000969 	.word	0x08000969
+ 8000254:	40013810 	.word	0x40013810
+ 8000258:	40010804 	.word	0x40010804
+ 800025c:	888444b4 	.word	0x888444b4
+ 8000260:	20000014 	.word	0x20000014
+ 8000264:	20000018 	.word	0x20000018
+
+08000268 <Hw_Init>:
+
+#include "Hw.h"
+
+
+HW_DEF void Hw_Init()
+{
+ 8000268:	b508      	push	{r3, lr}
+
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOA; //usart set 
+ 800026a:	4b08      	ldr	r3, [pc, #32]	; (800028c <Hw_Init+0x24>)
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOB; 
+    RCC->APB2ENR |= RCC_APB2Periph_USART1; //usart set
+    
+    GPIO_Configuration();
+ 800026c:	4908      	ldr	r1, [pc, #32]	; (8000290 <Hw_Init+0x28>)
+
+
+HW_DEF void Hw_Init()
+{
+
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOA; //usart set 
+ 800026e:	699a      	ldr	r2, [r3, #24]
+ 8000270:	f042 0204 	orr.w	r2, r2, #4
+ 8000274:	619a      	str	r2, [r3, #24]
+    RCC->APB2ENR |= RCC_APB2Periph_GPIOB; 
+ 8000276:	699a      	ldr	r2, [r3, #24]
+ 8000278:	f042 0208 	orr.w	r2, r2, #8
+ 800027c:	619a      	str	r2, [r3, #24]
+    RCC->APB2ENR |= RCC_APB2Periph_USART1; //usart set
+ 800027e:	699a      	ldr	r2, [r3, #24]
+ 8000280:	f442 4280 	orr.w	r2, r2, #16384	; 0x4000
+ 8000284:	619a      	str	r2, [r3, #24]
+    
+    GPIO_Configuration();
+ 8000286:	4788      	blx	r1
+ 8000288:	bd08      	pop	{r3, pc}
+ 800028a:	bf00      	nop
+ 800028c:	40021000 	.word	0x40021000
+ 8000290:	08000351 	.word	0x08000351
+
+08000294 <GPIO_Init>:
+
+#include "Hw_Gpio.h"
+
+
+GPIO_DEF void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct)
+{
+ 8000294:	e92d 41f0 	stmdb	sp!, {r4, r5, r6, r7, r8, lr}
+    uint32_t currentmode = 0x00, currentpin = 0x00, pinpos = 0x00, pos = 0x00;
+    uint32_t tmpreg = 0x00, pinmask = 0x00;
+/*--------------- GPIO Mode Configuration -----------------*/
+    currentmode = ((uint32_t)GPIO_InitStruct->GPIO_Mode) & ((uint32_t)0x0F);
+ 8000298:	78cd      	ldrb	r5, [r1, #3]
+
+    if((((uint32_t)GPIO_InitStruct->GPIO_Mode)&((uint32_t)0x10)) != 0x00)
+ 800029a:	06eb      	lsls	r3, r5, #27
+    {
+        currentmode |= GPIO_InitStruct->GPIO_Speed;
+ 800029c:	bf48      	it	mi
+ 800029e:	788b      	ldrbmi	r3, [r1, #2]
+    }
+/*--------------- GPIO CRL Configuration -----------------*/
+    if(((uint32_t)GPIO_InitStruct->GPIO_Pin &((uint32_t)0x00FF)) != 0x00)
+ 80002a0:	8809      	ldrh	r1, [r1, #0]
+GPIO_DEF void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct)
+{
+    uint32_t currentmode = 0x00, currentpin = 0x00, pinpos = 0x00, pos = 0x00;
+    uint32_t tmpreg = 0x00, pinmask = 0x00;
+/*--------------- GPIO Mode Configuration -----------------*/
+    currentmode = ((uint32_t)GPIO_InitStruct->GPIO_Mode) & ((uint32_t)0x0F);
+ 80002a2:	f005 0e0f 	and.w	lr, r5, #15
+
+    if((((uint32_t)GPIO_InitStruct->GPIO_Mode)&((uint32_t)0x10)) != 0x00)
+    {
+        currentmode |= GPIO_InitStruct->GPIO_Speed;
+ 80002a6:	bf48      	it	mi
+ 80002a8:	ea4e 0e03 	orrmi.w	lr, lr, r3
+    }
+/*--------------- GPIO CRL Configuration -----------------*/
+    if(((uint32_t)GPIO_InitStruct->GPIO_Pin &((uint32_t)0x00FF)) != 0x00)
+ 80002ac:	f011 0fff 	tst.w	r1, #255	; 0xff
+ 80002b0:	d021      	beq.n	80002f6 <GPIO_Init+0x62>
+    {
+        tmpreg = GPIOx->CRL;
+ 80002b2:	6806      	ldr	r6, [r0, #0]
+        for(pinpos = 0x00; pinpos < 0x08; pinpos++)
+ 80002b4:	2300      	movs	r3, #0
+        {
+            pos = ((uint32_t)0x01) << pinpos;
+ 80002b6:	2701      	movs	r7, #1
+
+            currentpin = (GPIO_InitStruct->GPIO_Pin) & pos;
+            if(currentpin == pos)
+            {
+                pos = pinpos << 2;
+                pinmask = ((uint32_t)0x0F) << pos;
+ 80002b8:	f04f 080f 	mov.w	r8, #15
+ 80002bc:	e002      	b.n	80002c4 <GPIO_Init+0x30>
+    }
+/*--------------- GPIO CRL Configuration -----------------*/
+    if(((uint32_t)GPIO_InitStruct->GPIO_Pin &((uint32_t)0x00FF)) != 0x00)
+    {
+        tmpreg = GPIOx->CRL;
+        for(pinpos = 0x00; pinpos < 0x08; pinpos++)
+ 80002be:	3301      	adds	r3, #1
+ 80002c0:	2b08      	cmp	r3, #8
+ 80002c2:	d017      	beq.n	80002f4 <GPIO_Init+0x60>
+        {
+            pos = ((uint32_t)0x01) << pinpos;
+ 80002c4:	fa07 f203 	lsl.w	r2, r7, r3
+
+            currentpin = (GPIO_InitStruct->GPIO_Pin) & pos;
+ 80002c8:	ea02 0401 	and.w	r4, r2, r1
+            if(currentpin == pos)
+ 80002cc:	4294      	cmp	r4, r2
+ 80002ce:	d1f6      	bne.n	80002be <GPIO_Init+0x2a>
+            {
+                pos = pinpos << 2;
+ 80002d0:	009a      	lsls	r2, r3, #2
+                pinmask = ((uint32_t)0x0F) << pos;
+ 80002d2:	fa08 fc02 	lsl.w	ip, r8, r2
+                tmpreg &= ~pinmask;
+ 80002d6:	ea26 060c 	bic.w	r6, r6, ip
+                tmpreg |= (currentmode << pos);
+ 80002da:	fa0e f202 	lsl.w	r2, lr, r2
+                if(GPIO_InitStruct->GPIO_Mode == GPIO_Mode_IPD)
+ 80002de:	2d28      	cmp	r5, #40	; 0x28
+            if(currentpin == pos)
+            {
+                pos = pinpos << 2;
+                pinmask = ((uint32_t)0x0F) << pos;
+                tmpreg &= ~pinmask;
+                tmpreg |= (currentmode << pos);
+ 80002e0:	ea46 0602 	orr.w	r6, r6, r2
+                if(GPIO_InitStruct->GPIO_Mode == GPIO_Mode_IPD)
+ 80002e4:	d031      	beq.n	800034a <GPIO_Init+0xb6>
+                {
+                    GPIOx->BRR = (((uint32_t)0x01) << pinpos);
+                }else
+                {
+                    if(GPIO_InitStruct->GPIO_Mode == GPIO_Mode_IPU)
+ 80002e6:	2d48      	cmp	r5, #72	; 0x48
+    }
+/*--------------- GPIO CRL Configuration -----------------*/
+    if(((uint32_t)GPIO_InitStruct->GPIO_Pin &((uint32_t)0x00FF)) != 0x00)
+    {
+        tmpreg = GPIOx->CRL;
+        for(pinpos = 0x00; pinpos < 0x08; pinpos++)
+ 80002e8:	f103 0301 	add.w	r3, r3, #1
+                    GPIOx->BRR = (((uint32_t)0x01) << pinpos);
+                }else
+                {
+                    if(GPIO_InitStruct->GPIO_Mode == GPIO_Mode_IPU)
+                    {
+                        GPIOx->BSRR = (((uint32_t)0x01) << pinpos);
+ 80002ec:	bf08      	it	eq
+ 80002ee:	6104      	streq	r4, [r0, #16]
+    }
+/*--------------- GPIO CRL Configuration -----------------*/
+    if(((uint32_t)GPIO_InitStruct->GPIO_Pin &((uint32_t)0x00FF)) != 0x00)
+    {
+        tmpreg = GPIOx->CRL;
+        for(pinpos = 0x00; pinpos < 0x08; pinpos++)
+ 80002f0:	2b08      	cmp	r3, #8
+ 80002f2:	d1e7      	bne.n	80002c4 <GPIO_Init+0x30>
+                        GPIOx->BSRR = (((uint32_t)0x01) << pinpos);
+                    }
+                }
+            }
+        }
+        GPIOx->CRL = tmpreg;
+ 80002f4:	6006      	str	r6, [r0, #0]
+    }
+    /*--------------- GPIO CRH Configuration -----------------*/
+    if(GPIO_InitStruct->GPIO_Pin > 0x00FF)
+ 80002f6:	29ff      	cmp	r1, #255	; 0xff
+ 80002f8:	d923      	bls.n	8000342 <GPIO_Init+0xae>
+    {
+        tmpreg = GPIOx->CRH;
+ 80002fa:	6846      	ldr	r6, [r0, #4]
+        for(pinpos = 0x00;pinpos < 0x08;pinpos++)
+ 80002fc:	2300      	movs	r3, #0
+        {
+            pos = (((uint32_t)0x01) << (pinpos+0x08));
+ 80002fe:	2701      	movs	r7, #1
+            currentpin = ((GPIO_InitStruct->GPIO_Pin)&pos);
+            if(currentpin == pos)
+            {
+                pos = pinpos << 2;
+                pinmask = ((uint32_t)0x0F) << pos;
+ 8000300:	f04f 0c0f 	mov.w	ip, #15
+ 8000304:	e002      	b.n	800030c <GPIO_Init+0x78>
+    }
+    /*--------------- GPIO CRH Configuration -----------------*/
+    if(GPIO_InitStruct->GPIO_Pin > 0x00FF)
+    {
+        tmpreg = GPIOx->CRH;
+        for(pinpos = 0x00;pinpos < 0x08;pinpos++)
+ 8000306:	3301      	adds	r3, #1
+ 8000308:	2b08      	cmp	r3, #8
+ 800030a:	d019      	beq.n	8000340 <GPIO_Init+0xac>
+ 800030c:	f103 0208 	add.w	r2, r3, #8
+        {
+            pos = (((uint32_t)0x01) << (pinpos+0x08));
+ 8000310:	fa07 f202 	lsl.w	r2, r7, r2
+            currentpin = ((GPIO_InitStruct->GPIO_Pin)&pos);
+ 8000314:	ea02 0401 	and.w	r4, r2, r1
+            if(currentpin == pos)
+ 8000318:	4294      	cmp	r4, r2
+ 800031a:	d1f4      	bne.n	8000306 <GPIO_Init+0x72>
+            {
+                pos = pinpos << 2;
+ 800031c:	009a      	lsls	r2, r3, #2
+                pinmask = ((uint32_t)0x0F) << pos;
+ 800031e:	fa0c f802 	lsl.w	r8, ip, r2
+                tmpreg &= ~pinmask;
+ 8000322:	ea26 0608 	bic.w	r6, r6, r8
+                tmpreg |= (currentmode << pos);
+ 8000326:	fa0e f202 	lsl.w	r2, lr, r2
+                if(GPIO_InitStruct->GPIO_Mode == GPIO_Mode_IPD)
+ 800032a:	2d28      	cmp	r5, #40	; 0x28
+            if(currentpin == pos)
+            {
+                pos = pinpos << 2;
+                pinmask = ((uint32_t)0x0F) << pos;
+                tmpreg &= ~pinmask;
+                tmpreg |= (currentmode << pos);
+ 800032c:	ea46 0602 	orr.w	r6, r6, r2
+                if(GPIO_InitStruct->GPIO_Mode == GPIO_Mode_IPD)
+ 8000330:	d009      	beq.n	8000346 <GPIO_Init+0xb2>
+                {
+                    GPIOx->BRR = (((uint32_t)0x01) <<(pinpos + 0x08));
+                }
+                if(GPIO_InitStruct->GPIO_Mode == GPIO_Mode_IPU)
+ 8000332:	2d48      	cmp	r5, #72	; 0x48
+    }
+    /*--------------- GPIO CRH Configuration -----------------*/
+    if(GPIO_InitStruct->GPIO_Pin > 0x00FF)
+    {
+        tmpreg = GPIOx->CRH;
+        for(pinpos = 0x00;pinpos < 0x08;pinpos++)
+ 8000334:	f103 0301 	add.w	r3, r3, #1
+                {
+                    GPIOx->BRR = (((uint32_t)0x01) <<(pinpos + 0x08));
+                }
+                if(GPIO_InitStruct->GPIO_Mode == GPIO_Mode_IPU)
+                {
+                    GPIOx->BSRR = (((uint32_t)0x01) << (pinpos + 0x08));
+ 8000338:	bf08      	it	eq
+ 800033a:	6104      	streq	r4, [r0, #16]
+    }
+    /*--------------- GPIO CRH Configuration -----------------*/
+    if(GPIO_InitStruct->GPIO_Pin > 0x00FF)
+    {
+        tmpreg = GPIOx->CRH;
+        for(pinpos = 0x00;pinpos < 0x08;pinpos++)
+ 800033c:	2b08      	cmp	r3, #8
+ 800033e:	d1e5      	bne.n	800030c <GPIO_Init+0x78>
+                {
+                    GPIOx->BSRR = (((uint32_t)0x01) << (pinpos + 0x08));
+                }
+            }
+        }
+        GPIOx->CRH = tmpreg;
+ 8000340:	6046      	str	r6, [r0, #4]
+ 8000342:	e8bd 81f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, pc}
+                pinmask = ((uint32_t)0x0F) << pos;
+                tmpreg &= ~pinmask;
+                tmpreg |= (currentmode << pos);
+                if(GPIO_InitStruct->GPIO_Mode == GPIO_Mode_IPD)
+                {
+                    GPIOx->BRR = (((uint32_t)0x01) <<(pinpos + 0x08));
+ 8000346:	6144      	str	r4, [r0, #20]
+ 8000348:	e7dd      	b.n	8000306 <GPIO_Init+0x72>
+                pinmask = ((uint32_t)0x0F) << pos;
+                tmpreg &= ~pinmask;
+                tmpreg |= (currentmode << pos);
+                if(GPIO_InitStruct->GPIO_Mode == GPIO_Mode_IPD)
+                {
+                    GPIOx->BRR = (((uint32_t)0x01) << pinpos);
+ 800034a:	6144      	str	r4, [r0, #20]
+ 800034c:	e7b7      	b.n	80002be <GPIO_Init+0x2a>
+ 800034e:	bf00      	nop
+
+08000350 <GPIO_Configuration>:
+    }
+    return bitstatus;
+}
+
+GPIO_DEF void GPIO_Configuration(void)
+{
+ 8000350:	b570      	push	{r4, r5, r6, lr}
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.GPIO_Pin = GPIO_USART_Tx_Pin;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+ 8000352:	4d0e      	ldr	r5, [pc, #56]	; (800038c <GPIO_Configuration+0x3c>)
+    }
+    return bitstatus;
+}
+
+GPIO_DEF void GPIO_Configuration(void)
+{
+ 8000354:	b082      	sub	sp, #8
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.GPIO_Pin = GPIO_USART_Tx_Pin;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+ 8000356:	4628      	mov	r0, r5
+ 8000358:	a901      	add	r1, sp, #4
+
+GPIO_DEF void GPIO_Configuration(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.GPIO_Pin = GPIO_USART_Tx_Pin;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 800035a:	2203      	movs	r2, #3
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+ 800035c:	2318      	movs	r3, #24
+    GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+ 800035e:	4c0c      	ldr	r4, [pc, #48]	; (8000390 <GPIO_Configuration+0x40>)
+}
+
+GPIO_DEF void GPIO_Configuration(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.GPIO_Pin = GPIO_USART_Tx_Pin;
+ 8000360:	f44f 7600 	mov.w	r6, #512	; 0x200
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 8000364:	f88d 2006 	strb.w	r2, [sp, #6]
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+ 8000368:	f88d 3007 	strb.w	r3, [sp, #7]
+}
+
+GPIO_DEF void GPIO_Configuration(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.GPIO_Pin = GPIO_USART_Tx_Pin;
+ 800036c:	f8ad 6004 	strh.w	r6, [sp, #4]
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+ 8000370:	47a0      	blx	r4
+    GPIO_InitStructure.GPIO_Pin = GPIO_USART_Rx_Pin;
+ 8000372:	f44f 6280 	mov.w	r2, #1024	; 0x400
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+ 8000376:	2304      	movs	r3, #4
+    GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+ 8000378:	4628      	mov	r0, r5
+ 800037a:	a901      	add	r1, sp, #4
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.GPIO_Pin = GPIO_USART_Tx_Pin;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Pin = GPIO_USART_Rx_Pin;
+ 800037c:	f8ad 2004 	strh.w	r2, [sp, #4]
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+ 8000380:	f88d 3007 	strb.w	r3, [sp, #7]
+    GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+ 8000384:	47a0      	blx	r4
+
+ 8000386:	b002      	add	sp, #8
+ 8000388:	bd70      	pop	{r4, r5, r6, pc}
+ 800038a:	bf00      	nop
+ 800038c:	40010800 	.word	0x40010800
+ 8000390:	08000295 	.word	0x08000295
+
+08000394 <print_byte>:
+ *******************************************************************************/
+#include "Ld_Printf.h"
+
+void print_byte(unsigned int c)
+{
+    if (c == '\n') print_byte('\r');
+ 8000394:	280a      	cmp	r0, #10
+ * @date      04/15/2013
+ *******************************************************************************/
+#include "Ld_Printf.h"
+
+void print_byte(unsigned int c)
+{
+ 8000396:	b510      	push	{r4, lr}
+ 8000398:	4604      	mov	r4, r0
+    if (c == '\n') print_byte('\r');
+ 800039a:	d006      	beq.n	80003aa <print_byte+0x16>
+    while( !((*(volatile unsigned long *) 0x40013800) & 0x80) ) ;
+ 800039c:	4a05      	ldr	r2, [pc, #20]	; (80003b4 <print_byte+0x20>)
+ 800039e:	6813      	ldr	r3, [r2, #0]
+ 80003a0:	061b      	lsls	r3, r3, #24
+ 80003a2:	d5fc      	bpl.n	800039e <print_byte+0xa>
+    *(volatile unsigned long *) 0x40013804 = c;
+ 80003a4:	4b04      	ldr	r3, [pc, #16]	; (80003b8 <print_byte+0x24>)
+ 80003a6:	601c      	str	r4, [r3, #0]
+ 80003a8:	bd10      	pop	{r4, pc}
+ *******************************************************************************/
+#include "Ld_Printf.h"
+
+void print_byte(unsigned int c)
+{
+    if (c == '\n') print_byte('\r');
+ 80003aa:	200d      	movs	r0, #13
+ 80003ac:	f7ff fff2 	bl	8000394 <print_byte>
+ 80003b0:	e7f4      	b.n	800039c <print_byte+0x8>
+ 80003b2:	bf00      	nop
+ 80003b4:	40013800 	.word	0x40013800
+ 80003b8:	40013804 	.word	0x40013804
+
+080003bc <DecToLong>:
+//        retval : ��ȯ�� ���� ��ϵ� �ּ�.
+// ��ȯ : return : 1 : success                0 : failure.
+// ���� :
+int DecToLong(char *s, long *retval){
+        long remainder;
+        if (!s || !s[0]) return false;
+ 80003bc:	b1e8      	cbz	r0, 80003fa <DecToLong+0x3e>
+ 80003be:	7803      	ldrb	r3, [r0, #0]
+ 80003c0:	b1db      	cbz	r3, 80003fa <DecToLong+0x3e>
+
+
+        for (*retval=0; *s; s++){
+ 80003c2:	2300      	movs	r3, #0
+ 80003c4:	600b      	str	r3, [r1, #0]
+ 80003c6:	7802      	ldrb	r2, [r0, #0]
+ 80003c8:	b1e2      	cbz	r2, 8000404 <DecToLong+0x48>
+// ���� : 10���� ���ڿ� s���� ������ ����� retval�� ����Ű�� ��ġ�� ���.
+// �Ű� : s      : ��ȯ�� ���ڿ��� �ּ�.
+//        retval : ��ȯ�� ���� ��ϵ� �ּ�.
+// ��ȯ : return : 1 : success                0 : failure.
+// ���� :
+int DecToLong(char *s, long *retval){
+ 80003ca:	b430      	push	{r4, r5}
+        long remainder;
+        if (!s || !s[0]) return false;
+
+
+        for (*retval=0; *s; s++){
+                if (*s < '0' || *s > '9') return false;
+ 80003cc:	f1a2 0430 	sub.w	r4, r2, #48	; 0x30
+ 80003d0:	b2e2      	uxtb	r2, r4
+ 80003d2:	2a09      	cmp	r2, #9
+ 80003d4:	d902      	bls.n	80003dc <DecToLong+0x20>
+ 80003d6:	e012      	b.n	80003fe <DecToLong+0x42>
+ 80003d8:	2d09      	cmp	r5, #9
+ 80003da:	d810      	bhi.n	80003fe <DecToLong+0x42>
+                remainder = *s - '0';
+                *retval = *retval * 10 + remainder;
+ 80003dc:	eb03 0383 	add.w	r3, r3, r3, lsl #2
+ 80003e0:	eb04 0343 	add.w	r3, r4, r3, lsl #1
+ 80003e4:	600b      	str	r3, [r1, #0]
+int DecToLong(char *s, long *retval){
+        long remainder;
+        if (!s || !s[0]) return false;
+
+
+        for (*retval=0; *s; s++){
+ 80003e6:	f810 2f01 	ldrb.w	r2, [r0, #1]!
+                if (*s < '0' || *s > '9') return false;
+ 80003ea:	f1a2 0430 	sub.w	r4, r2, #48	; 0x30
+ 80003ee:	b2e5      	uxtb	r5, r4
+int DecToLong(char *s, long *retval){
+        long remainder;
+        if (!s || !s[0]) return false;
+
+
+        for (*retval=0; *s; s++){
+ 80003f0:	2a00      	cmp	r2, #0
+ 80003f2:	d1f1      	bne.n	80003d8 <DecToLong+0x1c>
+                remainder = *s - '0';
+                *retval = *retval * 10 + remainder;
+        }
+
+
+        return true;
+ 80003f4:	2001      	movs	r0, #1
+}        // DecToLong.
+ 80003f6:	bc30      	pop	{r4, r5}
+ 80003f8:	4770      	bx	lr
+//        retval : ��ȯ�� ���� ��ϵ� �ּ�.
+// ��ȯ : return : 1 : success                0 : failure.
+// ���� :
+int DecToLong(char *s, long *retval){
+        long remainder;
+        if (!s || !s[0]) return false;
+ 80003fa:	2000      	movs	r0, #0
+                *retval = *retval * 10 + remainder;
+        }
+
+
+        return true;
+}        // DecToLong.
+ 80003fc:	4770      	bx	lr
+//        retval : ��ȯ�� ���� ��ϵ� �ּ�.
+// ��ȯ : return : 1 : success                0 : failure.
+// ���� :
+int DecToLong(char *s, long *retval){
+        long remainder;
+        if (!s || !s[0]) return false;
+ 80003fe:	2000      	movs	r0, #0
+                *retval = *retval * 10 + remainder;
+        }
+
+
+        return true;
+}        // DecToLong.
+ 8000400:	bc30      	pop	{r4, r5}
+ 8000402:	4770      	bx	lr
+                remainder = *s - '0';
+                *retval = *retval * 10 + remainder;
+        }
+
+
+        return true;
+ 8000404:	2001      	movs	r0, #1
+}        // DecToLong.
+ 8000406:	4770      	bx	lr
+
+08000408 <printf>:
+// �Ű� : fmt : printf()�� �����ϳ� "%s", "%c", "%d", "%x" ��� ����.
+//              %d, %x�� ��쿡�� "%08x", "%8x"�� ���� ��Ÿ�� ���̿� �� ������ 0���� ä���� ���� ����.
+// ��ȯ : ����.
+// ���� : ����.
+LDSTRING_DEF void printf(char *fmt, ...)
+{
+ 8000408:	b40f      	push	{r0, r1, r2, r3}
+ 800040a:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 800040e:	b089      	sub	sp, #36	; 0x24
+        int                i;
+        va_list args;
+        char        *s=fmt;
+ 8000410:	f10d 0848 	add.w	r8, sp, #72	; 0x48
+        return;
+}
+
+void PrintChar(char *fmt, char c)
+{
+        print_byte(c);
+ 8000414:	4ec6      	ldr	r6, [pc, #792]	; (8000730 <printf+0x328>)
+// ���� : ����.
+LDSTRING_DEF void printf(char *fmt, ...)
+{
+        int                i;
+        va_list args;
+        char        *s=fmt;
+ 8000416:	f858 5b04 	ldr.w	r5, [r8], #4
+        char        format[10];        // fmt�� ���ڰ� "%08lx"���, "08l"�� �ӽ÷� ���.
+        
+        va_start(args, fmt);
+        while (*s){
+ 800041a:	7828      	ldrb	r0, [r5, #0]
+ 800041c:	b3a0      	cbz	r0, 8000488 <printf+0x80>
+                if (*s=='%'){
+ 800041e:	2825      	cmp	r0, #37	; 0x25
+ 8000420:	d137      	bne.n	8000492 <printf+0x8a>
+                        s++;
+                        // s���� "%08lx"������ ������ format�� ���. ���߿� ����Լ��� �Ѱ���.
+                        format[0] = '%';
+ 8000422:	ac08      	add	r4, sp, #32
+ 8000424:	f804 0d18 	strb.w	r0, [r4, #-24]!
+ 8000428:	4621      	mov	r1, r4
+        char        format[10];        // fmt�� ���ڰ� "%08lx"���, "08l"�� �ӽ÷� ���.
+        
+        va_start(args, fmt);
+        while (*s){
+                if (*s=='%'){
+                        s++;
+ 800042a:	1c6b      	adds	r3, r5, #1
+ 800042c:	f105 0c0a 	add.w	ip, r5, #10
+ 8000430:	1b5f      	subs	r7, r3, r5
+ 8000432:	469e      	mov	lr, r3
+                        // s���� "%08lx"������ ������ format�� ���. ���߿� ����Լ��� �Ѱ���.
+                        format[0] = '%';
+                        for (i=1; i<10;){
+                                if (*s=='c' || *s=='d' || *s=='x' || *s=='s' || *s=='%'){
+ 8000434:	f813 0b01 	ldrb.w	r0, [r3], #1
+ 8000438:	f1a0 0263 	sub.w	r2, r0, #99	; 0x63
+ 800043c:	2a01      	cmp	r2, #1
+ 800043e:	f240 8095 	bls.w	800056c <printf+0x164>
+ 8000442:	2878      	cmp	r0, #120	; 0x78
+ 8000444:	f000 8092 	beq.w	800056c <printf+0x164>
+ 8000448:	2873      	cmp	r0, #115	; 0x73
+ 800044a:	f000 808f 	beq.w	800056c <printf+0x164>
+ 800044e:	2825      	cmp	r0, #37	; 0x25
+ 8000450:	f000 808c 	beq.w	800056c <printf+0x164>
+        while (*s){
+                if (*s=='%'){
+                        s++;
+                        // s���� "%08lx"������ ������ format�� ���. ���߿� ����Լ��� �Ѱ���.
+                        format[0] = '%';
+                        for (i=1; i<10;){
+ 8000454:	4563      	cmp	r3, ip
+                                        format[i++] = *s;
+                                        format[i] = '\0';
+                                        break;
+                                }
+                                else {
+                                        format[i++] = *s++;
+ 8000456:	461a      	mov	r2, r3
+ 8000458:	f801 0f01 	strb.w	r0, [r1, #1]!
+        while (*s){
+                if (*s=='%'){
+                        s++;
+                        // s���� "%08lx"������ ������ format�� ���. ���߿� ����Լ��� �Ѱ���.
+                        format[0] = '%';
+                        for (i=1; i<10;){
+ 800045c:	d1e8      	bne.n	8000430 <printf+0x28>
+ 800045e:	f89e 0001 	ldrb.w	r0, [lr, #1]
+                                else {
+                                        format[i++] = *s++;
+                                }
+                        }
+                        // "%s", "%c", "%d", "%x"�� ã�� ����� �Լ� ȣ��.
+                        switch (*s++){
+ 8000462:	1c55      	adds	r5, r2, #1
+ 8000464:	2864      	cmp	r0, #100	; 0x64
+ 8000466:	f000 808f 	beq.w	8000588 <printf+0x180>
+ 800046a:	d815      	bhi.n	8000498 <printf+0x90>
+ 800046c:	2825      	cmp	r0, #37	; 0x25
+ 800046e:	f000 810c 	beq.w	800068a <printf+0x282>
+ 8000472:	2863      	cmp	r0, #99	; 0x63
+ 8000474:	d1d1      	bne.n	800041a <printf+0x12>
+        return;
+}
+
+void PrintChar(char *fmt, char c)
+{
+        print_byte(c);
+ 8000476:	f898 0000 	ldrb.w	r0, [r8]
+ 800047a:	47b0      	blx	r6
+        va_list args;
+        char        *s=fmt;
+        char        format[10];        // fmt�� ���ڰ� "%08lx"���, "08l"�� �ӽ÷� ���.
+        
+        va_start(args, fmt);
+        while (*s){
+ 800047c:	7828      	ldrb	r0, [r5, #0]
+                                }
+                        }
+                        // "%s", "%c", "%d", "%x"�� ã�� ����� �Լ� ȣ��.
+                        switch (*s++){
+                                case 'c' :
+                                        PrintChar(format, va_arg(args, int));
+ 800047e:	f108 0404 	add.w	r4, r8, #4
+ 8000482:	46a0      	mov	r8, r4
+        va_list args;
+        char        *s=fmt;
+        char        format[10];        // fmt�� ���ڰ� "%08lx"���, "08l"�� �ӽ÷� ���.
+        
+        va_start(args, fmt);
+        while (*s){
+ 8000484:	2800      	cmp	r0, #0
+ 8000486:	d1ca      	bne.n	800041e <printf+0x16>
+                        s++;
+                }
+        }
+        va_end(args);
+        return;
+}
+ 8000488:	b009      	add	sp, #36	; 0x24
+ 800048a:	e8bd 4ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 800048e:	b004      	add	sp, #16
+ 8000490:	4770      	bx	lr
+
+void PrintChar(char *fmt, char c)
+{
+        print_byte(c);
+ 8000492:	47b0      	blx	r6
+                                        break;
+                        }
+                }
+                else {
+                        PrintChar("%c", *s);
+                        s++;
+ 8000494:	3501      	adds	r5, #1
+ 8000496:	e7c0      	b.n	800041a <printf+0x12>
+                                else {
+                                        format[i++] = *s++;
+                                }
+                        }
+                        // "%s", "%c", "%d", "%x"�� ã�� ����� �Լ� ȣ��.
+                        switch (*s++){
+ 8000498:	2873      	cmp	r0, #115	; 0x73
+ 800049a:	f000 80f8 	beq.w	800068e <printf+0x286>
+ 800049e:	2878      	cmp	r0, #120	; 0x78
+ 80004a0:	d1bb      	bne.n	800041a <printf+0x12>
+                                        break;
+                                case 'd' :
+                                        PrintDec(format, va_arg(args, int));
+                                        break;
+                                case 'x' :
+                                        PrintHex(format, va_arg(args, int));
+ 80004a2:	f8d8 a000 	ldr.w	sl, [r8]
+        char        uHex, lHex;
+        int                cnt;                                                // "%5x"�� ��� 5���� ����ϵ��� ����� ����.
+
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+ 80004a6:	f89d 3008 	ldrb.w	r3, [sp, #8]
+
+void PrintHex(char *fmt, int l){
+        int                i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // flags.
+        long        flagcnt=0;
+ 80004aa:	2700      	movs	r7, #0
+ 80004ac:	f8cd a000 	str.w	sl, [sp]
+                                        break;
+                                case 'd' :
+                                        PrintDec(format, va_arg(args, int));
+                                        break;
+                                case 'x' :
+                                        PrintHex(format, va_arg(args, int));
+ 80004b0:	f108 0804 	add.w	r8, r8, #4
+
+void PrintHex(char *fmt, int l){
+        int                i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // flags.
+        long        flagcnt=0;
+ 80004b4:	9701      	str	r7, [sp, #4]
+        char        uHex, lHex;
+        int                cnt;                                                // "%5x"�� ��� 5���� ����ϵ��� ����� ����.
+
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+ 80004b6:	2b00      	cmp	r3, #0
+ 80004b8:	f000 80ff 	beq.w	80006ba <printf+0x2b2>
+                if (c=='x') break;
+ 80004bc:	2b78      	cmp	r3, #120	; 0x78
+ 80004be:	f000 80fc 	beq.w	80006ba <printf+0x2b2>
+ 80004c2:	46bb      	mov	fp, r7
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 80004c4:	46b9      	mov	r9, r7
+
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='x') break;
+                else if (c>='1' && c<='9'){
+ 80004c6:	f1a3 0231 	sub.w	r2, r3, #49	; 0x31
+ 80004ca:	2a08      	cmp	r2, #8
+ 80004cc:	d84a      	bhi.n	8000564 <printf+0x15c>
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 80004ce:	f814 300b 	ldrb.w	r3, [r4, fp]
+ 80004d2:	eb04 010b 	add.w	r1, r4, fp
+ 80004d6:	f1a3 0230 	sub.w	r2, r3, #48	; 0x30
+ 80004da:	2a09      	cmp	r2, #9
+ 80004dc:	f200 814f 	bhi.w	800077e <printf+0x376>
+ 80004e0:	a805      	add	r0, sp, #20
+ 80004e2:	4686      	mov	lr, r0
+ 80004e4:	2200      	movs	r2, #0
+                                tol[j] = s[i++];
+ 80004e6:	f80e 3b01 	strb.w	r3, [lr], #1
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='x') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 80004ea:	f811 3f01 	ldrb.w	r3, [r1, #1]!
+                                tol[j] = s[i++];
+ 80004ee:	f10b 0b01 	add.w	fp, fp, #1
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='x') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 80004f2:	f1a3 0c30 	sub.w	ip, r3, #48	; 0x30
+ 80004f6:	f1bc 0f09 	cmp.w	ip, #9
+ 80004fa:	f102 0201 	add.w	r2, r2, #1
+ 80004fe:	d9f2      	bls.n	80004e6 <printf+0xde>
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 8000500:	ab08      	add	r3, sp, #32
+ 8000502:	441a      	add	r2, r3
+                        i--;
+                        DecToLong(tol, &flagcnt);
+ 8000504:	a901      	add	r1, sp, #4
+ 8000506:	4b8b      	ldr	r3, [pc, #556]	; (8000734 <printf+0x32c>)
+                if (c=='x') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 8000508:	f802 9c0c 	strb.w	r9, [r2, #-12]
+                        i--;
+ 800050c:	f10b 3bff 	add.w	fp, fp, #4294967295
+                        DecToLong(tol, &flagcnt);
+ 8000510:	4798      	blx	r3
+        char        uHex, lHex;
+        int                cnt;                                                // "%5x"�� ��� 5���� ����ϵ��� ����� ����.
+
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+ 8000512:	f10b 0b01 	add.w	fp, fp, #1
+ 8000516:	ab08      	add	r3, sp, #32
+ 8000518:	445b      	add	r3, fp
+ 800051a:	f813 3c18 	ldrb.w	r3, [r3, #-24]
+ 800051e:	b10b      	cbz	r3, 8000524 <printf+0x11c>
+                if (c=='x') break;
+ 8000520:	2b78      	cmp	r3, #120	; 0x78
+ 8000522:	d1d0      	bne.n	80004c6 <printf+0xbe>
+ 8000524:	9b01      	ldr	r3, [sp, #4]
+ 8000526:	fa9a f28a 	rev.w	r2, sl
+                else continue;
+        }
+
+
+        s = (char *)(&l);
+        l = SWAP32(l);                // little, big endian�� ����.(big�� ����ϱ� ���� ������ �ٲ�)
+ 800052a:	9200      	str	r2, [sp, #0]
+        
+        // ���� flag�� ���� ���.
+        if (flagcnt){
+ 800052c:	2b00      	cmp	r3, #0
+ 800052e:	f000 80c7 	beq.w	80006c0 <printf+0x2b8>
+                if (flagcnt&0x01){        // flagcnt�� Ȧ�� �϶�, upper�� ����, lower�� ���.
+ 8000532:	07da      	lsls	r2, r3, #31
+ 8000534:	f140 812c 	bpl.w	8000790 <printf+0x388>
+                        c = s[(8-(flagcnt+1))/2]; // Ȧ�� �϶� �� ��ġ�� �����ϴ� ���� ���� ���� �ɴϴ�.
+ 8000538:	f1c3 0307 	rsb	r3, r3, #7
+ 800053c:	eb03 73d3 	add.w	r3, r3, r3, lsr #31
+ 8000540:	aa08      	add	r2, sp, #32
+ 8000542:	eb02 0363 	add.w	r3, r2, r3, asr #1
+                        
+                        // lower 4 bits�� �����ͼ� ascii code��.
+                        lHex = ((c>>0)&0x0f);
+ 8000546:	f813 3c20 	ldrb.w	r3, [r3, #-32]
+                        if (lHex!=0) leading_zero=false;
+ 800054a:	f013 030f 	ands.w	r3, r3, #15
+ 800054e:	f000 815a 	beq.w	8000806 <printf+0x3fe>
+                        if (lHex<10) lHex+='0';
+ 8000552:	2b09      	cmp	r3, #9
+ 8000554:	f240 8175 	bls.w	8000842 <printf+0x43a>
+                        else         lHex+='A'-10;
+ 8000558:	f103 0037 	add.w	r0, r3, #55	; 0x37
+                        // lower 4 bits ���.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+                        }
+                        else print_byte(lHex);
+ 800055c:	47b0      	blx	r6
+ 800055e:	f04f 0900 	mov.w	r9, #0
+ 8000562:	e155      	b.n	8000810 <printf+0x408>
+                        }
+                        tol[j] = '\0';
+                        i--;
+                        DecToLong(tol, &flagcnt);
+                }
+                else if (c=='0') flag0=true;
+ 8000564:	2b30      	cmp	r3, #48	; 0x30
+ 8000566:	bf08      	it	eq
+ 8000568:	2701      	moveq	r7, #1
+ 800056a:	e7d2      	b.n	8000512 <printf+0x10a>
+                        format[0] = '%';
+                        for (i=1; i<10;){
+                                if (*s=='c' || *s=='d' || *s=='x' || *s=='s' || *s=='%'){
+                                        format[i++] = *s;
+                                        format[i] = '\0';
+                                        break;
+ 800056c:	4672      	mov	r2, lr
+                        s++;
+                        // s���� "%08lx"������ ������ format�� ���. ���߿� ����Լ��� �Ѱ���.
+                        format[0] = '%';
+                        for (i=1; i<10;){
+                                if (*s=='c' || *s=='d' || *s=='x' || *s=='s' || *s=='%'){
+                                        format[i++] = *s;
+ 800056e:	ab08      	add	r3, sp, #32
+ 8000570:	441f      	add	r7, r3
+                                else {
+                                        format[i++] = *s++;
+                                }
+                        }
+                        // "%s", "%c", "%d", "%x"�� ã�� ����� �Լ� ȣ��.
+                        switch (*s++){
+ 8000572:	2864      	cmp	r0, #100	; 0x64
+                        // s���� "%08lx"������ ������ format�� ���. ���߿� ����Լ��� �Ѱ���.
+                        format[0] = '%';
+                        for (i=1; i<10;){
+                                if (*s=='c' || *s=='d' || *s=='x' || *s=='s' || *s=='%'){
+                                        format[i++] = *s;
+                                        format[i] = '\0';
+ 8000574:	f04f 0300 	mov.w	r3, #0
+                        s++;
+                        // s���� "%08lx"������ ������ format�� ���. ���߿� ����Լ��� �Ѱ���.
+                        format[0] = '%';
+                        for (i=1; i<10;){
+                                if (*s=='c' || *s=='d' || *s=='x' || *s=='s' || *s=='%'){
+                                        format[i++] = *s;
+ 8000578:	f807 0c18 	strb.w	r0, [r7, #-24]
+                                        format[i] = '\0';
+ 800057c:	f807 3c17 	strb.w	r3, [r7, #-23]
+                                else {
+                                        format[i++] = *s++;
+                                }
+                        }
+                        // "%s", "%c", "%d", "%x"�� ã�� ����� �Լ� ȣ��.
+                        switch (*s++){
+ 8000580:	f102 0501 	add.w	r5, r2, #1
+ 8000584:	f47f af71 	bne.w	800046a <printf+0x62>
+        bool        leading_zero=true;                        // long���� data�� ����ϱ� ���� ����.
+        long        divisor, result, remainder;
+
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+ 8000588:	f89d 3008 	ldrb.w	r3, [sp, #8]
+void PrintDec(char *fmt, int l)
+{
+        int        i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // "%08lx"���� '0', 'l'�� ���� ����.
+        long        flagcnt=0;                                        // "%08lx"���� "8"�� ã�Ƽ� long������.
+ 800058c:	2200      	movs	r2, #0
+ 800058e:	9201      	str	r2, [sp, #4]
+                        switch (*s++){
+                                case 'c' :
+                                        PrintChar(format, va_arg(args, int));
+                                        break;
+                                case 'd' :
+                                        PrintDec(format, va_arg(args, int));
+ 8000590:	f108 0a04 	add.w	sl, r8, #4
+ 8000594:	f8d8 b000 	ldr.w	fp, [r8]
+        bool        leading_zero=true;                        // long���� data�� ����ϱ� ���� ����.
+        long        divisor, result, remainder;
+
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+ 8000598:	2b00      	cmp	r3, #0
+ 800059a:	f000 80c4 	beq.w	8000726 <printf+0x31e>
+                if (c=='d') break;
+ 800059e:	2b64      	cmp	r3, #100	; 0x64
+ 80005a0:	f000 80c1 	beq.w	8000726 <printf+0x31e>
+ 80005a4:	4690      	mov	r8, r2
+ 80005a6:	4617      	mov	r7, r2
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 80005a8:	4691      	mov	r9, r2
+
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='d') break;
+                else if (c>='1' && c<='9'){
+ 80005aa:	f1a3 0231 	sub.w	r2, r3, #49	; 0x31
+ 80005ae:	2a08      	cmp	r2, #8
+ 80005b0:	d87e      	bhi.n	80006b0 <printf+0x2a8>
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 80005b2:	5de3      	ldrb	r3, [r4, r7]
+ 80005b4:	19e1      	adds	r1, r4, r7
+ 80005b6:	f1a3 0230 	sub.w	r2, r3, #48	; 0x30
+ 80005ba:	2a09      	cmp	r2, #9
+ 80005bc:	f200 80dc 	bhi.w	8000778 <printf+0x370>
+ 80005c0:	a805      	add	r0, sp, #20
+ 80005c2:	4686      	mov	lr, r0
+ 80005c4:	2200      	movs	r2, #0
+                                tol[j] = s[i++];
+ 80005c6:	f80e 3b01 	strb.w	r3, [lr], #1
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='d') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 80005ca:	f811 3f01 	ldrb.w	r3, [r1, #1]!
+                                tol[j] = s[i++];
+ 80005ce:	3701      	adds	r7, #1
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='d') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 80005d0:	f1a3 0c30 	sub.w	ip, r3, #48	; 0x30
+ 80005d4:	f1bc 0f09 	cmp.w	ip, #9
+ 80005d8:	f102 0201 	add.w	r2, r2, #1
+ 80005dc:	d9f3      	bls.n	80005c6 <printf+0x1be>
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 80005de:	ab08      	add	r3, sp, #32
+ 80005e0:	441a      	add	r2, r3
+                        i--;
+                        DecToLong(tol, &flagcnt);
+ 80005e2:	a901      	add	r1, sp, #4
+ 80005e4:	4b53      	ldr	r3, [pc, #332]	; (8000734 <printf+0x32c>)
+                if (c=='d') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 80005e6:	f802 9c0c 	strb.w	r9, [r2, #-12]
+                        i--;
+ 80005ea:	3f01      	subs	r7, #1
+                        DecToLong(tol, &flagcnt);
+ 80005ec:	4798      	blx	r3
+        bool        leading_zero=true;                        // long���� data�� ����ϱ� ���� ����.
+        long        divisor, result, remainder;
+
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+ 80005ee:	3701      	adds	r7, #1
+ 80005f0:	ab08      	add	r3, sp, #32
+ 80005f2:	443b      	add	r3, r7
+ 80005f4:	f813 3c18 	ldrb.w	r3, [r3, #-24]
+ 80005f8:	b10b      	cbz	r3, 80005fe <printf+0x1f6>
+                if (c=='d') break;
+ 80005fa:	2b64      	cmp	r3, #100	; 0x64
+ 80005fc:	d1d5      	bne.n	80005aa <printf+0x1a2>
+                else continue;
+        }
+
+
+        // ���� flag�� ���� ���.
+        if (flagcnt){
+ 80005fe:	9801      	ldr	r0, [sp, #4]
+ 8000600:	2800      	cmp	r0, #0
+ 8000602:	f000 8090 	beq.w	8000726 <printf+0x31e>
+                if (flagcnt>9) flagcnt=9;
+ 8000606:	2809      	cmp	r0, #9
+ 8000608:	f340 80bc 	ble.w	8000784 <printf+0x37c>
+ 800060c:	2009      	movs	r0, #9
+ 800060e:	9001      	str	r0, [sp, #4]
+ 8000610:	2206      	movs	r2, #6
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 8000612:	2107      	movs	r1, #7
+
+
+        // ���� flag�� ���� ���.
+        if (flagcnt){
+                if (flagcnt>9) flagcnt=9;
+                remainder = l%(Power(10, flagcnt));        // flagcnt���� ���ڸ��� ���� �ɷ���. 199�� flagcnt==2�̸�, 99��.
+ 8000614:	230a      	movs	r3, #10
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 8000616:	3901      	subs	r1, #1
+                retval *= num;
+ 8000618:	eb03 0383 	add.w	r3, r3, r3, lsl #2
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 800061c:	1c4c      	adds	r4, r1, #1
+                retval *= num;
+ 800061e:	ea4f 0343 	mov.w	r3, r3, lsl #1
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 8000622:	d1f8      	bne.n	8000616 <printf+0x20e>
+
+
+        // ���� flag�� ���� ���.
+        if (flagcnt){
+                if (flagcnt>9) flagcnt=9;
+                remainder = l%(Power(10, flagcnt));        // flagcnt���� ���ڸ��� ���� �ɷ���. 199�� flagcnt==2�̸�, 99��.
+ 8000624:	fb9b f7f3 	sdiv	r7, fp, r3
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 8000628:	2802      	cmp	r0, #2
+
+
+        // ���� flag�� ���� ���.
+        if (flagcnt){
+                if (flagcnt>9) flagcnt=9;
+                remainder = l%(Power(10, flagcnt));        // flagcnt���� ���ڸ��� ���� �ɷ���. 199�� flagcnt==2�̸�, 99��.
+ 800062a:	fb03 b717 	mls	r7, r3, r7, fp
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 800062e:	f000 8106 	beq.w	800083e <printf+0x436>
+ 8000632:	4613      	mov	r3, r2
+
+
+        // ���� flag�� ���� ���.
+        if (flagcnt){
+                if (flagcnt>9) flagcnt=9;
+                remainder = l%(Power(10, flagcnt));        // flagcnt���� ���ڸ��� ���� �ɷ���. 199�� flagcnt==2�̸�, 99��.
+ 8000634:	240a      	movs	r4, #10
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 8000636:	3b01      	subs	r3, #1
+                retval *= num;
+ 8000638:	eb04 0484 	add.w	r4, r4, r4, lsl #2
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 800063c:	1c59      	adds	r1, r3, #1
+                retval *= num;
+ 800063e:	ea4f 0444 	mov.w	r4, r4, lsl #1
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 8000642:	d1f8      	bne.n	8000636 <printf+0x22e>
+{
+        int        i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // "%08lx"���� '0', 'l'�� ���� ����.
+        long        flagcnt=0;                                        // "%08lx"���� "8"�� ã�Ƽ� long������.
+        bool        leading_zero=true;                        // long���� data�� ����ϱ� ���� ����.
+ 8000644:	4643      	mov	r3, r8
+ 8000646:	f04f 0901 	mov.w	r9, #1
+ 800064a:	46a8      	mov	r8, r5
+ 800064c:	461d      	mov	r5, r3
+ 800064e:	e010      	b.n	8000672 <printf+0x26a>
+                for (divisor=Power(10, flagcnt-1); divisor>0; divisor/=10){
+                        result = remainder/divisor;
+                        remainder %= divisor;
+
+
+                        if (result!=0 || divisor==1) leading_zero = false;
+ 8000650:	2c01      	cmp	r4, #1
+ 8000652:	d016      	beq.n	8000682 <printf+0x27a>
+
+
+                        if (leading_zero==true){
+ 8000654:	f1b9 0f00 	cmp.w	r9, #0
+ 8000658:	d013      	beq.n	8000682 <printf+0x27a>
+                                if (flag0)        print_byte('0');
+ 800065a:	2030      	movs	r0, #48	; 0x30
+ 800065c:	b905      	cbnz	r5, 8000660 <printf+0x258>
+                                else                print_byte(' ');
+ 800065e:	2020      	movs	r0, #32
+ 8000660:	47b0      	blx	r6
+        if (flagcnt){
+                if (flagcnt>9) flagcnt=9;
+                remainder = l%(Power(10, flagcnt));        // flagcnt���� ���ڸ��� ���� �ɷ���. 199�� flagcnt==2�̸�, 99��.
+
+
+                for (divisor=Power(10, flagcnt-1); divisor>0; divisor/=10){
+ 8000662:	4b35      	ldr	r3, [pc, #212]	; (8000738 <printf+0x330>)
+ 8000664:	fb83 2304 	smull	r2, r3, r3, r4
+ 8000668:	17e4      	asrs	r4, r4, #31
+ 800066a:	ebc4 04a3 	rsb	r4, r4, r3, asr #2
+ 800066e:	2c00      	cmp	r4, #0
+ 8000670:	dd7f      	ble.n	8000772 <printf+0x36a>
+                        result = remainder/divisor;
+ 8000672:	fb97 f3f4 	sdiv	r3, r7, r4
+
+                        if (leading_zero==true){
+                                if (flag0)        print_byte('0');
+                                else                print_byte(' ');
+                        }
+                        else print_byte((char)(result)+'0');
+ 8000676:	b2d8      	uxtb	r0, r3
+ 8000678:	3030      	adds	r0, #48	; 0x30
+                remainder = l%(Power(10, flagcnt));        // flagcnt���� ���ڸ��� ���� �ɷ���. 199�� flagcnt==2�̸�, 99��.
+
+
+                for (divisor=Power(10, flagcnt-1); divisor>0; divisor/=10){
+                        result = remainder/divisor;
+                        remainder %= divisor;
+ 800067a:	fb04 7713 	mls	r7, r4, r3, r7
+
+
+                        if (result!=0 || divisor==1) leading_zero = false;
+ 800067e:	2b00      	cmp	r3, #0
+ 8000680:	d0e6      	beq.n	8000650 <printf+0x248>
+
+                        if (leading_zero==true){
+                                if (flag0)        print_byte('0');
+                                else                print_byte(' ');
+                        }
+                        else print_byte((char)(result)+'0');
+ 8000682:	47b0      	blx	r6
+ 8000684:	f04f 0900 	mov.w	r9, #0
+ 8000688:	e7eb      	b.n	8000662 <printf+0x25a>
+        return;
+}
+
+void PrintChar(char *fmt, char c)
+{
+        print_byte(c);
+ 800068a:	47b0      	blx	r6
+ 800068c:	e6c5      	b.n	800041a <printf+0x12>
+                                        break;
+                                case 'x' :
+                                        PrintHex(format, va_arg(args, int));
+                                        break;
+                                case 's' :
+                                        PrintString(format, va_arg(args, char *));
+ 800068e:	f8d8 4000 	ldr.w	r4, [r8]
+ 8000692:	f108 0804 	add.w	r8, r8, #4
+        }
+        return;
+}
+
+void PrintString(char *fmt, char *s){
+        if (!fmt || !s) return;
+ 8000696:	2c00      	cmp	r4, #0
+ 8000698:	f43f aebf 	beq.w	800041a <printf+0x12>
+        while (*s) print_byte(*s++);
+ 800069c:	7820      	ldrb	r0, [r4, #0]
+ 800069e:	2800      	cmp	r0, #0
+ 80006a0:	f43f aebb 	beq.w	800041a <printf+0x12>
+ 80006a4:	47b0      	blx	r6
+ 80006a6:	f814 0f01 	ldrb.w	r0, [r4, #1]!
+ 80006aa:	2800      	cmp	r0, #0
+ 80006ac:	d1fa      	bne.n	80006a4 <printf+0x29c>
+ 80006ae:	e6b4      	b.n	800041a <printf+0x12>
+                        }
+                        tol[j] = '\0';
+                        i--;
+                        DecToLong(tol, &flagcnt);
+                }
+                else if (c=='0') flag0=true;
+ 80006b0:	2b30      	cmp	r3, #48	; 0x30
+ 80006b2:	bf08      	it	eq
+ 80006b4:	f04f 0801 	moveq.w	r8, #1
+ 80006b8:	e799      	b.n	80005ee <printf+0x1e6>
+ 80006ba:	fa9a f38a 	rev.w	r3, sl
+                else continue;
+        }
+
+
+        s = (char *)(&l);
+        l = SWAP32(l);                // little, big endian�� ����.(big�� ����ϱ� ���� ������ �ٲ�)
+ 80006be:	9300      	str	r3, [sp, #0]
+ 80006c0:	46e9      	mov	r9, sp
+                        else print_byte(lHex);
+                }
+        }
+        else {
+                for (i=0; i<4; i++){
+                        c = s[i];
+ 80006c2:	f819 3b01 	ldrb.w	r3, [r9], #1
+                        // lower 4 bits ���.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+                        }
+                        else print_byte(lHex);
+ 80006c6:	2201      	movs	r2, #1
+                for (i=0; i<4; i++){
+                        c = s[i];
+        
+                        // get upper 4 bits and lower 4 bits.
+                        uHex = ((c>>4)&0x0f);
+                        lHex = ((c>>0)&0x0f);
+ 80006c8:	f003 040f 	and.w	r4, r3, #15
+
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        if (uHex!=0) leading_zero = false;
+ 80006cc:	091b      	lsrs	r3, r3, #4
+                        // lower 4 bits ���.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+                        }
+                        else print_byte(lHex);
+ 80006ce:	f04f 0700 	mov.w	r7, #0
+                        uHex = ((c>>4)&0x0f);
+                        lHex = ((c>>0)&0x0f);
+
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        if (uHex!=0) leading_zero = false;
+ 80006d2:	d019      	beq.n	8000708 <printf+0x300>
+                        if (uHex<10) uHex+='0';
+ 80006d4:	2b09      	cmp	r3, #9
+                        else         uHex+='A'-10;
+ 80006d6:	bf88      	it	hi
+ 80006d8:	f103 0037 	addhi.w	r0, r3, #55	; 0x37
+                        lHex = ((c>>0)&0x0f);
+
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        if (uHex!=0) leading_zero = false;
+                        if (uHex<10) uHex+='0';
+ 80006dc:	f240 80b7 	bls.w	800084e <printf+0x446>
+                        else         uHex+='A'-10;
+                        if (!leading_zero) print_byte(uHex);
+ 80006e0:	47b0      	blx	r6
+ 80006e2:	2300      	movs	r3, #0
+                        
+                        if (lHex!=0 || i==3) leading_zero = false;
+ 80006e4:	b9b4      	cbnz	r4, 8000714 <printf+0x30c>
+ 80006e6:	2f03      	cmp	r7, #3
+ 80006e8:	f000 80b4 	beq.w	8000854 <printf+0x44c>
+                        if (lHex<10) lHex+='0';
+                        else         lHex+='A'-10;
+                        if (!leading_zero) print_byte(lHex);
+ 80006ec:	2201      	movs	r2, #1
+ 80006ee:	2b00      	cmp	r3, #0
+ 80006f0:	f000 80b0 	beq.w	8000854 <printf+0x44c>
+                        }
+                        else print_byte(lHex);
+                }
+        }
+        else {
+                for (i=0; i<4; i++){
+ 80006f4:	3701      	adds	r7, #1
+ 80006f6:	2f04      	cmp	r7, #4
+ 80006f8:	f43f ae8f 	beq.w	800041a <printf+0x12>
+                        c = s[i];
+ 80006fc:	f819 3b01 	ldrb.w	r3, [r9], #1
+        
+                        // get upper 4 bits and lower 4 bits.
+                        uHex = ((c>>4)&0x0f);
+                        lHex = ((c>>0)&0x0f);
+ 8000700:	f003 040f 	and.w	r4, r3, #15
+
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        if (uHex!=0) leading_zero = false;
+ 8000704:	091b      	lsrs	r3, r3, #4
+ 8000706:	d1e5      	bne.n	80006d4 <printf+0x2cc>
+                        if (uHex<10) uHex+='0';
+                        else         uHex+='A'-10;
+                        if (!leading_zero) print_byte(uHex);
+ 8000708:	2a00      	cmp	r2, #0
+ 800070a:	f000 80a0 	beq.w	800084e <printf+0x446>
+ 800070e:	2301      	movs	r3, #1
+                        
+                        if (lHex!=0 || i==3) leading_zero = false;
+ 8000710:	2c00      	cmp	r4, #0
+ 8000712:	d0e8      	beq.n	80006e6 <printf+0x2de>
+                        if (lHex<10) lHex+='0';
+ 8000714:	2c09      	cmp	r4, #9
+                        else         lHex+='A'-10;
+ 8000716:	bf88      	it	hi
+ 8000718:	f104 0037 	addhi.w	r0, r4, #55	; 0x37
+                        if (uHex<10) uHex+='0';
+                        else         uHex+='A'-10;
+                        if (!leading_zero) print_byte(uHex);
+                        
+                        if (lHex!=0 || i==3) leading_zero = false;
+                        if (lHex<10) lHex+='0';
+ 800071c:	f240 809a 	bls.w	8000854 <printf+0x44c>
+                        else         lHex+='A'-10;
+                        if (!leading_zero) print_byte(lHex);
+ 8000720:	47b0      	blx	r6
+ 8000722:	2200      	movs	r2, #0
+ 8000724:	e7e6      	b.n	80006f4 <printf+0x2ec>
+
+                        if (leading_zero==true){
+                                if (flag0)        print_byte('0');
+                                else                print_byte(' ');
+                        }
+                        else print_byte((char)(result)+'0');
+ 8000726:	270a      	movs	r7, #10
+ 8000728:	2201      	movs	r2, #1
+ 800072a:	4c04      	ldr	r4, [pc, #16]	; (800073c <printf+0x334>)
+ 800072c:	e013      	b.n	8000756 <printf+0x34e>
+ 800072e:	bf00      	nop
+ 8000730:	08000395 	.word	0x08000395
+ 8000734:	080003bd 	.word	0x080003bd
+ 8000738:	66666667 	.word	0x66666667
+ 800073c:	3b9aca00 	.word	0x3b9aca00
+                        result = remainder/divisor;
+                        remainder %= divisor;
+
+
+                        if (result!=0 || divisor==1) leading_zero = false;
+                        if (leading_zero==false) print_byte((char)(result)+'0');
+ 8000740:	47b0      	blx	r6
+ 8000742:	2200      	movs	r2, #0
+                }
+        } else {
+                remainder = l;
+
+
+                for (divisor=1000000000; divisor>0; divisor/=10){
+ 8000744:	4b45      	ldr	r3, [pc, #276]	; (800085c <printf+0x454>)
+ 8000746:	3f01      	subs	r7, #1
+ 8000748:	fb83 1304 	smull	r1, r3, r3, r4
+ 800074c:	ea4f 74e4 	mov.w	r4, r4, asr #31
+ 8000750:	ebc4 04a3 	rsb	r4, r4, r3, asr #2
+ 8000754:	d00e      	beq.n	8000774 <printf+0x36c>
+                        result = remainder/divisor;
+ 8000756:	fb9b f3f4 	sdiv	r3, fp, r4
+                        remainder %= divisor;
+
+
+                        if (result!=0 || divisor==1) leading_zero = false;
+                        if (leading_zero==false) print_byte((char)(result)+'0');
+ 800075a:	b2d8      	uxtb	r0, r3
+ 800075c:	3030      	adds	r0, #48	; 0x30
+                remainder = l;
+
+
+                for (divisor=1000000000; divisor>0; divisor/=10){
+                        result = remainder/divisor;
+                        remainder %= divisor;
+ 800075e:	fb04 bb13 	mls	fp, r4, r3, fp
+
+
+                        if (result!=0 || divisor==1) leading_zero = false;
+ 8000762:	2b00      	cmp	r3, #0
+ 8000764:	d1ec      	bne.n	8000740 <printf+0x338>
+ 8000766:	2c01      	cmp	r4, #1
+ 8000768:	d0ea      	beq.n	8000740 <printf+0x338>
+                        if (leading_zero==false) print_byte((char)(result)+'0');
+ 800076a:	2a00      	cmp	r2, #0
+ 800076c:	d0e8      	beq.n	8000740 <printf+0x338>
+ 800076e:	2201      	movs	r2, #1
+ 8000770:	e7e8      	b.n	8000744 <printf+0x33c>
+ 8000772:	4645      	mov	r5, r8
+                        switch (*s++){
+                                case 'c' :
+                                        PrintChar(format, va_arg(args, int));
+                                        break;
+                                case 'd' :
+                                        PrintDec(format, va_arg(args, int));
+ 8000774:	46d0      	mov	r8, sl
+ 8000776:	e650      	b.n	800041a <printf+0x12>
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='d') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 8000778:	2200      	movs	r2, #0
+ 800077a:	a805      	add	r0, sp, #20
+ 800077c:	e72f      	b.n	80005de <printf+0x1d6>
+
+        // fmt�� "%08lx"���� '0', '8', 'l'�� �ؼ�.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='x') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 800077e:	2200      	movs	r2, #0
+ 8000780:	a805      	add	r0, sp, #20
+ 8000782:	e6bd      	b.n	8000500 <printf+0xf8>
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 8000784:	2801      	cmp	r0, #1
+ 8000786:	f1a0 0102 	sub.w	r1, r0, #2
+ 800078a:	d04a      	beq.n	8000822 <printf+0x41a>
+ 800078c:	1ec2      	subs	r2, r0, #3
+ 800078e:	e741      	b.n	8000614 <printf+0x20c>
+void PrintHex(char *fmt, int l){
+        int                i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // flags.
+        long        flagcnt=0;
+        bool        leading_zero=true;
+ 8000790:	f04f 0901 	mov.w	r9, #1
+                        flagcnt--;
+                }
+
+
+                // byte������ data�� Hex�� ���.
+                for (cnt=0, i=(8-flagcnt)/2; i<4; i++){
+ 8000794:	f1c3 0308 	rsb	r3, r3, #8
+ 8000798:	eb03 73d3 	add.w	r3, r3, r3, lsr #31
+ 800079c:	ea4f 0a63 	mov.w	sl, r3, asr #1
+ 80007a0:	f1ba 0f03 	cmp.w	sl, #3
+ 80007a4:	f73f ae39 	bgt.w	800041a <printf+0x12>
+ 80007a8:	46ab      	mov	fp, r5
+ 80007aa:	44ea      	add	sl, sp
+ 80007ac:	ac01      	add	r4, sp, #4
+                        c = s[i];
+ 80007ae:	f81a 3b01 	ldrb.w	r3, [sl], #1
+                                
+                        // get upper 4 bits and lower 4 bits.
+                        uHex = ((c>>4)&0x0f);
+                        lHex = ((c>>0)&0x0f);
+ 80007b2:	f003 050f 	and.w	r5, r3, #15
+
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        // upper 4 bits�� ascii code��.
+                        if (uHex!=0) leading_zero = false;
+ 80007b6:	091b      	lsrs	r3, r3, #4
+ 80007b8:	d009      	beq.n	80007ce <printf+0x3c6>
+                        if (uHex<10) uHex+='0';
+ 80007ba:	2b09      	cmp	r3, #9
+                        else         uHex+='A'-10;
+ 80007bc:	bf88      	it	hi
+ 80007be:	f103 0037 	addhi.w	r0, r3, #55	; 0x37
+
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        // upper 4 bits�� ascii code��.
+                        if (uHex!=0) leading_zero = false;
+                        if (uHex<10) uHex+='0';
+ 80007c2:	d941      	bls.n	8000848 <printf+0x440>
+                        // upper 4 bits ���.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+                        }
+                        else print_byte(uHex);
+ 80007c4:	47b0      	blx	r6
+                        
+                        // lower 4 bits�� ascii code��.
+                        if (lHex!=0) leading_zero = false;
+ 80007c6:	b97d      	cbnz	r5, 80007e8 <printf+0x3e0>
+                        if (lHex<10) lHex+='0';
+ 80007c8:	f105 0030 	add.w	r0, r5, #48	; 0x30
+ 80007cc:	e010      	b.n	80007f0 <printf+0x3e8>
+                        if (uHex<10) uHex+='0';
+                        else         uHex+='A'-10;
+
+
+                        // upper 4 bits ���.
+                        if (leading_zero){
+ 80007ce:	f1b9 0f00 	cmp.w	r9, #0
+ 80007d2:	d039      	beq.n	8000848 <printf+0x440>
+                                if (flag0) print_byte('0');
+ 80007d4:	b187      	cbz	r7, 80007f8 <printf+0x3f0>
+ 80007d6:	2030      	movs	r0, #48	; 0x30
+ 80007d8:	47b0      	blx	r6
+                                else       print_byte(' ');
+                        }
+                        else print_byte(uHex);
+                        
+                        // lower 4 bits�� ascii code��.
+                        if (lHex!=0) leading_zero = false;
+ 80007da:	b92d      	cbnz	r5, 80007e8 <printf+0x3e0>
+                        else         lHex+='A'-10;
+
+
+                        // lower 4 bits ���.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+ 80007dc:	2030      	movs	r0, #48	; 0x30
+ 80007de:	47b0      	blx	r6
+                        flagcnt--;
+                }
+
+
+                // byte������ data�� Hex�� ���.
+                for (cnt=0, i=(8-flagcnt)/2; i<4; i++){
+ 80007e0:	45a2      	cmp	sl, r4
+ 80007e2:	d1e4      	bne.n	80007ae <printf+0x3a6>
+ 80007e4:	465d      	mov	r5, fp
+ 80007e6:	e618      	b.n	800041a <printf+0x12>
+                        }
+                        else print_byte(uHex);
+                        
+                        // lower 4 bits�� ascii code��.
+                        if (lHex!=0) leading_zero = false;
+                        if (lHex<10) lHex+='0';
+ 80007e8:	2d09      	cmp	r5, #9
+ 80007ea:	d9ed      	bls.n	80007c8 <printf+0x3c0>
+                        else         lHex+='A'-10;
+ 80007ec:	f105 0037 	add.w	r0, r5, #55	; 0x37
+                        // lower 4 bits ���.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+                        }
+                        else print_byte(lHex);
+ 80007f0:	47b0      	blx	r6
+ 80007f2:	f04f 0900 	mov.w	r9, #0
+ 80007f6:	e7f3      	b.n	80007e0 <printf+0x3d8>
+
+
+                        // upper 4 bits ���.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+ 80007f8:	2020      	movs	r0, #32
+ 80007fa:	47b0      	blx	r6
+                        }
+                        else print_byte(uHex);
+                        
+                        // lower 4 bits�� ascii code��.
+                        if (lHex!=0) leading_zero = false;
+ 80007fc:	2d00      	cmp	r5, #0
+ 80007fe:	d1f3      	bne.n	80007e8 <printf+0x3e0>
+
+
+                        // lower 4 bits ���.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+ 8000800:	2020      	movs	r0, #32
+ 8000802:	47b0      	blx	r6
+ 8000804:	e7ec      	b.n	80007e0 <printf+0x3d8>
+                        else         lHex+='A'-10;
+
+
+                        // lower 4 bits ���.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+ 8000806:	b13f      	cbz	r7, 8000818 <printf+0x410>
+ 8000808:	2030      	movs	r0, #48	; 0x30
+ 800080a:	47b0      	blx	r6
+void PrintHex(char *fmt, int l){
+        int                i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // flags.
+        long        flagcnt=0;
+        bool        leading_zero=true;
+ 800080c:	f04f 0901 	mov.w	r9, #1
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+                        }
+                        else print_byte(lHex);
+                        
+                        flagcnt--;
+ 8000810:	9b01      	ldr	r3, [sp, #4]
+ 8000812:	3b01      	subs	r3, #1
+ 8000814:	9301      	str	r3, [sp, #4]
+ 8000816:	e7bd      	b.n	8000794 <printf+0x38c>
+
+
+                        // lower 4 bits ���.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+ 8000818:	2020      	movs	r0, #32
+ 800081a:	47b0      	blx	r6
+void PrintHex(char *fmt, int l){
+        int                i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // flags.
+        long        flagcnt=0;
+        bool        leading_zero=true;
+ 800081c:	f04f 0901 	mov.w	r9, #1
+ 8000820:	e7f6      	b.n	8000810 <printf+0x408>
+
+
+        // ���� flag�� ���� ���.
+        if (flagcnt){
+                if (flagcnt>9) flagcnt=9;
+                remainder = l%(Power(10, flagcnt));        // flagcnt���� ���ڸ��� ���� �ɷ���. 199�� flagcnt==2�̸�, 99��.
+ 8000822:	4b0e      	ldr	r3, [pc, #56]	; (800085c <printf+0x454>)
+ 8000824:	fb83 370b 	smull	r3, r7, r3, fp
+ 8000828:	ea4f 73eb 	mov.w	r3, fp, asr #31
+ 800082c:	ebc3 07a7 	rsb	r7, r3, r7, asr #2
+ 8000830:	eb07 0387 	add.w	r3, r7, r7, lsl #2
+ 8000834:	ebab 0743 	sub.w	r7, fp, r3, lsl #1
+ 8000838:	f06f 0301 	mvn.w	r3, #1
+ 800083c:	e6fa      	b.n	8000634 <printf+0x22c>
+        while (*s) print_byte(*s++);
+        return;
+}
+
+int Power(int num, int cnt){
+        long retval=num;
+ 800083e:	240a      	movs	r4, #10
+ 8000840:	e700      	b.n	8000644 <printf+0x23c>
+                        c = s[(8-(flagcnt+1))/2]; // Ȧ�� �϶� �� ��ġ�� �����ϴ� ���� ���� ���� �ɴϴ�.
+                        
+                        // lower 4 bits�� �����ͼ� ascii code��.
+                        lHex = ((c>>0)&0x0f);
+                        if (lHex!=0) leading_zero=false;
+                        if (lHex<10) lHex+='0';
+ 8000842:	f103 0030 	add.w	r0, r3, #48	; 0x30
+ 8000846:	e689      	b.n	800055c <printf+0x154>
+
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        // upper 4 bits�� ascii code��.
+                        if (uHex!=0) leading_zero = false;
+                        if (uHex<10) uHex+='0';
+ 8000848:	f103 0030 	add.w	r0, r3, #48	; 0x30
+ 800084c:	e7ba      	b.n	80007c4 <printf+0x3bc>
+                        lHex = ((c>>0)&0x0f);
+
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        if (uHex!=0) leading_zero = false;
+                        if (uHex<10) uHex+='0';
+ 800084e:	f103 0030 	add.w	r0, r3, #48	; 0x30
+ 8000852:	e745      	b.n	80006e0 <printf+0x2d8>
+                        else         uHex+='A'-10;
+                        if (!leading_zero) print_byte(uHex);
+                        
+                        if (lHex!=0 || i==3) leading_zero = false;
+                        if (lHex<10) lHex+='0';
+ 8000854:	f104 0030 	add.w	r0, r4, #48	; 0x30
+ 8000858:	e762      	b.n	8000720 <printf+0x318>
+ 800085a:	bf00      	nop
+ 800085c:	66666667 	.word	0x66666667
+
+08000860 <Rcc_GetClocksFreq>:
+GET_CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
+{
+    uint32_t tmp = 0, pllmull = 0, pllsource = 0, presc = 0;
+
+/* Get SYSCLK source -------------------------------------------------------*/
+    tmp = RCC->CFGR & CFGR_SWS_Mask;
+ 8000860:	4a23      	ldr	r2, [pc, #140]	; (80008f0 <Rcc_GetClocksFreq+0x90>)
+
+#include "Get_clock.h"
+
+
+GET_CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
+{
+ 8000862:	b430      	push	{r4, r5}
+    uint32_t tmp = 0, pllmull = 0, pllsource = 0, presc = 0;
+
+/* Get SYSCLK source -------------------------------------------------------*/
+    tmp = RCC->CFGR & CFGR_SWS_Mask;
+ 8000864:	6853      	ldr	r3, [r2, #4]
+ 8000866:	f003 030c 	and.w	r3, r3, #12
+
+    switch(tmp)
+ 800086a:	2b04      	cmp	r3, #4
+ 800086c:	d038      	beq.n	80008e0 <Rcc_GetClocksFreq+0x80>
+ 800086e:	2b08      	cmp	r3, #8
+ 8000870:	d025      	beq.n	80008be <Rcc_GetClocksFreq+0x5e>
+ 8000872:	b30b      	cbz	r3, 80008b8 <Rcc_GetClocksFreq+0x58>
+            }
+        }
+        break;
+
+        default:
+        RCC_Clocks->SYSCLK_Frequency = HSI_Value;
+ 8000874:	4a1f      	ldr	r2, [pc, #124]	; (80008f4 <Rcc_GetClocksFreq+0x94>)
+        break;
+ 8000876:	4613      	mov	r3, r2
+            }
+        }
+        break;
+
+        default:
+        RCC_Clocks->SYSCLK_Frequency = HSI_Value;
+ 8000878:	6002      	str	r2, [r0, #0]
+        break;
+    }
+      /* Compute HCLK, PCLK1, PCLK2 and ADCCLK clocks frequencies ----------------*/
+  /* Get HCLK prescaler */
+    tmp = RCC->CFGR & CFGR_HPRE_Set_Mask;
+ 800087a:	4a1d      	ldr	r2, [pc, #116]	; (80008f0 <Rcc_GetClocksFreq+0x90>)
+    tmp = tmp >> 4;
+    presc = APBAHBPrescTable[tmp];
+ 800087c:	4c1e      	ldr	r4, [pc, #120]	; (80008f8 <Rcc_GetClocksFreq+0x98>)
+        RCC_Clocks->SYSCLK_Frequency = HSI_Value;
+        break;
+    }
+      /* Compute HCLK, PCLK1, PCLK2 and ADCCLK clocks frequencies ----------------*/
+  /* Get HCLK prescaler */
+    tmp = RCC->CFGR & CFGR_HPRE_Set_Mask;
+ 800087e:	6851      	ldr	r1, [r2, #4]
+    /* PCLK2 clock frequency */
+    RCC_Clocks->PCLK2_Frequency = RCC_Clocks->HCLK_Frequency >> presc;
+    /* Get ADCCLK prescaler */
+    tmp = RCC->CFGR & CFGR_ADCPRE_Set_Mask;
+    tmp = tmp >> 14;
+    presc = ADCPrescTable[tmp];
+ 8000880:	4d1e      	ldr	r5, [pc, #120]	; (80008fc <Rcc_GetClocksFreq+0x9c>)
+        break;
+    }
+      /* Compute HCLK, PCLK1, PCLK2 and ADCCLK clocks frequencies ----------------*/
+  /* Get HCLK prescaler */
+    tmp = RCC->CFGR & CFGR_HPRE_Set_Mask;
+    tmp = tmp >> 4;
+ 8000882:	f3c1 1103 	ubfx	r1, r1, #4, #4
+    presc = APBAHBPrescTable[tmp];
+ 8000886:	5c61      	ldrb	r1, [r4, r1]
+    /* HCLK clock frequency */
+    RCC_Clocks->HCLK_Frequency = RCC_Clocks->SYSCLK_Frequency >> presc;
+ 8000888:	40cb      	lsrs	r3, r1
+ 800088a:	6043      	str	r3, [r0, #4]
+    /* Get PCLK1 prescaler */
+    tmp = RCC->CFGR & CFGR_PPRE1_Set_Mask;
+ 800088c:	6851      	ldr	r1, [r2, #4]
+    tmp = tmp >>8;
+ 800088e:	f3c1 2102 	ubfx	r1, r1, #8, #3
+    presc = APBAHBPrescTable[tmp];
+ 8000892:	5c61      	ldrb	r1, [r4, r1]
+    /* PCLK1 clock frequency */
+    RCC_Clocks->PCLK1_Frequency = RCC_Clocks->HCLK_Frequency >> presc;
+ 8000894:	fa23 f101 	lsr.w	r1, r3, r1
+ 8000898:	6081      	str	r1, [r0, #8]
+    /* Get PCLK2 prescaler */
+    tmp = RCC->CFGR & CFGR_PPRE2_Set_Mask;
+ 800089a:	6851      	ldr	r1, [r2, #4]
+    tmp = tmp >> 11;
+ 800089c:	f3c1 21c2 	ubfx	r1, r1, #11, #3
+    presc = APBAHBPrescTable[tmp];
+ 80008a0:	5c61      	ldrb	r1, [r4, r1]
+    /* PCLK2 clock frequency */
+    RCC_Clocks->PCLK2_Frequency = RCC_Clocks->HCLK_Frequency >> presc;
+ 80008a2:	40cb      	lsrs	r3, r1
+ 80008a4:	60c3      	str	r3, [r0, #12]
+    /* Get ADCCLK prescaler */
+    tmp = RCC->CFGR & CFGR_ADCPRE_Set_Mask;
+ 80008a6:	6852      	ldr	r2, [r2, #4]
+    tmp = tmp >> 14;
+ 80008a8:	f3c2 3281 	ubfx	r2, r2, #14, #2
+    presc = ADCPrescTable[tmp];
+ 80008ac:	5caa      	ldrb	r2, [r5, r2]
+    /* ADCCLK clock frequency */
+    RCC_Clocks->ADCCLK_Frequency = RCC_Clocks->PCLK2_Frequency /presc;
+  
+
+}
+ 80008ae:	bc30      	pop	{r4, r5}
+    /* Get ADCCLK prescaler */
+    tmp = RCC->CFGR & CFGR_ADCPRE_Set_Mask;
+    tmp = tmp >> 14;
+    presc = ADCPrescTable[tmp];
+    /* ADCCLK clock frequency */
+    RCC_Clocks->ADCCLK_Frequency = RCC_Clocks->PCLK2_Frequency /presc;
+ 80008b0:	fbb3 f3f2 	udiv	r3, r3, r2
+ 80008b4:	6103      	str	r3, [r0, #16]
+  
+
+}
+ 80008b6:	4770      	bx	lr
+
+    switch(tmp)
+    {
+        case 0x00:
+        /* HSI used as system clock */
+        RCC_Clocks->SYSCLK_Frequency = HSI_Value;
+ 80008b8:	4b0e      	ldr	r3, [pc, #56]	; (80008f4 <Rcc_GetClocksFreq+0x94>)
+ 80008ba:	6003      	str	r3, [r0, #0]
+        break;
+ 80008bc:	e7dd      	b.n	800087a <Rcc_GetClocksFreq+0x1a>
+        break;
+
+        case 0x08:
+        /* PLL used as system clock */
+      /* Get PLL clock source and multiplication factor ----------------------*/
+        pllmull = RCC->CFGR & CFGR_PLLMull_Mask;
+ 80008be:	6853      	ldr	r3, [r2, #4]
+        pllsource = RCC->CFGR & CFGR_PLLSRC_Mask;
+ 80008c0:	6851      	ldr	r1, [r2, #4]
+        pllmull = (pllmull >> 18) + 2;
+ 80008c2:	f3c3 4383 	ubfx	r3, r3, #18, #4
+
+        if(pllsource == 0x00)
+ 80008c6:	03c9      	lsls	r1, r1, #15
+        case 0x08:
+        /* PLL used as system clock */
+      /* Get PLL clock source and multiplication factor ----------------------*/
+        pllmull = RCC->CFGR & CFGR_PLLMull_Mask;
+        pllsource = RCC->CFGR & CFGR_PLLSRC_Mask;
+        pllmull = (pllmull >> 18) + 2;
+ 80008c8:	f103 0302 	add.w	r3, r3, #2
+
+        if(pllsource == 0x00)
+ 80008cc:	d50b      	bpl.n	80008e6 <Rcc_GetClocksFreq+0x86>
+            RCC_Clocks->SYSCLK_Frequency = (HSI_Value >> 1) * pllmull;
+        }
+        else
+        {
+            /* HSE selected as PLL clock entry */
+            if((RCC->CFGR & CFGR_PLLXTPRE_Mask) != (uint32_t)RESET)
+ 80008ce:	6852      	ldr	r2, [r2, #4]
+ 80008d0:	0392      	lsls	r2, r2, #14
+            {
+                /* HSE oscillator clock divided by 2 */
+                RCC_Clocks->SYSCLK_Frequency = (HSE_Value >> 1) * pllmull;
+ 80008d2:	bf4c      	ite	mi
+ 80008d4:	4a0a      	ldrmi	r2, [pc, #40]	; (8000900 <Rcc_GetClocksFreq+0xa0>)
+            }
+            else
+            {
+                RCC_Clocks->SYSCLK_Frequency = HSE_Value * pllmull;
+ 80008d6:	4a0b      	ldrpl	r2, [pc, #44]	; (8000904 <Rcc_GetClocksFreq+0xa4>)
+ 80008d8:	fb02 f303 	mul.w	r3, r2, r3
+ 80008dc:	6003      	str	r3, [r0, #0]
+ 80008de:	e7cc      	b.n	800087a <Rcc_GetClocksFreq+0x1a>
+        RCC_Clocks->SYSCLK_Frequency = HSI_Value;
+        break;
+
+        case 0x04:
+        /* HSE used as system clock */
+        RCC_Clocks->SYSCLK_Frequency = HSE_Value;
+ 80008e0:	4b08      	ldr	r3, [pc, #32]	; (8000904 <Rcc_GetClocksFreq+0xa4>)
+ 80008e2:	6003      	str	r3, [r0, #0]
+        break;
+ 80008e4:	e7c9      	b.n	800087a <Rcc_GetClocksFreq+0x1a>
+        pllmull = (pllmull >> 18) + 2;
+
+        if(pllsource == 0x00)
+        {
+            /* HSI oscillator clock divided by 2 selected as PLL clock entry */
+            RCC_Clocks->SYSCLK_Frequency = (HSI_Value >> 1) * pllmull;
+ 80008e6:	4a08      	ldr	r2, [pc, #32]	; (8000908 <Rcc_GetClocksFreq+0xa8>)
+ 80008e8:	fb02 f303 	mul.w	r3, r2, r3
+ 80008ec:	6003      	str	r3, [r0, #0]
+ 80008ee:	e7c4      	b.n	800087a <Rcc_GetClocksFreq+0x1a>
+ 80008f0:	40021000 	.word	0x40021000
+ 80008f4:	007a1200 	.word	0x007a1200
+ 80008f8:	20000004 	.word	0x20000004
+ 80008fc:	20000000 	.word	0x20000000
+ 8000900:	005b8d80 	.word	0x005b8d80
+ 8000904:	00b71b00 	.word	0x00b71b00
+ 8000908:	003d0900 	.word	0x003d0900
+
+0800090c <System_Information>:
+}
+
+extern __IO uint32_t StartUpCouter;
+
+GET_CLOCK_DEF void System_Information()
+{
+ 800090c:	b510      	push	{r4, lr}
+    RCC_ClocksTypeDef rcc_clock;
+    printf("StartupCounter : %d\n", StartUpCouter);
+ 800090e:	4b0d      	ldr	r3, [pc, #52]	; (8000944 <System_Information+0x38>)
+}
+
+extern __IO uint32_t StartUpCouter;
+
+GET_CLOCK_DEF void System_Information()
+{
+ 8000910:	b086      	sub	sp, #24
+    RCC_ClocksTypeDef rcc_clock;
+    printf("StartupCounter : %d\n", StartUpCouter);
+ 8000912:	4c0d      	ldr	r4, [pc, #52]	; (8000948 <System_Information+0x3c>)
+ 8000914:	6819      	ldr	r1, [r3, #0]
+ 8000916:	480d      	ldr	r0, [pc, #52]	; (800094c <System_Information+0x40>)
+ 8000918:	47a0      	blx	r4
+    Rcc_GetClocksFreq(&rcc_clock);
+ 800091a:	4b0d      	ldr	r3, [pc, #52]	; (8000950 <System_Information+0x44>)
+ 800091c:	a801      	add	r0, sp, #4
+ 800091e:	4798      	blx	r3
+    printf("System clock frequency = %d\n", rcc_clock.SYSCLK_Frequency);
+ 8000920:	9901      	ldr	r1, [sp, #4]
+ 8000922:	480c      	ldr	r0, [pc, #48]	; (8000954 <System_Information+0x48>)
+ 8000924:	47a0      	blx	r4
+    printf("HCLK_Freqeuncy : %d\n", rcc_clock.HCLK_Frequency);
+ 8000926:	9902      	ldr	r1, [sp, #8]
+ 8000928:	480b      	ldr	r0, [pc, #44]	; (8000958 <System_Information+0x4c>)
+ 800092a:	47a0      	blx	r4
+    printf("PCLK1_Frequency : %d\n", rcc_clock.PCLK1_Frequency);
+ 800092c:	9903      	ldr	r1, [sp, #12]
+ 800092e:	480b      	ldr	r0, [pc, #44]	; (800095c <System_Information+0x50>)
+ 8000930:	47a0      	blx	r4
+    printf("PCLK2_Frequency : %d\n", rcc_clock.PCLK2_Frequency);
+ 8000932:	9904      	ldr	r1, [sp, #16]
+ 8000934:	480a      	ldr	r0, [pc, #40]	; (8000960 <System_Information+0x54>)
+ 8000936:	47a0      	blx	r4
+    printf("ADCCLK_Frequency : %d\n", rcc_clock.ADCCLK_Frequency);
+ 8000938:	480a      	ldr	r0, [pc, #40]	; (8000964 <System_Information+0x58>)
+ 800093a:	9905      	ldr	r1, [sp, #20]
+ 800093c:	47a0      	blx	r4
+}
+ 800093e:	b006      	add	sp, #24
+ 8000940:	bd10      	pop	{r4, pc}
+ 8000942:	bf00      	nop
+ 8000944:	20000014 	.word	0x20000014
+ 8000948:	08000409 	.word	0x08000409
+ 800094c:	08000980 	.word	0x08000980
+ 8000950:	08000861 	.word	0x08000861
+ 8000954:	08000998 	.word	0x08000998
+ 8000958:	080009b8 	.word	0x080009b8
+ 800095c:	080009d0 	.word	0x080009d0
+ 8000960:	080009e8 	.word	0x080009e8
+ 8000964:	08000a00 	.word	0x08000a00
+
+08000968 <main>:
+
+#include "main.h"
+
+
+int main()
+{
+ 8000968:	b508      	push	{r3, lr}
+    Hw_Init();
+ 800096a:	4b03      	ldr	r3, [pc, #12]	; (8000978 <main+0x10>)
+ 800096c:	4798      	blx	r3
+    
+    System_Information();
+ 800096e:	4b03      	ldr	r3, [pc, #12]	; (800097c <main+0x14>)
+ 8000970:	4798      	blx	r3
+ 8000972:	2000      	movs	r0, #0
+ 8000974:	bd08      	pop	{r3, pc}
+ 8000976:	bf00      	nop
+ 8000978:	08000269 	.word	0x08000269
+ 800097c:	0800090d 	.word	0x0800090d
+ 8000980:	72617453 	.word	0x72617453
+ 8000984:	43707574 	.word	0x43707574
+ 8000988:	746e756f 	.word	0x746e756f
+ 800098c:	3a207265 	.word	0x3a207265
+ 8000990:	0a642520 	.word	0x0a642520
+ 8000994:	00000000 	.word	0x00000000
+ 8000998:	74737953 	.word	0x74737953
+ 800099c:	63206d65 	.word	0x63206d65
+ 80009a0:	6b636f6c 	.word	0x6b636f6c
+ 80009a4:	65726620 	.word	0x65726620
+ 80009a8:	6e657571 	.word	0x6e657571
+ 80009ac:	3d207963 	.word	0x3d207963
+ 80009b0:	0a642520 	.word	0x0a642520
+ 80009b4:	00000000 	.word	0x00000000
+ 80009b8:	4b4c4348 	.word	0x4b4c4348
+ 80009bc:	6572465f 	.word	0x6572465f
+ 80009c0:	6e756571 	.word	0x6e756571
+ 80009c4:	3a207963 	.word	0x3a207963
+ 80009c8:	0a642520 	.word	0x0a642520
+ 80009cc:	00000000 	.word	0x00000000
+ 80009d0:	4b4c4350 	.word	0x4b4c4350
+ 80009d4:	72465f31 	.word	0x72465f31
+ 80009d8:	65757165 	.word	0x65757165
+ 80009dc:	2079636e 	.word	0x2079636e
+ 80009e0:	6425203a 	.word	0x6425203a
+ 80009e4:	0000000a 	.word	0x0000000a
+ 80009e8:	4b4c4350 	.word	0x4b4c4350
+ 80009ec:	72465f32 	.word	0x72465f32
+ 80009f0:	65757165 	.word	0x65757165
+ 80009f4:	2079636e 	.word	0x2079636e
+ 80009f8:	6425203a 	.word	0x6425203a
+ 80009fc:	0000000a 	.word	0x0000000a
+ 8000a00:	43434441 	.word	0x43434441
+ 8000a04:	465f4b4c 	.word	0x465f4b4c
+ 8000a08:	75716572 	.word	0x75716572
+ 8000a0c:	79636e65 	.word	0x79636e65
+ 8000a10:	25203a20 	.word	0x25203a20
+ 8000a14:	00000a64 	.word	0x00000a64

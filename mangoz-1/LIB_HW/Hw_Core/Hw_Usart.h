@@ -14,8 +14,8 @@
 #define USART_DEF         extern
 #endif
 
-USART_DEF void USART1_Init(void);
-USART_DEF void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStructure);
+USART_DEF void USART1_Init(uint32_t apbclock);
+USART_DEF void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStructure, uint32_t apbclock);
 
 
 

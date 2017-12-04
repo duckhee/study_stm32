@@ -4,7 +4,7 @@
 #include "Get_clock.h"
 
 
-CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
+GET_CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
 {
     uint32_t tmp = 0, pllmull = 0, pllsource = 0, presc = 0;
 
@@ -28,7 +28,7 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
       /* Get PLL clock source and multiplication factor ----------------------*/
         pllmull = RCC->CFGR & CFGR_PLLMull_Mask;
         pllsource = RCC->CFGR & CFGR_PLLSRC_Mask;
-        pllmul = (pllmull >> 18) + 2;
+        pllmull = (pllmull >> 18) + 2;
 
         if(pllsource == 0x00)
         {
@@ -85,7 +85,7 @@ CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
 
 extern __IO uint32_t StartUpCouter;
 
-CLOCK_DEF void System_Information()
+GET_CLOCK_DEF void System_Information()
 {
     RCC_ClocksTypeDef rcc_clock;
     printf("StartupCounter : %d\n", StartUpCouter);
