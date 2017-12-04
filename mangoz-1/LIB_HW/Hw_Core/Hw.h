@@ -11,8 +11,11 @@
 #include "Hw_Usart.h"
 #include "Hw_Rcc.h"
 #include "Hw_Gpio.h"
+#include "Hw_Flash.h"
 
 
+//include printf 
+#include "Ld_Printf.h"
 
 
 

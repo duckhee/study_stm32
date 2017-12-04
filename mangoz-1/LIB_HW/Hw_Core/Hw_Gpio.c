@@ -95,23 +95,4 @@ GPIO_DEF void GPIO_Configuration(void)
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_Init(GPIO_USART, &GPIO_InitStructure);
 
-
-    GPIO_InitStructure.GPIO_Pin = GPIO_KEY1_PIN;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(GPIO_KEY, &GPIO_InitStructure);
-
-    GPIO_InitStructure.GPIO_Pin = GPIO_LED1_PIN | GPIO_LED2_PIN | GPIO_LED3_PIN;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIO_LED, &GPIO_InitStructure);
-    //led all off setting
-    Led_All_Off();
-
-    GPIO_InitStructure.GPIO_Pin
-    = GPIO_7_SEG_POWER_PIN | GPIO_7_SEG_A_PIN | GPIO_7_SEG_B_PIN | GPIO_7_SEG_C_PIN | GPIO_7_SEG_D_PIN | GPIO_7_SEG_E_PIN | GPIO_7_SEG_F_PIN | GPIO_7_SEG_G_PIN | GPIO_7_SEG_DP_PIN;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(GPIO_7_SEG, &GPIO_InitStructure);
-    //segment all off setting
-    Off_7_SEG_AllPin();
 }

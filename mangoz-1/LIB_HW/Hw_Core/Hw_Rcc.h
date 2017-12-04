@@ -9,6 +9,8 @@
 #define RCC_DEF              extern
 #endif
 
+RCC_DEF void HSE_Init(void);
+RCC_DEF void HSI_Init(void);
 
 
 #endif
