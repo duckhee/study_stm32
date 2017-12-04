@@ -36,6 +36,13 @@ NVIC_DEF void NVIC_Configuration(void)
         NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
         NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
         NVIC_Init(&NVIC_InitStructure);
+        /* Enable the TIM4 gloabal Interrupt */
+        // NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+        // NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+        // NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+        // NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+        // NVIC_Init(&NVIC_InitStructure);
+
 }
 
 NVIC_DEF void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)

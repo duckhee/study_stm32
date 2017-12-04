@@ -22,6 +22,7 @@ HW_EXT_DEF ITStatus EXTI_GetITStatus(uint32_t EXTI_Line);
 HW_EXT_DEF void EXTI_ClearITPendingBit(uint32_t EXTI_Line);
 HW_EXT_DEF void EXTI0_IRQHandler(void);
 HW_EXT_DEF void EXTI1_IRQHandler(void);
+HW_EXT_DEF void TIM4_IRQHandler(void);
 HW_EXT_DEF void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource);
 HW_EXT_DEF void EXTI_Init(EXTI_InitTypeDef* EXTI_InitStruct);
 
