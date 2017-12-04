@@ -1,0 +1,629 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 2
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"usb_int.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.CTR_LP,"ax",%progbits
+  19              		.align	2
+  20              		.global	CTR_LP
+  21              		.thumb
+  22              		.thumb_func
+  24              	CTR_LP:
+  25              	.LFB0:
+  26              		.file 1 "../LIB_HW/Driver/LIB_USB/DRV/usb_int.c"
+   1:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** /**
+   2:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   ******************************************************************************
+   3:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * @file    usb_int.c
+   4:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * @author  MCD Application Team
+   5:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * @version V4.0.0
+   6:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * @date    28-August-2012
+   7:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * @brief   Endpoint CTR (Low and High) interrupt's service routines
+   8:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   ******************************************************************************
+   9:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * @attention
+  10:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   *
+  11:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  12:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   *
+  13:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  14:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * You may not use this file except in compliance with the License.
+  15:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * You may obtain a copy of the License at:
+  16:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   *
+  17:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
+  18:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   *
+  19:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * Unless required by applicable law or agreed to in writing, software 
+  20:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
+  21:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  22:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * See the License for the specific language governing permissions and
+  23:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   * limitations under the License.
+  24:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   *
+  25:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   ******************************************************************************
+  26:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   */
+  27:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  28:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** /* Includes ------------------------------------------------------------------*/
+  29:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** #include "usb_lib.h"
+  30:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  31:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** /* Private typedef -----------------------------------------------------------*/
+  32:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** /* Private define ------------------------------------------------------------*/
+  33:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** /* Private macro -------------------------------------------------------------*/
+  34:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** /* Private variables ---------------------------------------------------------*/
+  35:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** __IO uint16_t SaveRState;
+  36:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** __IO uint16_t SaveTState;
+  37:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  38:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** /* Extern variables ----------------------------------------------------------*/
+  39:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** extern void (*pEpInt_IN[7])(void);    /*  Handles IN  interrupts   */
+  40:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** extern void (*pEpInt_OUT[7])(void);   /*  Handles OUT interrupts   */
+  41:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  42:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** /* Private function prototypes -----------------------------------------------*/
+  43:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** /* Private functions ---------------------------------------------------------*/
+  44:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  45:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** /*******************************************************************************
+  46:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** * Function Name  : CTR_LP.
+  47:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** * Description    : Low priority Endpoint Correct Transfer interrupt's service
+  48:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** *                  routine.
+  49:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** * Input          : None.
+  50:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** * Output         : None.
+  51:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** * Return         : None.
+  52:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** *******************************************************************************/
+  53:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** void CTR_LP(void)
+  54:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** {
+  27              		.loc 1 54 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 16
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 28
+  34              		.cfi_offset 4, -28
+  35              		.cfi_offset 5, -24
+  36              		.cfi_offset 6, -20
+  37              		.cfi_offset 7, -16
+  38              		.cfi_offset 8, -12
+  39              		.cfi_offset 9, -8
+  40              		.cfi_offset 14, -4
+  55:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   __IO uint16_t wEPVal = 0;
+  41              		.loc 1 55 0
+  42 0004 0023     		movs	r3, #0
+  54:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   __IO uint16_t wEPVal = 0;
+  43              		.loc 1 54 0
+  44 0006 85B0     		sub	sp, sp, #20
+  45              	.LCFI1:
+  46              		.cfi_def_cfa_offset 48
+  47 0008 DFF85C81 		ldr	r8, .L81+20
+  56:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   /* stay in loop while pending interrupts */
+  57:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   while (((wIstr = _GetISTR()) & ISTR_CTR) != 0)
+  48              		.loc 1 57 0
+  49 000c 514F     		ldr	r7, .L81
+  58:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   {
+  59:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     /* extract highest priority endpoint number */
+  60:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     EPindex = (uint8_t)(wIstr & ISTR_EP_ID);
+  61:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     if (EPindex == 0)
+  62:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     {
+  63:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* Decode and service control endpoint interrupt */
+  64:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* calling related service routine */
+  65:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* (Setup0_Process, In0_Process, Out0_Process) */
+  66:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  67:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* save RX & TX status */
+  68:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* and set both to NAK */
+  69:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       
+  70:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 	    SaveRState = _GetENDPOINT(ENDP0);
+  50              		.loc 1 70 0
+  51 000e 524D     		ldr	r5, .L81+4
+  55:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   /* stay in loop while pending interrupts */
+  52              		.loc 1 55 0
+  53 0010 ADF80E30 		strh	r3, [sp, #14]	@ movhi
+  54              	.L2:
+  57:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   {
+  55              		.loc 1 57 0
+  56 0014 3B68     		ldr	r3, [r7]
+  57              		.loc 1 70 0
+  58 0016 514C     		ldr	r4, .L81+8
+  57:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   {
+  59              		.loc 1 57 0
+  60 0018 9AB2     		uxth	r2, r3
+  61 001a 13F4004F 		tst	r3, #32768
+  71:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 	    SaveTState = SaveRState & EPTX_STAT;
+  62              		.loc 1 71 0
+  63 001e 504E     		ldr	r6, .L81+12
+  60:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     if (EPindex == 0)
+  64              		.loc 1 60 0
+  65 0020 5048     		ldr	r0, .L81+16
+  57:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   {
+  66              		.loc 1 57 0
+  67 0022 A8F80020 		strh	r2, [r8]	@ movhi
+  68 0026 5049     		ldr	r1, .L81+20
+  70:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 	    SaveTState = SaveRState & EPTX_STAT;
+  69              		.loc 1 70 0
+  70 0028 DFF82C91 		ldr	r9, .L81+4
+  57:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   {
+  71              		.loc 1 57 0
+  72 002c 00F08A80 		beq	.L1
+  60:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     if (EPindex == 0)
+  73              		.loc 1 60 0
+  74 0030 0B88     		ldrh	r3, [r1]
+  75 0032 03F00F03 		and	r3, r3, #15
+  72:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 	    SaveRState &=  EPRX_STAT;	
+  73:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  74:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 	    _SetEPRxTxStatus(ENDP0,EP_RX_NAK,EP_TX_NAK);
+  75:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  76:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* DIR bit = origin of the interrupt */
+  77:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  78:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       if ((wIstr & ISTR_DIR) == 0)
+  79:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       {
+  80:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         /* DIR = 0 */
+  81:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  82:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         /* DIR = 0      => IN  int */
+  83:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         /* DIR = 0 implies that (EP_CTR_TX = 1) always  */
+  84:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  85:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         _ClearEP_CTR_TX(ENDP0);
+  86:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         In0_Process();
+  87:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  88:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****            /* before terminate set Tx & Rx status */
+  89:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  90:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****             _SetEPRxTxStatus(ENDP0,SaveRState,SaveTState);
+  91:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 		  return;
+  92:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       }
+  93:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       else
+  94:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       {
+  95:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         /* DIR = 1 */
+  96:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  97:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         /* DIR = 1 & CTR_RX       => SETUP or OUT int */
+  98:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         /* DIR = 1 & (CTR_TX | CTR_RX) => 2 int pending */
+  99:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 100:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         wEPVal = _GetENDPOINT(ENDP0);
+ 101:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         
+ 102:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         if ((wEPVal &EP_SETUP) != 0)
+ 103:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         {
+ 104:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           _ClearEP_CTR_RX(ENDP0); /* SETUP bit kept frozen while CTR_RX = 1 */
+ 105:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           Setup0_Process();
+ 106:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           /* before terminate set Tx & Rx status */
+ 107:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 108:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 		      _SetEPRxTxStatus(ENDP0,SaveRState,SaveTState);
+ 109:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           return;
+ 110:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         }
+ 111:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 112:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         else if ((wEPVal & EP_CTR_RX) != 0)
+ 113:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         {
+ 114:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           _ClearEP_CTR_RX(ENDP0);
+ 115:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           Out0_Process();
+ 116:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           /* before terminate set Tx & Rx status */
+ 117:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****      
+ 118:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 		     _SetEPRxTxStatus(ENDP0,SaveRState,SaveTState);
+ 119:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           return;
+ 120:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         }
+ 121:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       }
+ 122:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     }/* if(EPindex == 0) */
+ 123:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     else
+ 124:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     {
+ 125:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* Decode and service non control endpoints interrupt  */
+ 126:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 127:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* process related endpoint register */
+ 128:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       wEPVal = _GetENDPOINT(EPindex);
+  76              		.loc 1 128 0
+  77 0036 9A00     		lsls	r2, r3, #2
+  78 0038 02F18042 		add	r2, r2, #1073741824
+  79 003c 02F5B842 		add	r2, r2, #23552
+  60:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     if (EPindex == 0)
+  80              		.loc 1 60 0
+  81 0040 0370     		strb	r3, [r0]
+  61:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     {
+  82              		.loc 1 61 0
+  83 0042 63BB     		cbnz	r3, .L3
+  84              	.LBB2:
+  74:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  85              		.loc 1 74 0
+  86 0044 4BF6BF73 		movw	r3, #49087
+  87              	.LBE2:
+  70:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 	    SaveTState = SaveRState & EPTX_STAT;
+  88              		.loc 1 70 0
+  89 0048 2268     		ldr	r2, [r4]
+  90 004a 92B2     		uxth	r2, r2
+  91 004c 2A80     		strh	r2, [r5]	@ movhi
+  71:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 	    SaveRState &=  EPRX_STAT;	
+  92              		.loc 1 71 0
+  93 004e 2A88     		ldrh	r2, [r5]
+  94 0050 02F03002 		and	r2, r2, #48
+  95 0054 3280     		strh	r2, [r6]	@ movhi
+  72:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+  96              		.loc 1 72 0
+  97 0056 2A88     		ldrh	r2, [r5]
+  98 0058 02F44052 		and	r2, r2, #12288
+  99 005c 2A80     		strh	r2, [r5]	@ movhi
+ 100              	.LBB3:
+  74:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 101              		.loc 1 74 0
+ 102 005e 2268     		ldr	r2, [r4]
+ 103 0060 1340     		ands	r3, r3, r2
+ 104              	.LVL0:
+ 105 0062 83F40053 		eor	r3, r3, #8192
+ 106              	.LVL1:
+ 107 0066 83F02003 		eor	r3, r3, #32
+ 108              	.LVL2:
+ 109 006a 43F40043 		orr	r3, r3, #32768
+ 110              	.LVL3:
+ 111 006e 43F08003 		orr	r3, r3, #128
+ 112 0072 2360     		str	r3, [r4]
+ 113              	.LBE3:
+  78:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       {
+ 114              		.loc 1 78 0
+ 115 0074 0B88     		ldrh	r3, [r1]
+ 116 0076 DA06     		lsls	r2, r3, #27
+ 117              	.LVL4:
+ 118 0078 3CD5     		bpl	.L78
+ 100:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         
+ 119              		.loc 1 100 0
+ 120 007a 2368     		ldr	r3, [r4]
+ 121 007c 9BB2     		uxth	r3, r3
+ 122 007e ADF80E30 		strh	r3, [sp, #14]	@ movhi
+ 102:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         {
+ 123              		.loc 1 102 0
+ 124 0082 BDF80E30 		ldrh	r3, [sp, #14]
+ 125 0086 1B05     		lsls	r3, r3, #20
+ 126 0088 5FD4     		bmi	.L79
+ 112:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         {
+ 127              		.loc 1 112 0
+ 128 008a BDF80E30 		ldrh	r3, [sp, #14]
+ 129 008e 1BB2     		sxth	r3, r3
+ 130 0090 002B     		cmp	r3, #0
+ 131 0092 BFDA     		bge	.L2
+ 114:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           Out0_Process();
+ 132              		.loc 1 114 0
+ 133 0094 40F68F73 		movw	r3, #3983
+ 134 0098 2168     		ldr	r1, [r4]
+ 115:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           /* before terminate set Tx & Rx status */
+ 135              		.loc 1 115 0
+ 136 009a 344A     		ldr	r2, .L81+24
+ 137 009c 2EE0     		b	.L75
+ 138              	.L3:
+ 139              		.loc 1 128 0
+ 140 009e 1168     		ldr	r1, [r2]
+ 141 00a0 89B2     		uxth	r1, r1
+ 142 00a2 ADF80E10 		strh	r1, [sp, #14]	@ movhi
+ 129:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       if ((wEPVal & EP_CTR_RX) != 0)
+ 143              		.loc 1 129 0
+ 144 00a6 BDF80E10 		ldrh	r1, [sp, #14]
+ 145 00aa 09B2     		sxth	r1, r1
+ 146 00ac 0029     		cmp	r1, #0
+ 147 00ae 14DB     		blt	.L80
+ 148              	.L21:
+ 130:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       {
+ 131:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         /* clear int flag */
+ 132:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         _ClearEP_CTR_RX(EPindex);
+ 133:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 134:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         /* call OUT service function */
+ 135:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         (*pEpInt_OUT[EPindex-1])();
+ 136:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 137:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       } /* if((wEPVal & EP_CTR_RX) */
+ 138:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 139:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       if ((wEPVal & EP_CTR_TX) != 0)
+ 149              		.loc 1 139 0
+ 150 00b0 BDF80E30 		ldrh	r3, [sp, #14]
+ 151 00b4 1B06     		lsls	r3, r3, #24
+ 152 00b6 ADD5     		bpl	.L2
+ 140:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       {
+ 141:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         /* clear int flag */
+ 142:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         _ClearEP_CTR_TX(EPindex);
+ 153              		.loc 1 142 0
+ 154 00b8 48F60F71 		movw	r1, #36623
+ 155 00bc 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
+ 143:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 144:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         /* call IN service function */
+ 145:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         (*pEpInt_IN[EPindex-1])();
+ 156              		.loc 1 145 0
+ 157 00be 2C48     		ldr	r0, .L81+28
+ 142:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 158              		.loc 1 142 0
+ 159 00c0 9300     		lsls	r3, r2, #2
+ 160 00c2 03F18043 		add	r3, r3, #1073741824
+ 161 00c6 03F5B843 		add	r3, r3, #23552
+ 162 00ca 1C68     		ldr	r4, [r3]
+ 163              		.loc 1 145 0
+ 164 00cc 013A     		subs	r2, r2, #1
+ 142:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 165              		.loc 1 142 0
+ 166 00ce 2140     		ands	r1, r1, r4
+ 167 00d0 1960     		str	r1, [r3]
+ 168              		.loc 1 145 0
+ 169 00d2 50F82230 		ldr	r3, [r0, r2, lsl #2]
+ 170 00d6 9847     		blx	r3
+ 171              	.LVL5:
+ 172 00d8 9CE7     		b	.L2
+ 173              	.L80:
+ 132:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 174              		.loc 1 132 0
+ 175 00da 40F68F71 		movw	r1, #3983
+ 176 00de 1668     		ldr	r6, [r2]
+ 135:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 177              		.loc 1 135 0
+ 178 00e0 244C     		ldr	r4, .L81+32
+ 132:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 179              		.loc 1 132 0
+ 180 00e2 3140     		ands	r1, r1, r6
+ 135:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 181              		.loc 1 135 0
+ 182 00e4 013B     		subs	r3, r3, #1
+ 183 00e6 54F82330 		ldr	r3, [r4, r3, lsl #2]
+ 132:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 184              		.loc 1 132 0
+ 185 00ea 1160     		str	r1, [r2]
+ 186 00ec 0190     		str	r0, [sp, #4]
+ 135:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 187              		.loc 1 135 0
+ 188 00ee 9847     		blx	r3
+ 189              	.LVL6:
+ 190 00f0 0198     		ldr	r0, [sp, #4]
+ 191 00f2 DDE7     		b	.L21
+ 192              	.L78:
+  85:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****         In0_Process();
+ 193              		.loc 1 85 0
+ 194 00f4 48F60F73 		movw	r3, #36623
+ 195 00f8 2168     		ldr	r1, [r4]
+  86:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 196              		.loc 1 86 0
+ 197 00fa 1F4A     		ldr	r2, .L81+36
+ 198              	.L75:
+ 114:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           Out0_Process();
+ 199              		.loc 1 114 0
+ 200 00fc 0B40     		ands	r3, r3, r1
+ 201 00fe 2360     		str	r3, [r4]
+ 115:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           /* before terminate set Tx & Rx status */
+ 202              		.loc 1 115 0
+ 203 0100 9047     		blx	r2
+ 204              	.LVL7:
+ 205              	.LBB4:
+ 118:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           return;
+ 206              		.loc 1 118 0
+ 207 0102 4BF6BF73 		movw	r3, #49087
+ 208 0106 2168     		ldr	r1, [r4]
+ 209 0108 B9F80020 		ldrh	r2, [r9]
+ 210 010c 0B40     		ands	r3, r3, r1
+ 211              	.LVL8:
+ 212 010e D404     		lsls	r4, r2, #19
+ 213 0110 B9F80020 		ldrh	r2, [r9]
+ 214 0114 48BF     		it	mi
+ 215 0116 83F48053 		eormi	r3, r3, #4096
+ 216              	.LVL9:
+ 217 011a 9004     		lsls	r0, r2, #18
+ 218 011c 3288     		ldrh	r2, [r6]
+ 219 011e 48BF     		it	mi
+ 220 0120 83F40053 		eormi	r3, r3, #8192
+ 221              	.LVL10:
+ 222 0124 D106     		lsls	r1, r2, #27
+ 223 0126 3288     		ldrh	r2, [r6]
+ 224 0128 48BF     		it	mi
+ 225 012a 83F01003 		eormi	r3, r3, #16
+ 226              	.LVL11:
+ 227 012e 9206     		lsls	r2, r2, #26
+ 228 0130 48BF     		it	mi
+ 229 0132 83F02003 		eormi	r3, r3, #32
+ 230              	.LVL12:
+ 231 0136 43F40043 		orr	r3, r3, #32768
+ 232              	.LVL13:
+ 233 013a 43F08003 		orr	r3, r3, #128
+ 234 013e 074A     		ldr	r2, .L81+8
+ 235 0140 9BB2     		uxth	r3, r3
+ 236 0142 1360     		str	r3, [r2]
+ 237              	.L1:
+ 238              	.LBE4:
+ 146:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       } /* if((wEPVal & EP_CTR_TX) != 0) */
+ 147:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 148:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     }/* if(EPindex == 0) else */
+ 149:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 150:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   }/* while(...) */
+ 151:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** }
+ 239              		.loc 1 151 0
+ 240 0144 05B0     		add	sp, sp, #20
+ 241              	.LCFI2:
+ 242              		.cfi_remember_state
+ 243              		.cfi_def_cfa_offset 28
+ 244              		@ sp needed
+ 245 0146 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 246              	.L79:
+ 247              	.LCFI3:
+ 248              		.cfi_restore_state
+ 104:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           Setup0_Process();
+ 249              		.loc 1 104 0
+ 250 014a 40F68F73 		movw	r3, #3983
+ 251 014e 2168     		ldr	r1, [r4]
+ 105:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****           /* before terminate set Tx & Rx status */
+ 252              		.loc 1 105 0
+ 253 0150 0A4A     		ldr	r2, .L81+40
+ 254 0152 D3E7     		b	.L75
+ 255              	.L82:
+ 256              		.align	2
+ 257              	.L81:
+ 258 0154 445C0040 		.word	1073765444
+ 259 0158 00000000 		.word	SaveRState
+ 260 015c 005C0040 		.word	1073765376
+ 261 0160 00000000 		.word	SaveTState
+ 262 0164 00000000 		.word	EPindex
+ 263 0168 00000000 		.word	wIstr
+ 264 016c 00000000 		.word	Out0_Process
+ 265 0170 00000000 		.word	pEpInt_IN
+ 266 0174 00000000 		.word	pEpInt_OUT
+ 267 0178 00000000 		.word	In0_Process
+ 268 017c 00000000 		.word	Setup0_Process
+ 269              		.cfi_endproc
+ 270              	.LFE0:
+ 272              		.section	.text.CTR_HP,"ax",%progbits
+ 273              		.align	2
+ 274              		.global	CTR_HP
+ 275              		.thumb
+ 276              		.thumb_func
+ 278              	CTR_HP:
+ 279              	.LFB1:
+ 152:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 153:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** /*******************************************************************************
+ 154:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** * Function Name  : CTR_HP.
+ 155:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** * Description    : High Priority Endpoint Correct Transfer interrupt's service 
+ 156:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** *                  routine.
+ 157:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** * Input          : None.
+ 158:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** * Output         : None.
+ 159:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** * Return         : None.
+ 160:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** *******************************************************************************/
+ 161:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** void CTR_HP(void)
+ 162:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** {
+ 280              		.loc 1 162 0
+ 281              		.cfi_startproc
+ 282              		@ args = 0, pretend = 0, frame = 0
+ 283              		@ frame_needed = 0, uses_anonymous_args = 0
+ 284              	.LVL14:
+ 285 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 286              	.LCFI4:
+ 287              		.cfi_def_cfa_offset 24
+ 288              		.cfi_offset 3, -24
+ 289              		.cfi_offset 4, -20
+ 290              		.cfi_offset 5, -16
+ 291              		.cfi_offset 6, -12
+ 292              		.cfi_offset 7, -8
+ 293              		.cfi_offset 14, -4
+ 294 0002 174D     		ldr	r5, .L95
+ 163:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   uint32_t wEPVal = 0;
+ 164:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 165:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   while (((wIstr = _GetISTR()) & ISTR_CTR) != 0)
+ 295              		.loc 1 165 0
+ 296 0004 174C     		ldr	r4, .L95+4
+ 297 0006 2F46     		mov	r7, r5
+ 166:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   {
+ 167:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     _SetISTR((uint16_t)CLR_CTR); /* clear CTR flag */
+ 168:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     /* extract highest priority endpoint number */
+ 169:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     EPindex = (uint8_t)(wIstr & ISTR_EP_ID);
+ 298              		.loc 1 169 0
+ 299 0008 174E     		ldr	r6, .L95+8
+ 300              	.LVL15:
+ 301              	.L84:
+ 165:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   {
+ 302              		.loc 1 165 0
+ 303 000a 2368     		ldr	r3, [r4]
+ 304 000c 9AB2     		uxth	r2, r3
+ 305 000e 1B04     		lsls	r3, r3, #16
+ 306 0010 2A80     		strh	r2, [r5]	@ movhi
+ 307 0012 23D5     		bpl	.L93
+ 167:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     /* extract highest priority endpoint number */
+ 308              		.loc 1 167 0
+ 309 0014 47F6FF73 		movw	r3, #32767
+ 310 0018 2360     		str	r3, [r4]
+ 311              		.loc 1 169 0
+ 312 001a 3A88     		ldrh	r2, [r7]
+ 313 001c 02F00F02 		and	r2, r2, #15
+ 170:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     /* process related endpoint register */
+ 171:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     wEPVal = _GetENDPOINT(EPindex);
+ 314              		.loc 1 171 0
+ 315 0020 9300     		lsls	r3, r2, #2
+ 316 0022 03F18043 		add	r3, r3, #1073741824
+ 169:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     /* process related endpoint register */
+ 317              		.loc 1 169 0
+ 318 0026 3270     		strb	r2, [r6]
+ 319              		.loc 1 171 0
+ 320 0028 03F5B843 		add	r3, r3, #23552
+ 321 002c 1968     		ldr	r1, [r3]
+ 322              	.LVL16:
+ 172:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     if ((wEPVal & EP_CTR_RX) != 0)
+ 323              		.loc 1 172 0
+ 324 002e 0804     		lsls	r0, r1, #16
+ 325 0030 0ED4     		bmi	.L94
+ 173:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     {
+ 174:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* clear int flag */
+ 175:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       _ClearEP_CTR_RX(EPindex);
+ 176:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 177:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* call OUT service function */
+ 178:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       (*pEpInt_OUT[EPindex-1])();
+ 179:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 180:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     } /* if((wEPVal & EP_CTR_RX) */
+ 181:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     else if ((wEPVal & EP_CTR_TX) != 0)
+ 326              		.loc 1 181 0
+ 327 0032 0906     		lsls	r1, r1, #24
+ 328              	.LVL17:
+ 329 0034 E9D5     		bpl	.L84
+ 182:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     {
+ 183:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* clear int flag */
+ 184:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       _ClearEP_CTR_TX(EPindex);
+ 330              		.loc 1 184 0
+ 331 0036 48F60F71 		movw	r1, #36623
+ 332 003a D3F800E0 		ldr	lr, [r3]
+ 185:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 186:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       /* call IN service function */
+ 187:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****       (*pEpInt_IN[EPindex-1])();
+ 333              		.loc 1 187 0
+ 334 003e 0B48     		ldr	r0, .L95+12
+ 335              	.L92:
+ 184:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 336              		.loc 1 184 0
+ 337 0040 0EEA0101 		and	r1, lr, r1
+ 338              		.loc 1 187 0
+ 339 0044 013A     		subs	r2, r2, #1
+ 340 0046 50F82220 		ldr	r2, [r0, r2, lsl #2]
+ 184:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 341              		.loc 1 184 0
+ 342 004a 1960     		str	r1, [r3]
+ 343              		.loc 1 187 0
+ 344 004c 9047     		blx	r2
+ 345              	.LVL18:
+ 346 004e DCE7     		b	.L84
+ 347              	.LVL19:
+ 348              	.L94:
+ 175:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 349              		.loc 1 175 0
+ 350 0050 40F68F71 		movw	r1, #3983
+ 351              	.LVL20:
+ 352 0054 D3F800E0 		ldr	lr, [r3]
+ 178:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 353              		.loc 1 178 0
+ 354 0058 0548     		ldr	r0, .L95+16
+ 355 005a F1E7     		b	.L92
+ 356              	.L93:
+ 188:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 189:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 190:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****     } /* if((wEPVal & EP_CTR_TX) != 0) */
+ 191:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** 
+ 192:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c ****   }/* while(...) */
+ 193:../LIB_HW/Driver/LIB_USB/DRV/usb_int.c **** }
+ 357              		.loc 1 193 0
+ 358 005c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 359              	.L96:
+ 360 005e 00BF     		.align	2
+ 361              	.L95:
+ 362 0060 00000000 		.word	wIstr
+ 363 0064 445C0040 		.word	1073765444
+ 364 0068 00000000 		.word	EPindex
+ 365 006c 00000000 		.word	pEpInt_IN
+ 366 0070 00000000 		.word	pEpInt_OUT
+ 367              		.cfi_endproc
+ 368              	.LFE1:
+ 370              		.comm	SaveTState,2,2
+ 371              		.comm	SaveRState,2,2
+ 372              		.text
+ 373              	.Letext0:
+ 374              		.file 2 "../LIB_HW/Core/Hw_Define.h"
+ 375              		.file 3 "../LIB_HW/Driver/LIB_USB/DRV/usb_regs.h"
+ 376              		.file 4 "../LIB_HW/Driver/LIB_USB/DRV/usb_init.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_int.c
+C:\Users\user\AppData\Local\Temp\ccTmZhtl.s:19     .text.CTR_LP:00000000 $t
+C:\Users\user\AppData\Local\Temp\ccTmZhtl.s:24     .text.CTR_LP:00000000 CTR_LP
+C:\Users\user\AppData\Local\Temp\ccTmZhtl.s:258    .text.CTR_LP:00000154 $d
+                            *COM*:00000002 SaveRState
+                            *COM*:00000002 SaveTState
+C:\Users\user\AppData\Local\Temp\ccTmZhtl.s:273    .text.CTR_HP:00000000 $t
+C:\Users\user\AppData\Local\Temp\ccTmZhtl.s:278    .text.CTR_HP:00000000 CTR_HP
+C:\Users\user\AppData\Local\Temp\ccTmZhtl.s:362    .text.CTR_HP:00000060 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+EPindex
+wIstr
+Out0_Process
+pEpInt_IN
+pEpInt_OUT
+In0_Process
+Setup0_Process

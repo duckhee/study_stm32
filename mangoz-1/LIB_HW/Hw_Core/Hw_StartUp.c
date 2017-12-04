@@ -4,18 +4,8 @@ typedef void (*const intfunc)(void);
 // Private define ----------------------------------------------------------------------------------------
 #define WEAK __attribute__ ((weak))
 
-// //link pointer get LINKERSCRIPT
-// extern unsigned long _ld_stack_address;
-// extern unsigned long _ld_ram_start;
-// extern unsigned long _ld_text_start;
-// extern unsigned long _ld_text_end;
-// extern unsigned long _ld_data_start;
-// extern unsigned long _ld_data_end;
-// extern unsigned long _ld_bss_start;
-// extern unsigned long _ld_bss_end;
 
 //-- init value for the stack pointer. defined in linker script 
-//
 extern unsigned long _estack;
 extern unsigned long _sidata;    /*!< Start address for the initialization 
                                       values of the .data section.            */
@@ -191,9 +181,8 @@ void (*g_pfnVectors[])(void) =
 
 void Reset_Handler(void)
 {
-    unsigned long HSIStatus = 0, StartUpCounter = 0;
-    //unsigned long HSEStatus = 0, StartUpCounter = 0;
-    //Init_Data();
+    //unsigned long HSIStatus = 0, StartUpCounter = 0;
+    unsigned long HSEStatus = 0, StartUpCounter = 0;
       
 	/* Zero fill the bss segment.  This is done with inline assembly since this
 	   will clear the value of pulDest if it is not kept in a register. */
@@ -216,48 +205,34 @@ void Reset_Handler(void)
           "    strlt   r2, [r0], #4\n"
           "    blt     zero_loop");
         	
-	/*
-	
-	__asm("  ldr     r0, =_ld_bss_start\n"
-          "  ldr     r1, =_ld_bss_end\n"
-          "  mov     r2, #0\n"
-          "  .thumb_func\n"
-          "zero_loop:\n"
-          "    cmp     r0, r1\n"
-          "    it      lt\n"
-          "    strlt   r2, [r0], #4\n"
-          "    blt     zero_loop");
-        	
-	
-	*/
 	
     //HSI On 
-    *(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
+    //*(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
     //HSE ON
-    //*(volatile unsigned long *)0x40021000 |= 0x1 << 16;
+    *(volatile unsigned long *)0x40021000 |= 0x1 << 16;
     
     //check HSI Or HSE READY
     do
     {
         //HSI check
-        HSIStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 1); //HSI RDY check bit
+        //HSIStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 1); //HSI RDY check bit
         //HSE check
-        //HSEStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 17); //HSE RDY check bit
+        HSEStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 17); //HSE RDY check bit
         StartUpCounter++;
-    }while((HSIStatus == 0) && (StartUpCounter != 0x0500));
+    }while((HSEStatus == 0) && (StartUpCounter != 0x0500));
     
     ///////////////// FLASH Memory Latency move code RAM sections ////////////////////////////////////
 	*(volatile unsigned long *)0x40022000 |= (1<<4);     //prefetch buffer enable
-    *(volatile unsigned long *)0x40022000 |= 0x10; //bit PRETBE = 1 Set
+    *(volatile unsigned long *)0x40022000 |= 0x10; //bit latency = 1 bit Set 010 48<sysclock<72
     *(volatile unsigned long *)0x40022000 &= ~(0x7); //bit 2, 1, 0 clear 0, 0, 0
     *(volatile unsigned long *)0x40022000 |= 0x2; //bit 2, 1, 0 = 0, 1, 0
     //////////////////////////////////////////////////////////////////////////////////////////////////
     
     // reset setting PLL 
     *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16); //18 bit set 0, 17 bit set 0, 16 bit set 0
-    *(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
+    // *(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
     // *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ??
-    // *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
+     *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
     *(volatile unsigned long *) 0x40021000 |= 0x01 << 24/*0x1000000*/;                       //PLLON
     while( ((*(volatile unsigned long *) 0x40021000) & 0x01 << 25/*0x2000000*/) == 0);       //PLLRDY
     /////////// PLL Seting System clock ///////////////////////////////
@@ -297,8 +272,8 @@ void Reset_Handler(void)
     *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
     *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
     *(volatile unsigned long *) 0x40013814 = 0x0;
-    *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; //OSC 32MHz 115200bps Setting
-    //*(volatile unsigned long *)0x40013808 = 39 << 4 | 1; //OSC 72MHz 115200bps Setting
+    //*(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; //OSC 32MHz 115200bps Setting
+    *(volatile unsigned long *)0x40013808 = 39 << 4 | 1; //OSC 72MHz 115200bps Setting
     *(volatile unsigned long *) 0x4001380C |= 0x2000;
 
     main(); //jump main function
@@ -311,29 +286,6 @@ void Reset_Handler(void)
 
 }
 
-
-// void Init_Data()
-// {
-//     unsigned long *pulSrc, *pulDest;
-
-//     pulSrc = &_ld_data_start;
-//     pulDest = &_ld_ram_start;
-
-//     if(pulSrc != pulDest)
-//     {
-//         for(;pulDest < &_ld_data_end; )
-//         {
-//             *(pulDest++) = *(pulSrc++);
-
-//         }
-//     }
-
-//     for(pulDest = &_ld_bss_start; pulDest <  &_ld_bss_end; )
-//     {
-//         *(pulDest++) = 0;
-//     }
-// }
-//code move ram section 
 
 
 // =======================================================================================================

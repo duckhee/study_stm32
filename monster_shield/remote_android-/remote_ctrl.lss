@@ -1,0 +1,2349 @@
+
+remote_ctrl.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000940  08000000  08000000  00008000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 ._usrstack    00000100  20000000  20000000  00010000  2**0
+                  ALLOC
+  2 .debug_info   00000a02  00000000  00000000  00008940  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_abbrev 00000406  00000000  00000000  00009342  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_loc    00001398  00000000  00000000  00009748  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_aranges 000000b0  00000000  00000000  0000aae0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_ranges 000001a8  00000000  00000000  0000ab90  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000004c8  00000000  00000000  0000ad38  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    000002e3  00000000  00000000  0000b200  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .comment      00000070  00000000  00000000  0000b4e3  2**0
+                  CONTENTS, READONLY
+ 10 .ARM.attributes 00000033  00000000  00000000  0000b553  2**0
+                  CONTENTS, READONLY
+ 11 .debug_frame  000001d4  00000000  00000000  0000b588  2**2
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+08000000 <g_pfnVectors>:
+ 8000000:	00 50 00 20 0d 01 00 08 00 00 00 00 00 00 00 00     .P. ............
+ 8000010:	09 01 00 08 09 01 00 08 09 01 00 08 00 00 00 00     ................
+	...
+ 800002c:	09 01 00 08 09 01 00 08 00 00 00 00 09 01 00 08     ................
+ 800003c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800004c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800005c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800006c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800007c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800008c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 800009c:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 80000ac:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 80000bc:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 80000cc:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+ 80000dc:	09 01 00 08 09 01 00 08 09 01 00 08 09 01 00 08     ................
+	...
+
+08000108 <Default_Handler>:
+//	This is the code that gets called when the processor receives an unexpected interrupt. 
+//	This simply enters an infinite loop, preserving the system state for examination by a debugger.
+// =======================================================================================================
+
+void Default_Handler(void)
+{
+ 8000108:	e7fe      	b.n	8000108 <Default_Handler>
+ 800010a:	bf00      	nop
+
+0800010c <Reset_Handler>:
+// -------------------------------------------------------------------------------------------------------
+//	초기화 과정에서 SP ← _estack, PC ← Reset_Handler 로 설정이 되어, Reset_Handler()가 호출된다.
+// -------------------------------------------------------------------------------------------------------
+
+void Reset_Handler(void)        // Reset_Handler() Start - 여기서부터 코드가 처음 시작되는 부분이다.
+{
+ 800010c:	4668      	mov	r0, sp
+ 800010e:	f020 0107 	bic.w	r1, r0, #7
+ 8000112:	468d      	mov	sp, r1
+ 8000114:	e92d 41f9 	stmdb	sp!, {r0, r3, r4, r5, r6, r7, r8, lr}
+	// 8MHz/2 x 9 = 36MHz
+	// 12MHz x 6 = 72MHz
+
+	// HSI(0x1<<0) or HSE ON(0x1<<16) RCC_CR - bit01:HSION bit, bit16:HSEON
+	// *(volatile unsigned long *) 0x40021000 |= 1;	//RCC_CR(0x40021000)-Set HSION bit(내부클럭선택)
+	RCC_CR |= 1<<16;	// Set HSEON bit(외부클럭선택)
+ 8000118:	4b59      	ldr	r3, [pc, #356]	; (8000280 <Reset_Handler+0x174>)
+ 800011a:	f44f 62a0 	mov.w	r2, #1280	; 0x500
+ 800011e:	6819      	ldr	r1, [r3, #0]
+//////	clock 설정 확인
+	do
+	{
+		// HSIStatus = (*(volatile unsigned long *) 0x40021000 & 0x1<<1);
+		// RCC_CR(0x40021000) - HSIRDY bit set되면 HSEStatus != 0
+		HSEStatus = (RCC_CR & 0x1<<17);
+ 8000120:	4618      	mov	r0, r3
+	// 8MHz/2 x 9 = 36MHz
+	// 12MHz x 6 = 72MHz
+
+	// HSI(0x1<<0) or HSE ON(0x1<<16) RCC_CR - bit01:HSION bit, bit16:HSEON
+	// *(volatile unsigned long *) 0x40021000 |= 1;	//RCC_CR(0x40021000)-Set HSION bit(내부클럭선택)
+	RCC_CR |= 1<<16;	// Set HSEON bit(외부클럭선택)
+ 8000122:	f441 3180 	orr.w	r1, r1, #65536	; 0x10000
+ 8000126:	6019      	str	r1, [r3, #0]
+ 8000128:	e001      	b.n	800012e <Reset_Handler+0x22>
+		// RCC_CR(0x40021000) - HSIRDY bit set되면 HSEStatus != 0
+		HSEStatus = (RCC_CR & 0x1<<17);
+		// RCC_CR(0x40021000) - HSERDY bit set되면 HSEStatus != 0
+		StartUpCounter++;
+	}
+	while((HSEStatus == 0) && (StartUpCounter != 0x0500));
+ 800012a:	3a01      	subs	r2, #1
+ 800012c:	d002      	beq.n	8000134 <Reset_Handler+0x28>
+//////	clock 설정 확인
+	do
+	{
+		// HSIStatus = (*(volatile unsigned long *) 0x40021000 & 0x1<<1);
+		// RCC_CR(0x40021000) - HSIRDY bit set되면 HSEStatus != 0
+		HSEStatus = (RCC_CR & 0x1<<17);
+ 800012e:	6803      	ldr	r3, [r0, #0]
+		// RCC_CR(0x40021000) - HSERDY bit set되면 HSEStatus != 0
+		StartUpCounter++;
+	}
+	while((HSEStatus == 0) && (StartUpCounter != 0x0500));
+ 8000130:	0399      	lsls	r1, r3, #14
+ 8000132:	d5fa      	bpl.n	800012a <Reset_Handler+0x1e>
+	// HSEStatus != 0 이고, StartUpCounter = 500 이 될때까지 대기
+
+//////	FLASH Memory Latency 설정(2 Wait State)
+	// 0x40022000 FLASH_ACR RRRR RRRR RRRR RRRR RRRR RRRR RRxx xxxx xxxx
+	FLASH_ACR |=  0x10;		// xxxx xxxx xxxx xxxx xxxx xxxx xxx1 xxxx bit4 PRFTBE=1 Set.
+ 8000134:	4b53      	ldr	r3, [pc, #332]	; (8000284 <Reset_Handler+0x178>)
+	// RCC_CFGR   &=   1111 1111 1110 0000 0111 1111 1111 1111   bit16-21 Clear
+	//*(volatile unsigned long *) 0x40021004 |= (0x7<<18);	//RCC_CFGR 내부 4MHz
+
+	// PLLSRC bit(16)=1: 외부클럭, PLLXTPRE bit(17)=0: 클럭 1/2분주 사용X, PLLMULL(18-21)=7: 외부클럭x9
+	// 여기서 설정 전에 값을 Clear 해야하나?
+	RCC_CFGR &= ~(0xF<<18 | 0x1<<17 | 0x1<<16);
+ 8000136:	4a54      	ldr	r2, [pc, #336]	; (8000288 <Reset_Handler+0x17c>)
+	while((HSEStatus == 0) && (StartUpCounter != 0x0500));
+	// HSEStatus != 0 이고, StartUpCounter = 500 이 될때까지 대기
+
+//////	FLASH Memory Latency 설정(2 Wait State)
+	// 0x40022000 FLASH_ACR RRRR RRRR RRRR RRRR RRRR RRRR RRxx xxxx xxxx
+	FLASH_ACR |=  0x10;		// xxxx xxxx xxxx xxxx xxxx xxxx xxx1 xxxx bit4 PRFTBE=1 Set.
+ 8000138:	6818      	ldr	r0, [r3, #0]
+	// Clear bit bit16-21
+	RCC_CFGR |= (0x7<<18 | 0x1<<16);	// PLLMUL=0111(×9) PLLSRC=1(external 8MHz) → 8×9 = 72MHz
+	//*(volatile unsigned long *) 0x40021004 |= (0x4<<18 | 0x1<<16);	//0x110000;//RCC_CFGR//12MHz
+
+	//*(volatile unsigned long *) 0x40021000 |= 0x01 << 24;				//0x01000000 - PLLON
+	RCC_CR	 |= (0x01 << 24 | 0x01<<16);	// HSEON,PLLON bit set
+ 800013a:	4951      	ldr	r1, [pc, #324]	; (8000280 <Reset_Handler+0x174>)
+	while((HSEStatus == 0) && (StartUpCounter != 0x0500));
+	// HSEStatus != 0 이고, StartUpCounter = 500 이 될때까지 대기
+
+//////	FLASH Memory Latency 설정(2 Wait State)
+	// 0x40022000 FLASH_ACR RRRR RRRR RRRR RRRR RRRR RRRR RRxx xxxx xxxx
+	FLASH_ACR |=  0x10;		// xxxx xxxx xxxx xxxx xxxx xxxx xxx1 xxxx bit4 PRFTBE=1 Set.
+ 800013c:	f040 0010 	orr.w	r0, r0, #16
+ 8000140:	6018      	str	r0, [r3, #0]
+	FLASH_ACR &= ~(0x7);	// bit2,1,0 Clear
+ 8000142:	6818      	ldr	r0, [r3, #0]
+	RCC_CFGR |= (0x7<<18 | 0x1<<16);	// PLLMUL=0111(×9) PLLSRC=1(external 8MHz) → 8×9 = 72MHz
+	//*(volatile unsigned long *) 0x40021004 |= (0x4<<18 | 0x1<<16);	//0x110000;//RCC_CFGR//12MHz
+
+	//*(volatile unsigned long *) 0x40021000 |= 0x01 << 24;				//0x01000000 - PLLON
+	RCC_CR	 |= (0x01 << 24 | 0x01<<16);	// HSEON,PLLON bit set
+	while((RCC_CR & (0x1<<25)) == 0);		// Wait PLLRDY bit set
+ 8000144:	460c      	mov	r4, r1
+	// HSEStatus != 0 이고, StartUpCounter = 500 이 될때까지 대기
+
+//////	FLASH Memory Latency 설정(2 Wait State)
+	// 0x40022000 FLASH_ACR RRRR RRRR RRRR RRRR RRRR RRRR RRxx xxxx xxxx
+	FLASH_ACR |=  0x10;		// xxxx xxxx xxxx xxxx xxxx xxxx xxx1 xxxx bit4 PRFTBE=1 Set.
+	FLASH_ACR &= ~(0x7);	// bit2,1,0 Clear
+ 8000146:	f020 0007 	bic.w	r0, r0, #7
+ 800014a:	6018      	str	r0, [r3, #0]
+	FLASH_ACR |=  0x2;		// bit2,1,0 = 0,1,0
+ 800014c:	6818      	ldr	r0, [r3, #0]
+ 800014e:	f040 0002 	orr.w	r0, r0, #2
+ 8000152:	6018      	str	r0, [r3, #0]
+	// RCC_CFGR   &=   1111 1111 1110 0000 0111 1111 1111 1111   bit16-21 Clear
+	//*(volatile unsigned long *) 0x40021004 |= (0x7<<18);	//RCC_CFGR 내부 4MHz
+
+	// PLLSRC bit(16)=1: 외부클럭, PLLXTPRE bit(17)=0: 클럭 1/2분주 사용X, PLLMULL(18-21)=7: 외부클럭x9
+	// 여기서 설정 전에 값을 Clear 해야하나?
+	RCC_CFGR &= ~(0xF<<18 | 0x1<<17 | 0x1<<16);
+ 8000154:	6813      	ldr	r3, [r2, #0]
+ 8000156:	f423 137c 	bic.w	r3, r3, #4128768	; 0x3f0000
+ 800015a:	6013      	str	r3, [r2, #0]
+	// 0000 0000 0011 1111 0000 0000 0000 0000
+	// 1111 1111 1100 0000 1111 1111 1111 1111 PLLMUL[21:18], PLLXTRE[17], PLLSRC[16] Clear
+	// Clear bit bit16-21
+	RCC_CFGR |= (0x7<<18 | 0x1<<16);	// PLLMUL=0111(×9) PLLSRC=1(external 8MHz) → 8×9 = 72MHz
+ 800015c:	6813      	ldr	r3, [r2, #0]
+ 800015e:	f443 13e8 	orr.w	r3, r3, #1900544	; 0x1d0000
+ 8000162:	6013      	str	r3, [r2, #0]
+	//*(volatile unsigned long *) 0x40021004 |= (0x4<<18 | 0x1<<16);	//0x110000;//RCC_CFGR//12MHz
+
+	//*(volatile unsigned long *) 0x40021000 |= 0x01 << 24;				//0x01000000 - PLLON
+	RCC_CR	 |= (0x01 << 24 | 0x01<<16);	// HSEON,PLLON bit set
+ 8000164:	680b      	ldr	r3, [r1, #0]
+ 8000166:	f043 7380 	orr.w	r3, r3, #16777216	; 0x1000000
+ 800016a:	f443 3380 	orr.w	r3, r3, #65536	; 0x10000
+ 800016e:	600b      	str	r3, [r1, #0]
+	while((RCC_CR & (0x1<<25)) == 0);		// Wait PLLRDY bit set
+ 8000170:	6823      	ldr	r3, [r4, #0]
+ 8000172:	019b      	lsls	r3, r3, #6
+ 8000174:	d5fc      	bpl.n	8000170 <Reset_Handler+0x64>
+	// 00: HSI selected as system clock
+	// 01: HSE selected as system clock
+	// 10: PLL selected as system clock  ***
+	// 11: not allowed
+
+	RCC_CFGR &= ~0x3;	// bit 1,0 → 00 : clear
+ 8000176:	4b44      	ldr	r3, [pc, #272]	; (8000288 <Reset_Handler+0x17c>)
+ 8000178:	681a      	ldr	r2, [r3, #0]
+	RCC_CFGR |=  0x2;	// bit 1,0 → 10 : Set SW(System clock Switch) = 10
+	
+	while( (RCC_CFGR & 0xC) != 0x08);	// while((RCC_CFG & 0b1010) != 0b1000);
+ 800017a:	4619      	mov	r1, r3
+	// 00: HSI selected as system clock
+	// 01: HSE selected as system clock
+	// 10: PLL selected as system clock  ***
+	// 11: not allowed
+
+	RCC_CFGR &= ~0x3;	// bit 1,0 → 00 : clear
+ 800017c:	f022 0203 	bic.w	r2, r2, #3
+ 8000180:	601a      	str	r2, [r3, #0]
+	RCC_CFGR |=  0x2;	// bit 1,0 → 10 : Set SW(System clock Switch) = 10
+ 8000182:	681a      	ldr	r2, [r3, #0]
+ 8000184:	f042 0202 	orr.w	r2, r2, #2
+ 8000188:	601a      	str	r2, [r3, #0]
+	
+	while( (RCC_CFGR & 0xC) != 0x08);	// while((RCC_CFG & 0b1010) != 0b1000);
+ 800018a:	680a      	ldr	r2, [r1, #0]
+ 800018c:	4b3e      	ldr	r3, [pc, #248]	; (8000288 <Reset_Handler+0x17c>)
+ 800018e:	f002 020c 	and.w	r2, r2, #12
+ 8000192:	2a08      	cmp	r2, #8
+ 8000194:	d1f9      	bne.n	800018a <Reset_Handler+0x7e>
+	// RCC_CFGR SW상태가 SWS(SW Status)에 반영되기를 기다려야한다면
+	// while((RCC_CFGR & 0xC) == 0x0c); 가 맞지않을까?
+
+////// HCLK(AHB)=72Mhz, PCLK2(APB2)=72Mhz, PCLK1(APB1)=36Mhz Clock set
+	RCC_CFGR |= ( 0<< 7 | 0<<11 | 0<<10 | 0<<10 );	// HPRE 0XXX HCLK	= 72MHZ
+ 8000196:	681a      	ldr	r2, [r3, #0]
+	RCC_CFGR |= ( 1<<10 | 0<< 9 | 0<< 8 );			// PPRE1 100 PCLK1	= 36MHz	
+	//xxxx xxxx xxxx xxxx xxxx x100 xxxx xxxx		//(PCLK1 has to be <= 36MHz)
+	
+
+	// RCC_AHBENR(ADD:0x40021014, RST_VAl:0x00000000) AHB에 있는 DMA1,2 등 주변장치에 Clock 소스 제어
+	RCC_AHBENR |= 0x1 << 0;	// DMA1 clock enable
+ 8000198:	493c      	ldr	r1, [pc, #240]	; (800028c <Reset_Handler+0x180>)
+	while( (RCC_CFGR & 0xC) != 0x08);	// while((RCC_CFG & 0b1010) != 0b1000);
+	// RCC_CFGR SW상태가 SWS(SW Status)에 반영되기를 기다려야한다면
+	// while((RCC_CFGR & 0xC) == 0x0c); 가 맞지않을까?
+
+////// HCLK(AHB)=72Mhz, PCLK2(APB2)=72Mhz, PCLK1(APB1)=36Mhz Clock set
+	RCC_CFGR |= ( 0<< 7 | 0<<11 | 0<<10 | 0<<10 );	// HPRE 0XXX HCLK	= 72MHZ
+ 800019a:	601a      	str	r2, [r3, #0]
+	//xxxx xxxx xxxx xxxx xxxx xxxx 0XXX xxxx
+	RCC_CFGR |= ( 0<<13 | 0<<12 | 0<<11 );			// PPRE2 0XX PCLK2	= 72MHZ
+ 800019c:	6818      	ldr	r0, [r3, #0]
+	// RCC_AHBENR(ADD:0x40021014, RST_VAl:0x00000000) AHB에 있는 DMA1,2 등 주변장치에 Clock 소스 제어
+	RCC_AHBENR |= 0x1 << 0;	// DMA1 clock enable
+
+	// RCC_APB2ENR(ADD:0x40021018, RST_VAl:0x00000000) APB2에 있는 UART 등 주변장치에 Clock 소스 제어
+	// ( GPIO & Alternation Function IO has to be enable, to use USART1 )
+	RCC_APB2ENR |= 0x1<<14 | 0x1<<11 | 0x1<<9 | 0x1<<4 | 0x1<<3 | 0x1<<2 | 0x1<<0;
+ 800019e:	4a3c      	ldr	r2, [pc, #240]	; (8000290 <Reset_Handler+0x184>)
+	// while((RCC_CFGR & 0xC) == 0x0c); 가 맞지않을까?
+
+////// HCLK(AHB)=72Mhz, PCLK2(APB2)=72Mhz, PCLK1(APB1)=36Mhz Clock set
+	RCC_CFGR |= ( 0<< 7 | 0<<11 | 0<<10 | 0<<10 );	// HPRE 0XXX HCLK	= 72MHZ
+	//xxxx xxxx xxxx xxxx xxxx xxxx 0XXX xxxx
+	RCC_CFGR |= ( 0<<13 | 0<<12 | 0<<11 );			// PPRE2 0XX PCLK2	= 72MHZ
+ 80001a0:	6018      	str	r0, [r3, #0]
+	//xxxx xxxx xxxx xxxx xx0X Xxxx xxxx xxxx
+	RCC_CFGR |= ( 1<<10 | 0<< 9 | 0<< 8 );			// PPRE1 100 PCLK1	= 36MHz	
+ 80001a2:	681c      	ldr	r4, [r3, #0]
+	// ( GPIO & Alternation Function IO has to be enable, to use USART1 )
+	RCC_APB2ENR |= 0x1<<14 | 0x1<<11 | 0x1<<9 | 0x1<<4 | 0x1<<3 | 0x1<<2 | 0x1<<0;
+	//              USART1 |   TIM1  |  ADC1  |  IOPC  |  IOPB  |  IOPA  |  AFIO
+
+	// RCC_APB1ENR(ADD:0x4002101c, RST_VAl:0x00000000) APB1에 있는 TIM2-3 등 주변장치에 Clock 소스 제어
+	RCC_APB1ENR |= 0x1 << 22 | 0x1 << 2| 0x1 << 1 | 0x1 << 0;
+ 80001a4:	483b      	ldr	r0, [pc, #236]	; (8000294 <Reset_Handler+0x188>)
+////// HCLK(AHB)=72Mhz, PCLK2(APB2)=72Mhz, PCLK1(APB1)=36Mhz Clock set
+	RCC_CFGR |= ( 0<< 7 | 0<<11 | 0<<10 | 0<<10 );	// HPRE 0XXX HCLK	= 72MHZ
+	//xxxx xxxx xxxx xxxx xxxx xxxx 0XXX xxxx
+	RCC_CFGR |= ( 0<<13 | 0<<12 | 0<<11 );			// PPRE2 0XX PCLK2	= 72MHZ
+	//xxxx xxxx xxxx xxxx xx0X Xxxx xxxx xxxx
+	RCC_CFGR |= ( 1<<10 | 0<< 9 | 0<< 8 );			// PPRE1 100 PCLK1	= 36MHz	
+ 80001a6:	f444 6480 	orr.w	r4, r4, #1024	; 0x400
+ 80001aa:	601c      	str	r4, [r3, #0]
+	//xxxx xxxx xxxx xxxx xxxx x100 xxxx xxxx		//(PCLK1 has to be <= 36MHz)
+	
+
+	// RCC_AHBENR(ADD:0x40021014, RST_VAl:0x00000000) AHB에 있는 DMA1,2 등 주변장치에 Clock 소스 제어
+	RCC_AHBENR |= 0x1 << 0;	// DMA1 clock enable
+ 80001ac:	680b      	ldr	r3, [r1, #0]
+	GPIOA_CRL = 0x33333333;
+	// PA_L 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PA00-PA07 All Set Output(Push Pull/High Spped-50Mhz)
+	
+	// Port A Configuration Register high : GPIOA_CRH ADD offset(0x04) RST Value(0x4444 4444)
+	GPIOA_CRH = 0x333334B3;
+ 80001ae:	f8df e114 	ldr.w	lr, [pc, #276]	; 80002c4 <Reset_Handler+0x1b8>
+	RCC_CFGR |= ( 1<<10 | 0<< 9 | 0<< 8 );			// PPRE1 100 PCLK1	= 36MHz	
+	//xxxx xxxx xxxx xxxx xxxx x100 xxxx xxxx		//(PCLK1 has to be <= 36MHz)
+	
+
+	// RCC_AHBENR(ADD:0x40021014, RST_VAl:0x00000000) AHB에 있는 DMA1,2 등 주변장치에 Clock 소스 제어
+	RCC_AHBENR |= 0x1 << 0;	// DMA1 clock enable
+ 80001b2:	f043 0301 	orr.w	r3, r3, #1
+ 80001b6:	600b      	str	r3, [r1, #0]
+
+	// RCC_APB2ENR(ADD:0x40021018, RST_VAl:0x00000000) APB2에 있는 UART 등 주변장치에 Clock 소스 제어
+	// ( GPIO & Alternation Function IO has to be enable, to use USART1 )
+	RCC_APB2ENR |= 0x1<<14 | 0x1<<11 | 0x1<<9 | 0x1<<4 | 0x1<<3 | 0x1<<2 | 0x1<<0;
+ 80001b8:	6813      	ldr	r3, [r2, #0]
+	GPIOA_CRH = 0x333334B3;
+	// PA_H 8bit : 0011 0011 0011 0011 0011 0100 1011 0011
+	// PA9,10:UART, PA11,12:USB, else set output( PushPull, HighSpeed)
+
+	// Port B Configuration Register Low  : GPIOB_CRL ADD offset(0x00) RST Value(0x4444 4444)
+	GPIOB_CRL = 0x33333333;
+ 80001ba:	4f37      	ldr	r7, [pc, #220]	; (8000298 <Reset_Handler+0x18c>)
+	// RCC_AHBENR(ADD:0x40021014, RST_VAl:0x00000000) AHB에 있는 DMA1,2 등 주변장치에 Clock 소스 제어
+	RCC_AHBENR |= 0x1 << 0;	// DMA1 clock enable
+
+	// RCC_APB2ENR(ADD:0x40021018, RST_VAl:0x00000000) APB2에 있는 UART 등 주변장치에 Clock 소스 제어
+	// ( GPIO & Alternation Function IO has to be enable, to use USART1 )
+	RCC_APB2ENR |= 0x1<<14 | 0x1<<11 | 0x1<<9 | 0x1<<4 | 0x1<<3 | 0x1<<2 | 0x1<<0;
+ 80001bc:	f443 4394 	orr.w	r3, r3, #18944	; 0x4a00
+ 80001c0:	f043 031d 	orr.w	r3, r3, #29
+ 80001c4:	6013      	str	r3, [r2, #0]
+	//              USART1 |   TIM1  |  ADC1  |  IOPC  |  IOPB  |  IOPA  |  AFIO
+
+	// RCC_APB1ENR(ADD:0x4002101c, RST_VAl:0x00000000) APB1에 있는 TIM2-3 등 주변장치에 Clock 소스 제어
+	RCC_APB1ENR |= 0x1 << 22 | 0x1 << 2| 0x1 << 1 | 0x1 << 0;
+ 80001c6:	6801      	ldr	r1, [r0, #0]
+	GPIOB_CRL = 0x33333333;
+	// PB_L 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PB00-PB07 All Set Output(Push Pull/High Spped-50Mhz)
+	
+	// Port B Configuration Register high : GPIOB_CRH ADD offset(0x04) RST Value(0x4444 4444)
+	GPIOB_CRH = 0x33333333;
+ 80001c8:	4e34      	ldr	r6, [pc, #208]	; (800029c <Reset_Handler+0x190>)
+	// PB_H 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PB08-PB15 All Set Output(Push Pull/High Spped-50Mhz)
+
+	// Port C Configuration Register Low  : GPIOC_CRL ADD offset(0x00) RST Value(0x4444 4444)
+	GPIOC_CRL = 0x33333333;
+ 80001ca:	4d35      	ldr	r5, [pc, #212]	; (80002a0 <Reset_Handler+0x194>)
+	// PC_L 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PC00-PC07 All Set Output(Push Pull/High Spped-50Mhz)
+
+	// Port C Configuration Register high : GPIOC_CRH ADD offset(0x04) RST Value(0x4444 4444)
+	GPIOC_CRH = 0x33333333;
+ 80001cc:	4c35      	ldr	r4, [pc, #212]	; (80002a4 <Reset_Handler+0x198>)
+	// GPIOA Base Address 0x4001 0800
+	// GPIOB Base Address 0x4001 0C00
+	// GPIOC Base Address 0x4001 1000
+
+	// Port A Configuration Register Low  : GPIOA_CRL ADD offset(0x00) RST Value(0x4444 4444)
+	GPIOA_CRL = 0x33333333;
+ 80001ce:	f8df 80f8 	ldr.w	r8, [pc, #248]	; 80002c8 <Reset_Handler+0x1bc>
+	// PA_L 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PA00-PA07 All Set Output(Push Pull/High Spped-50Mhz)
+	
+	// Port A Configuration Register high : GPIOA_CRH ADD offset(0x04) RST Value(0x4444 4444)
+	GPIOA_CRH = 0x333334B3;
+ 80001d2:	f8df c0f8 	ldr.w	ip, [pc, #248]	; 80002cc <Reset_Handler+0x1c0>
+	// ( GPIO & Alternation Function IO has to be enable, to use USART1 )
+	RCC_APB2ENR |= 0x1<<14 | 0x1<<11 | 0x1<<9 | 0x1<<4 | 0x1<<3 | 0x1<<2 | 0x1<<0;
+	//              USART1 |   TIM1  |  ADC1  |  IOPC  |  IOPB  |  IOPA  |  AFIO
+
+	// RCC_APB1ENR(ADD:0x4002101c, RST_VAl:0x00000000) APB1에 있는 TIM2-3 등 주변장치에 Clock 소스 제어
+	RCC_APB1ENR |= 0x1 << 22 | 0x1 << 2| 0x1 << 1 | 0x1 << 0;
+ 80001d6:	f441 0180 	orr.w	r1, r1, #4194304	; 0x400000
+	// GPIOA Base Address 0x4001 0800
+	// GPIOB Base Address 0x4001 0C00
+	// GPIOC Base Address 0x4001 1000
+
+	// Port A Configuration Register Low  : GPIOA_CRL ADD offset(0x00) RST Value(0x4444 4444)
+	GPIOA_CRL = 0x33333333;
+ 80001da:	f04f 3333 	mov.w	r3, #858993459	; 0x33333333
+	GPIOC_CRH = 0x33333333;
+	// PC_H 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PC08-PB15 All Set Output(Push Pull/High Spped-50Mhz)
+
+////// AFIO Set(SWJ I/O pin remap) for PA13, 14, 15, PB3, PB4 - All Free
+	AFIO_MAPR &= ~( 7<<24);		// SWJ_CFG[2:0]bit Clear
+ 80001de:	f5a2 3288 	sub.w	r2, r2, #69632	; 0x11000
+	// ( GPIO & Alternation Function IO has to be enable, to use USART1 )
+	RCC_APB2ENR |= 0x1<<14 | 0x1<<11 | 0x1<<9 | 0x1<<4 | 0x1<<3 | 0x1<<2 | 0x1<<0;
+	//              USART1 |   TIM1  |  ADC1  |  IOPC  |  IOPB  |  IOPA  |  AFIO
+
+	// RCC_APB1ENR(ADD:0x4002101c, RST_VAl:0x00000000) APB1에 있는 TIM2-3 등 주변장치에 Clock 소스 제어
+	RCC_APB1ENR |= 0x1 << 22 | 0x1 << 2| 0x1 << 1 | 0x1 << 0;
+ 80001e2:	f041 0107 	orr.w	r1, r1, #7
+ 80001e6:	6001      	str	r1, [r0, #0]
+	GPIOC_CRH = 0x33333333;
+	// PC_H 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PC08-PB15 All Set Output(Push Pull/High Spped-50Mhz)
+
+////// AFIO Set(SWJ I/O pin remap) for PA13, 14, 15, PB3, PB4 - All Free
+	AFIO_MAPR &= ~( 7<<24);		// SWJ_CFG[2:0]bit Clear
+ 80001e8:	3a14      	subs	r2, #20
+	// GPIOA Base Address 0x4001 0800
+	// GPIOB Base Address 0x4001 0C00
+	// GPIOC Base Address 0x4001 1000
+
+	// Port A Configuration Register Low  : GPIOA_CRL ADD offset(0x00) RST Value(0x4444 4444)
+	GPIOA_CRL = 0x33333333;
+ 80001ea:	f8c8 3000 	str.w	r3, [r8]
+	// PA_L 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PA00-PA07 All Set Output(Push Pull/High Spped-50Mhz)
+	
+	// Port A Configuration Register high : GPIOA_CRH ADD offset(0x04) RST Value(0x4444 4444)
+	GPIOA_CRH = 0x333334B3;
+ 80001ee:	f8ce c000 	str.w	ip, [lr]
+	// PA_H 8bit : 0011 0011 0011 0011 0011 0100 1011 0011
+	// PA9,10:UART, PA11,12:USB, else set output( PushPull, HighSpeed)
+
+	// Port B Configuration Register Low  : GPIOB_CRL ADD offset(0x00) RST Value(0x4444 4444)
+	GPIOB_CRL = 0x33333333;
+ 80001f2:	603b      	str	r3, [r7, #0]
+	// PB_L 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PB00-PB07 All Set Output(Push Pull/High Spped-50Mhz)
+	
+	// Port B Configuration Register high : GPIOB_CRH ADD offset(0x04) RST Value(0x4444 4444)
+	GPIOB_CRH = 0x33333333;
+ 80001f4:	6033      	str	r3, [r6, #0]
+	// PB_H 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PB08-PB15 All Set Output(Push Pull/High Spped-50Mhz)
+
+	// Port C Configuration Register Low  : GPIOC_CRL ADD offset(0x00) RST Value(0x4444 4444)
+	GPIOC_CRL = 0x33333333;
+ 80001f6:	602b      	str	r3, [r5, #0]
+	// PC_L 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PC00-PC07 All Set Output(Push Pull/High Spped-50Mhz)
+
+	// Port C Configuration Register high : GPIOC_CRH ADD offset(0x04) RST Value(0x4444 4444)
+	GPIOC_CRH = 0x33333333;
+ 80001f8:	6023      	str	r3, [r4, #0]
+	// PC_H 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PC08-PB15 All Set Output(Push Pull/High Spped-50Mhz)
+
+////// AFIO Set(SWJ I/O pin remap) for PA13, 14, 15, PB3, PB4 - All Free
+	AFIO_MAPR &= ~( 7<<24);		// SWJ_CFG[2:0]bit Clear
+ 80001fa:	6813      	ldr	r3, [r2, #0]
+	// *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; // 115,200bps(ins OSC 36Mhz)
+	// Baud Rate Register   : USART_BRR ADD offset(0x08) RST Value(0x0000 0000)
+	USART1_BRR  = 39 << 4 | 1;	// 115,200 bps (ext OSC 72Mhz) : DIV_Mantisa=39, DIV_Fraction=1
+
+	// Control Register1    : USART_CR1 ADD offset(0x0C) RST Value(0x0000 0000)
+	USART1_CR1  = 0x200C;		// ADD Mask WakeUP,1 Start bit, 8 Data bit, Tx Enable, Rx Enable
+ 80001fc:	492a      	ldr	r1, [pc, #168]	; (80002a8 <Reset_Handler+0x19c>)
+	GPIOC_CRH = 0x33333333;
+	// PC_H 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PC08-PB15 All Set Output(Push Pull/High Spped-50Mhz)
+
+////// AFIO Set(SWJ I/O pin remap) for PA13, 14, 15, PB3, PB4 - All Free
+	AFIO_MAPR &= ~( 7<<24);		// SWJ_CFG[2:0]bit Clear
+ 80001fe:	f023 63e0 	bic.w	r3, r3, #117440512	; 0x7000000
+ 8000202:	6013      	str	r3, [r2, #0]
+	AFIO_MAPR |=  ( 1<<26);		// SWJ_CFG[2:0]bit = 1,0,0
+ 8000204:	6813      	ldr	r3, [r2, #0]
+
+	// UART1 Base Address   : 0x4001 3800
+
+	// *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; // 115,200bps(ins OSC 36Mhz)
+	// Baud Rate Register   : USART_BRR ADD offset(0x08) RST Value(0x0000 0000)
+	USART1_BRR  = 39 << 4 | 1;	// 115,200 bps (ext OSC 72Mhz) : DIV_Mantisa=39, DIV_Fraction=1
+ 8000206:	f506 5630 	add.w	r6, r6, #11264	; 0x2c00
+
+	// Control Register1    : USART_CR1 ADD offset(0x0C) RST Value(0x0000 0000)
+	USART1_CR1  = 0x200C;		// ADD Mask WakeUP,1 Start bit, 8 Data bit, Tx Enable, Rx Enable
+																		
+	// Control Register2    : USART_CR2 ADD offset(0x10) RST Value(0x0000 0000)
+	USART1_CR2  = 0x0;			// 1 Stop Bit
+ 800020a:	f504 5420 	add.w	r4, r4, #10240	; 0x2800
+
+	// Control Register3    : USART_CR3 ADD offset(0x14) RST Value(0x0000 0000)
+	USART1_CR3  = 0x0;			// Hardware flow control disabled
+ 800020e:	f5a0 4058 	sub.w	r0, r0, #55296	; 0xd800
+
+	// Control Register1    : USART_CR1 ADD offset(0x0C) RST Value(0x0000 0000)
+	USART1_CR1  = 0x200C;		// ADD Mask WakeUP,1 Start bit, 8 Data bit, Tx Enable, Rx Enable
+																		
+	// Control Register2    : USART_CR2 ADD offset(0x10) RST Value(0x0000 0000)
+	USART1_CR2  = 0x0;			// 1 Stop Bit
+ 8000212:	340c      	adds	r4, #12
+
+	// Control Register3    : USART_CR3 ADD offset(0x14) RST Value(0x0000 0000)
+	USART1_CR3  = 0x0;			// Hardware flow control disabled
+ 8000214:	3808      	subs	r0, #8
+	// PC_H 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PC08-PB15 All Set Output(Push Pull/High Spped-50Mhz)
+
+////// AFIO Set(SWJ I/O pin remap) for PA13, 14, 15, PB3, PB4 - All Free
+	AFIO_MAPR &= ~( 7<<24);		// SWJ_CFG[2:0]bit Clear
+	AFIO_MAPR |=  ( 1<<26);		// SWJ_CFG[2:0]bit = 1,0,0
+ 8000216:	f043 6e80 	orr.w	lr, r3, #67108864	; 0x4000000
+
+	// UART1 Base Address   : 0x4001 3800
+
+	// *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; // 115,200bps(ins OSC 36Mhz)
+	// Baud Rate Register   : USART_BRR ADD offset(0x08) RST Value(0x0000 0000)
+	USART1_BRR  = 39 << 4 | 1;	// 115,200 bps (ext OSC 72Mhz) : DIV_Mantisa=39, DIV_Fraction=1
+ 800021a:	3604      	adds	r6, #4
+
+	// Control Register1    : USART_CR1 ADD offset(0x0C) RST Value(0x0000 0000)
+	USART1_CR1  = 0x200C;		// ADD Mask WakeUP,1 Start bit, 8 Data bit, Tx Enable, Rx Enable
+																		
+	// Control Register2    : USART_CR2 ADD offset(0x10) RST Value(0x0000 0000)
+	USART1_CR2  = 0x0;			// 1 Stop Bit
+ 800021c:	2300      	movs	r3, #0
+
+	// UART1 Base Address   : 0x4001 3800
+
+	// *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; // 115,200bps(ins OSC 36Mhz)
+	// Baud Rate Register   : USART_BRR ADD offset(0x08) RST Value(0x0000 0000)
+	USART1_BRR  = 39 << 4 | 1;	// 115,200 bps (ext OSC 72Mhz) : DIV_Mantisa=39, DIV_Fraction=1
+ 800021e:	f240 2771 	movw	r7, #625	; 0x271
+
+	// Control Register1    : USART_CR1 ADD offset(0x0C) RST Value(0x0000 0000)
+	USART1_CR1  = 0x200C;		// ADD Mask WakeUP,1 Start bit, 8 Data bit, Tx Enable, Rx Enable
+ 8000222:	f242 050c 	movw	r5, #8204	; 0x200c
+	// PC_H 8bit : 0011 0011 0011 0011 0011 0011 0011 0011
+	// PC08-PB15 All Set Output(Push Pull/High Spped-50Mhz)
+
+////// AFIO Set(SWJ I/O pin remap) for PA13, 14, 15, PB3, PB4 - All Free
+	AFIO_MAPR &= ~( 7<<24);		// SWJ_CFG[2:0]bit Clear
+	AFIO_MAPR |=  ( 1<<26);		// SWJ_CFG[2:0]bit = 1,0,0
+ 8000226:	f8c2 e000 	str.w	lr, [r2]
+
+	// UART1 Base Address   : 0x4001 3800
+
+	// *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; // 115,200bps(ins OSC 36Mhz)
+	// Baud Rate Register   : USART_BRR ADD offset(0x08) RST Value(0x0000 0000)
+	USART1_BRR  = 39 << 4 | 1;	// 115,200 bps (ext OSC 72Mhz) : DIV_Mantisa=39, DIV_Fraction=1
+ 800022a:	6037      	str	r7, [r6, #0]
+
+	// Control Register1    : USART_CR1 ADD offset(0x0C) RST Value(0x0000 0000)
+	USART1_CR1  = 0x200C;		// ADD Mask WakeUP,1 Start bit, 8 Data bit, Tx Enable, Rx Enable
+ 800022c:	600d      	str	r5, [r1, #0]
+																		
+	// Control Register2    : USART_CR2 ADD offset(0x10) RST Value(0x0000 0000)
+	USART1_CR2  = 0x0;			// 1 Stop Bit
+ 800022e:	6023      	str	r3, [r4, #0]
+
+	// Control Register3    : USART_CR3 ADD offset(0x14) RST Value(0x0000 0000)
+	USART1_CR3  = 0x0;			// Hardware flow control disabled
+ 8000230:	6003      	str	r3, [r0, #0]
+
+	USART1_CR1 |= 0x2000;       // SET ADD Mask WakeUP Why?????
+ 8000232:	680c      	ldr	r4, [r1, #0]
+	unsigned long *pulSrc, *pulDest;
+
+	/* Copy the data segment initializers from flash to SRAM */
+	pulSrc  = &_sidata;
+	pulDest = &_sdata;
+	if ( pulSrc != pulDest )
+ 8000234:	481d      	ldr	r0, [pc, #116]	; (80002ac <Reset_Handler+0x1a0>)
+ 8000236:	4a1e      	ldr	r2, [pc, #120]	; (80002b0 <Reset_Handler+0x1a4>)
+	USART1_CR2  = 0x0;			// 1 Stop Bit
+
+	// Control Register3    : USART_CR3 ADD offset(0x14) RST Value(0x0000 0000)
+	USART1_CR3  = 0x0;			// Hardware flow control disabled
+
+	USART1_CR1 |= 0x2000;       // SET ADD Mask WakeUP Why?????
+ 8000238:	f444 5400 	orr.w	r4, r4, #8192	; 0x2000
+	unsigned long *pulSrc, *pulDest;
+
+	/* Copy the data segment initializers from flash to SRAM */
+	pulSrc  = &_sidata;
+	pulDest = &_sdata;
+	if ( pulSrc != pulDest )
+ 800023c:	4290      	cmp	r0, r2
+	USART1_CR2  = 0x0;			// 1 Stop Bit
+
+	// Control Register3    : USART_CR3 ADD offset(0x14) RST Value(0x0000 0000)
+	USART1_CR3  = 0x0;			// Hardware flow control disabled
+
+	USART1_CR1 |= 0x2000;       // SET ADD Mask WakeUP Why?????
+ 800023e:	600c      	str	r4, [r1, #0]
+	unsigned long *pulSrc, *pulDest;
+
+	/* Copy the data segment initializers from flash to SRAM */
+	pulSrc  = &_sidata;
+	pulDest = &_sdata;
+	if ( pulSrc != pulDest )
+ 8000240:	d00c      	beq.n	800025c <Reset_Handler+0x150>
+	{
+		for(; pulDest < &_edata; )
+ 8000242:	491c      	ldr	r1, [pc, #112]	; (80002b4 <Reset_Handler+0x1a8>)
+ 8000244:	428a      	cmp	r2, r1
+ 8000246:	d209      	bcs.n	800025c <Reset_Handler+0x150>
+ 8000248:	43d4      	mvns	r4, r2
+ 800024a:	4421      	add	r1, r4
+ 800024c:	f021 0403 	bic.w	r4, r1, #3
+ 8000250:	3404      	adds	r4, #4
+		{
+			*(pulDest++) = *(pulSrc++);
+ 8000252:	58c1      	ldr	r1, [r0, r3]
+ 8000254:	50d1      	str	r1, [r2, r3]
+ 8000256:	3304      	adds	r3, #4
+	/* Copy the data segment initializers from flash to SRAM */
+	pulSrc  = &_sidata;
+	pulDest = &_sdata;
+	if ( pulSrc != pulDest )
+	{
+		for(; pulDest < &_edata; )
+ 8000258:	42a3      	cmp	r3, r4
+ 800025a:	d1fa      	bne.n	8000252 <Reset_Handler+0x146>
+		{
+			*(pulDest++) = *(pulSrc++);
+		}
+	}
+	/* Zero fill the bss segment. */
+	for(pulDest = &_sbss; pulDest < &_ebss; )
+ 800025c:	4b16      	ldr	r3, [pc, #88]	; (80002b8 <Reset_Handler+0x1ac>)
+ 800025e:	4a17      	ldr	r2, [pc, #92]	; (80002bc <Reset_Handler+0x1b0>)
+ 8000260:	4293      	cmp	r3, r2
+ 8000262:	d20a      	bcs.n	800027a <Reset_Handler+0x16e>
+ 8000264:	43d9      	mvns	r1, r3
+ 8000266:	440a      	add	r2, r1
+ 8000268:	f022 0103 	bic.w	r1, r2, #3
+ 800026c:	4419      	add	r1, r3
+	{
+		*(pulDest++) = 0;
+ 800026e:	2200      	movs	r2, #0
+ 8000270:	3b04      	subs	r3, #4
+ 8000272:	f843 2f04 	str.w	r2, [r3, #4]!
+		{
+			*(pulDest++) = *(pulSrc++);
+		}
+	}
+	/* Zero fill the bss segment. */
+	for(pulDest = &_sbss; pulDest < &_ebss; )
+ 8000276:	428b      	cmp	r3, r1
+ 8000278:	d1fb      	bne.n	8000272 <Reset_Handler+0x166>
+	USART1_CR1 |= 0x2000;       // SET ADD Mask WakeUP Why?????
+	
+	/* Initialize data and bss */
+	__Init_Data();
+
+	main();
+ 800027a:	4b11      	ldr	r3, [pc, #68]	; (80002c0 <Reset_Handler+0x1b4>)
+ 800027c:	4798      	blx	r3
+ 800027e:	e7fe      	b.n	800027e <Reset_Handler+0x172>
+ 8000280:	40021000 	.word	0x40021000
+ 8000284:	40022000 	.word	0x40022000
+ 8000288:	40021004 	.word	0x40021004
+ 800028c:	40021014 	.word	0x40021014
+ 8000290:	40021018 	.word	0x40021018
+ 8000294:	4002101c 	.word	0x4002101c
+ 8000298:	40010c00 	.word	0x40010c00
+ 800029c:	40010c04 	.word	0x40010c04
+ 80002a0:	40011000 	.word	0x40011000
+ 80002a4:	40011004 	.word	0x40011004
+ 80002a8:	4001380c 	.word	0x4001380c
+ 80002ac:	08000940 	.word	0x08000940
+ 80002b0:	20000000 	.word	0x20000000
+ 80002b4:	20000000 	.word	0x20000000
+ 80002b8:	20000000 	.word	0x20000000
+ 80002bc:	20000000 	.word	0x20000000
+ 80002c0:	08000821 	.word	0x08000821
+ 80002c4:	40010804 	.word	0x40010804
+ 80002c8:	40010800 	.word	0x40010800
+ 80002cc:	333334b3 	.word	0x333334b3
+
+080002d0 <print_byte>:
+
+
+
+void print_byte(unsigned int c)
+{
+    if (c == '\n') print_byte('\r');
+ 80002d0:	280a      	cmp	r0, #10
+#define va_end(ap)
+
+
+
+void print_byte(unsigned int c)
+{
+ 80002d2:	b510      	push	{r4, lr}
+ 80002d4:	4604      	mov	r4, r0
+    if (c == '\n') print_byte('\r');
+ 80002d6:	d006      	beq.n	80002e6 <print_byte+0x16>
+    while( !((*(volatile unsigned long *) 0x40013800) & 0x80) ) ;
+ 80002d8:	4a05      	ldr	r2, [pc, #20]	; (80002f0 <print_byte+0x20>)
+ 80002da:	6813      	ldr	r3, [r2, #0]
+ 80002dc:	061b      	lsls	r3, r3, #24
+ 80002de:	d5fc      	bpl.n	80002da <print_byte+0xa>
+    *(volatile unsigned long *) 0x40013804 = c;
+ 80002e0:	4b04      	ldr	r3, [pc, #16]	; (80002f4 <print_byte+0x24>)
+ 80002e2:	601c      	str	r4, [r3, #0]
+ 80002e4:	bd10      	pop	{r4, pc}
+
+
+
+void print_byte(unsigned int c)
+{
+    if (c == '\n') print_byte('\r');
+ 80002e6:	200d      	movs	r0, #13
+ 80002e8:	f7ff fff2 	bl	80002d0 <print_byte>
+ 80002ec:	e7f4      	b.n	80002d8 <print_byte+0x8>
+ 80002ee:	bf00      	nop
+ 80002f0:	40013800 	.word	0x40013800
+ 80002f4:	40013804 	.word	0x40013804
+
+080002f8 <DecToLong>:
+// 역할 : 10진수 문자열 s에서 정수를 만들어 retval이 가리키는 위치에 기록.
+// 매개 : s      : 변환할 문자열의 주소.
+//        retval : 변환된 값이 기록될 주소.
+// 반환 : return : 1 : success                0 : failure.
+// 주의 :
+int DecToLong(char *s, long *retval){
+ 80002f8:	b430      	push	{r4, r5}
+        long remainder;
+        if (!s || !s[0]) return false;
+ 80002fa:	b1d0      	cbz	r0, 8000332 <DecToLong+0x3a>
+ 80002fc:	7803      	ldrb	r3, [r0, #0]
+ 80002fe:	b1d3      	cbz	r3, 8000336 <DecToLong+0x3e>
+
+
+        for (*retval=0; *s; s++){
+ 8000300:	2300      	movs	r3, #0
+ 8000302:	600b      	str	r3, [r1, #0]
+ 8000304:	7802      	ldrb	r2, [r0, #0]
+ 8000306:	b19a      	cbz	r2, 8000330 <DecToLong+0x38>
+                if (*s < '0' || *s > '9') return false;
+ 8000308:	f1a2 0430 	sub.w	r4, r2, #48	; 0x30
+ 800030c:	b2e2      	uxtb	r2, r4
+ 800030e:	2a09      	cmp	r2, #9
+ 8000310:	d902      	bls.n	8000318 <DecToLong+0x20>
+ 8000312:	e013      	b.n	800033c <DecToLong+0x44>
+ 8000314:	2d09      	cmp	r5, #9
+ 8000316:	d811      	bhi.n	800033c <DecToLong+0x44>
+                remainder = *s - '0';
+                *retval = *retval * 10 + remainder;
+ 8000318:	eb03 0383 	add.w	r3, r3, r3, lsl #2
+ 800031c:	eb04 0343 	add.w	r3, r4, r3, lsl #1
+ 8000320:	600b      	str	r3, [r1, #0]
+int DecToLong(char *s, long *retval){
+        long remainder;
+        if (!s || !s[0]) return false;
+
+
+        for (*retval=0; *s; s++){
+ 8000322:	f810 2f01 	ldrb.w	r2, [r0, #1]!
+                if (*s < '0' || *s > '9') return false;
+ 8000326:	f1a2 0430 	sub.w	r4, r2, #48	; 0x30
+ 800032a:	b2e5      	uxtb	r5, r4
+int DecToLong(char *s, long *retval){
+        long remainder;
+        if (!s || !s[0]) return false;
+
+
+        for (*retval=0; *s; s++){
+ 800032c:	2a00      	cmp	r2, #0
+ 800032e:	d1f1      	bne.n	8000314 <DecToLong+0x1c>
+                if (*s < '0' || *s > '9') return false;
+                remainder = *s - '0';
+                *retval = *retval * 10 + remainder;
+        }
+        return true;
+ 8000330:	2001      	movs	r0, #1
+}        // DecToLong.
+ 8000332:	bc30      	pop	{r4, r5}
+ 8000334:	4770      	bx	lr
+//        retval : 변환된 값이 기록될 주소.
+// 반환 : return : 1 : success                0 : failure.
+// 주의 :
+int DecToLong(char *s, long *retval){
+        long remainder;
+        if (!s || !s[0]) return false;
+ 8000336:	4618      	mov	r0, r3
+                if (*s < '0' || *s > '9') return false;
+                remainder = *s - '0';
+                *retval = *retval * 10 + remainder;
+        }
+        return true;
+}        // DecToLong.
+ 8000338:	bc30      	pop	{r4, r5}
+ 800033a:	4770      	bx	lr
+        long remainder;
+        if (!s || !s[0]) return false;
+
+
+        for (*retval=0; *s; s++){
+                if (*s < '0' || *s > '9') return false;
+ 800033c:	2000      	movs	r0, #0
+                remainder = *s - '0';
+                *retval = *retval * 10 + remainder;
+        }
+        return true;
+}        // DecToLong.
+ 800033e:	bc30      	pop	{r4, r5}
+ 8000340:	4770      	bx	lr
+ 8000342:	bf00      	nop
+
+08000344 <printf>:
+// 매개 : fmt : printf()와 동일하나 "%s", "%c", "%d", "%x" 사용 가능.
+//              %d, %x의 경우에는 "%08x", "%8x"와 같이 나타낼 길이와 빈 공간을 0으로 채울지 선택 가능.
+// 반환 : 없음.
+// 주의 : 없음.
+void printf(char *fmt, ...)
+{
+ 8000344:	b40f      	push	{r0, r1, r2, r3}
+ 8000346:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 800034a:	b08b      	sub	sp, #44	; 0x2c
+        int i;
+        va_list args;
+        char *s=fmt;
+ 800034c:	f10d 0a50 	add.w	sl, sp, #80	; 0x50
+ 8000350:	f85a 4b04 	ldr.w	r4, [sl], #4
+        return;
+}
+
+void PrintChar(char *fmt, char c)
+{
+        print_byte(c);
+ 8000354:	4dbf      	ldr	r5, [pc, #764]	; (8000654 <printf+0x310>)
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+                        i--;
+                        DecToLong(tol, &flagcnt);
+ 8000356:	4fc0      	ldr	r7, [pc, #768]	; (8000658 <printf+0x314>)
+        va_list args;
+        char *s=fmt;
+        char format[10];        // fmt의 인자가 "%08lx"라면, "08l"를 임시로 기록.
+        
+        va_start(args, fmt);
+        while (*s){
+ 8000358:	7820      	ldrb	r0, [r4, #0]
+ 800035a:	b3a0      	cbz	r0, 80003c6 <printf+0x82>
+                if (*s=='%'){
+ 800035c:	2825      	cmp	r0, #37	; 0x25
+ 800035e:	d137      	bne.n	80003d0 <printf+0x8c>
+                        s++;
+                        // s에서 "%08lx"형식을 가져와 format에 기록. 나중에 출력함수에 넘겨줌.
+                        format[0] = '%';
+ 8000360:	f88d 0010 	strb.w	r0, [sp, #16]
+        char format[10];        // fmt의 인자가 "%08lx"라면, "08l"를 임시로 기록.
+        
+        va_start(args, fmt);
+        while (*s){
+                if (*s=='%'){
+                        s++;
+ 8000364:	1c63      	adds	r3, r4, #1
+                        // s에서 "%08lx"형식을 가져와 format에 기록. 나중에 출력함수에 넘겨줌.
+                        format[0] = '%';
+ 8000366:	2201      	movs	r2, #1
+ 8000368:	461e      	mov	r6, r3
+                        for (i=1; i<10;){
+                                if (*s=='c' || *s=='d' || *s=='x' || *s=='s' || *s=='%'){
+ 800036a:	f813 0b01 	ldrb.w	r0, [r3], #1
+ 800036e:	f1a0 0163 	sub.w	r1, r0, #99	; 0x63
+ 8000372:	b2c9      	uxtb	r1, r1
+ 8000374:	2901      	cmp	r1, #1
+                                        format[i++] = *s;
+                                        format[i] = '\0';
+                                        break;
+                                }
+                                else {
+                                        format[i++] = *s++;
+ 8000376:	461c      	mov	r4, r3
+                if (*s=='%'){
+                        s++;
+                        // s에서 "%08lx"형식을 가져와 format에 기록. 나중에 출력함수에 넘겨줌.
+                        format[0] = '%';
+                        for (i=1; i<10;){
+                                if (*s=='c' || *s=='d' || *s=='x' || *s=='s' || *s=='%'){
+ 8000378:	f240 809c 	bls.w	80004b4 <printf+0x170>
+ 800037c:	2878      	cmp	r0, #120	; 0x78
+ 800037e:	f000 8099 	beq.w	80004b4 <printf+0x170>
+ 8000382:	2873      	cmp	r0, #115	; 0x73
+ 8000384:	f000 8096 	beq.w	80004b4 <printf+0x170>
+ 8000388:	2825      	cmp	r0, #37	; 0x25
+ 800038a:	f000 8093 	beq.w	80004b4 <printf+0x170>
+                                        format[i++] = *s;
+                                        format[i] = '\0';
+                                        break;
+                                }
+                                else {
+                                        format[i++] = *s++;
+ 800038e:	f102 0110 	add.w	r1, r2, #16
+ 8000392:	3201      	adds	r2, #1
+ 8000394:	46ec      	mov	ip, sp
+        while (*s){
+                if (*s=='%'){
+                        s++;
+                        // s에서 "%08lx"형식을 가져와 format에 기록. 나중에 출력함수에 넘겨줌.
+                        format[0] = '%';
+                        for (i=1; i<10;){
+ 8000396:	2a0a      	cmp	r2, #10
+                                        format[i++] = *s;
+                                        format[i] = '\0';
+                                        break;
+                                }
+                                else {
+                                        format[i++] = *s++;
+ 8000398:	f801 000c 	strb.w	r0, [r1, ip]
+        while (*s){
+                if (*s=='%'){
+                        s++;
+                        // s에서 "%08lx"형식을 가져와 format에 기록. 나중에 출력함수에 넘겨줌.
+                        format[0] = '%';
+                        for (i=1; i<10;){
+ 800039c:	d1e4      	bne.n	8000368 <printf+0x24>
+ 800039e:	7870      	ldrb	r0, [r6, #1]
+                                else {
+                                        format[i++] = *s++;
+                                }
+                        }
+                        // "%s", "%c", "%d", "%x"를 찾아 출력할 함수 호출.
+                        switch (*s++){
+ 80003a0:	3401      	adds	r4, #1
+ 80003a2:	2864      	cmp	r0, #100	; 0x64
+ 80003a4:	f000 8093 	beq.w	80004ce <printf+0x18a>
+ 80003a8:	d815      	bhi.n	80003d6 <printf+0x92>
+ 80003aa:	2825      	cmp	r0, #37	; 0x25
+ 80003ac:	f000 811b 	beq.w	80005e6 <printf+0x2a2>
+ 80003b0:	2863      	cmp	r0, #99	; 0x63
+ 80003b2:	d1d1      	bne.n	8000358 <printf+0x14>
+        return;
+}
+
+void PrintChar(char *fmt, char c)
+{
+        print_byte(c);
+ 80003b4:	f89a 0000 	ldrb.w	r0, [sl]
+ 80003b8:	47a8      	blx	r5
+        va_list args;
+        char *s=fmt;
+        char format[10];        // fmt의 인자가 "%08lx"라면, "08l"를 임시로 기록.
+        
+        va_start(args, fmt);
+        while (*s){
+ 80003ba:	7820      	ldrb	r0, [r4, #0]
+                                }
+                        }
+                        // "%s", "%c", "%d", "%x"를 찾아 출력할 함수 호출.
+                        switch (*s++){
+                                case 'c' :
+                                        PrintChar(format, va_arg(args, int));
+ 80003bc:	f10a 0604 	add.w	r6, sl, #4
+ 80003c0:	46b2      	mov	sl, r6
+        va_list args;
+        char *s=fmt;
+        char format[10];        // fmt의 인자가 "%08lx"라면, "08l"를 임시로 기록.
+        
+        va_start(args, fmt);
+        while (*s){
+ 80003c2:	2800      	cmp	r0, #0
+ 80003c4:	d1ca      	bne.n	800035c <printf+0x18>
+                        s++;
+                }
+        }
+        va_end(args);
+        return;
+}
+ 80003c6:	b00b      	add	sp, #44	; 0x2c
+ 80003c8:	e8bd 4ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 80003cc:	b004      	add	sp, #16
+ 80003ce:	4770      	bx	lr
+
+void PrintChar(char *fmt, char c)
+{
+        print_byte(c);
+ 80003d0:	47a8      	blx	r5
+                                        break;
+                        }
+                }
+                else {
+                        PrintChar("%c", *s);
+                        s++;
+ 80003d2:	3401      	adds	r4, #1
+ 80003d4:	e7c0      	b.n	8000358 <printf+0x14>
+                                else {
+                                        format[i++] = *s++;
+                                }
+                        }
+                        // "%s", "%c", "%d", "%x"를 찾아 출력할 함수 호출.
+                        switch (*s++){
+ 80003d6:	2873      	cmp	r0, #115	; 0x73
+ 80003d8:	f000 8107 	beq.w	80005ea <printf+0x2a6>
+ 80003dc:	2878      	cmp	r0, #120	; 0x78
+ 80003de:	d1bb      	bne.n	8000358 <printf+0x14>
+                                        break;
+                                case 'd' :
+                                        PrintDec(format, va_arg(args, int));
+                                        break;
+                                case 'x' :
+                                        PrintHex(format, va_arg(args, int));
+ 80003e0:	f8da 9000 	ldr.w	r9, [sl]
+        char        uHex, lHex;
+        int                cnt;                                                // "%5x"의 경우 5개만 출력하도록 출력한 개수.
+
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+ 80003e4:	f89d 3010 	ldrb.w	r3, [sp, #16]
+
+void PrintHex(char *fmt, int l){
+        int                i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // flags.
+        long        flagcnt=0;
+ 80003e8:	2600      	movs	r6, #0
+                                        break;
+                                case 'd' :
+                                        PrintDec(format, va_arg(args, int));
+                                        break;
+                                case 'x' :
+                                        PrintHex(format, va_arg(args, int));
+ 80003ea:	f10a 0a04 	add.w	sl, sl, #4
+ 80003ee:	f8cd 9008 	str.w	r9, [sp, #8]
+ 80003f2:	f8cd a004 	str.w	sl, [sp, #4]
+
+void PrintHex(char *fmt, int l){
+        int                i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // flags.
+        long        flagcnt=0;
+ 80003f6:	9603      	str	r6, [sp, #12]
+        char        uHex, lHex;
+        int                cnt;                                                // "%5x"의 경우 5개만 출력하도록 출력한 개수.
+
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+ 80003f8:	2b00      	cmp	r3, #0
+ 80003fa:	f000 8133 	beq.w	8000664 <printf+0x320>
+                if (c=='x') break;
+ 80003fe:	2b78      	cmp	r3, #120	; 0x78
+ 8000400:	f000 8130 	beq.w	8000664 <printf+0x320>
+        char        uHex, lHex;
+        int                cnt;                                                // "%5x"의 경우 5개만 출력하도록 출력한 개수.
+
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+ 8000404:	46b3      	mov	fp, r6
+                if (c=='x') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 8000406:	46b0      	mov	r8, r6
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='x') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 8000408:	f10d 0a10 	add.w	sl, sp, #16
+
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='x') break;
+                else if (c>='1' && c<='9'){
+ 800040c:	f1a3 0231 	sub.w	r2, r3, #49	; 0x31
+ 8000410:	b2d2      	uxtb	r2, r2
+ 8000412:	2a08      	cmp	r2, #8
+ 8000414:	d84a      	bhi.n	80004ac <printf+0x168>
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 8000416:	f81a 200b 	ldrb.w	r2, [sl, fp]
+ 800041a:	eb0a 010b 	add.w	r1, sl, fp
+ 800041e:	f1a2 0330 	sub.w	r3, r2, #48	; 0x30
+ 8000422:	b2db      	uxtb	r3, r3
+ 8000424:	2b09      	cmp	r3, #9
+ 8000426:	a807      	add	r0, sp, #28
+ 8000428:	f04f 0300 	mov.w	r3, #0
+ 800042c:	d80d      	bhi.n	800044a <printf+0x106>
+                                tol[j] = s[i++];
+ 800042e:	54c2      	strb	r2, [r0, r3]
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='x') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 8000430:	f811 2f01 	ldrb.w	r2, [r1, #1]!
+                                tol[j] = s[i++];
+ 8000434:	f10b 0b01 	add.w	fp, fp, #1
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='x') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 8000438:	f1a2 0e30 	sub.w	lr, r2, #48	; 0x30
+ 800043c:	fa5f fe8e 	uxtb.w	lr, lr
+ 8000440:	f1be 0f09 	cmp.w	lr, #9
+ 8000444:	f103 0301 	add.w	r3, r3, #1
+ 8000448:	d9f1      	bls.n	800042e <printf+0xea>
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 800044a:	a90a      	add	r1, sp, #40	; 0x28
+ 800044c:	440b      	add	r3, r1
+                        i--;
+                        DecToLong(tol, &flagcnt);
+ 800044e:	a903      	add	r1, sp, #12
+                if (c=='x') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 8000450:	f803 8c0c 	strb.w	r8, [r3, #-12]
+                        i--;
+ 8000454:	f10b 3bff 	add.w	fp, fp, #4294967295
+                        DecToLong(tol, &flagcnt);
+ 8000458:	47b8      	blx	r7
+        char        uHex, lHex;
+        int                cnt;                                                // "%5x"의 경우 5개만 출력하도록 출력한 개수.
+
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+ 800045a:	f10b 0b01 	add.w	fp, fp, #1
+ 800045e:	ab0a      	add	r3, sp, #40	; 0x28
+ 8000460:	445b      	add	r3, fp
+ 8000462:	f813 3c18 	ldrb.w	r3, [r3, #-24]
+ 8000466:	b10b      	cbz	r3, 800046c <printf+0x128>
+                if (c=='x') break;
+ 8000468:	2b78      	cmp	r3, #120	; 0x78
+ 800046a:	d1cf      	bne.n	800040c <printf+0xc8>
+ 800046c:	9b03      	ldr	r3, [sp, #12]
+ 800046e:	fa99 f289 	rev.w	r2, r9
+                else if (c=='l') flagl=true;
+                else continue;
+        }
+
+        s = (char *)(&l);
+        l = SWAP32(l);                // little, big endian에 따라서.(big이 출력하기 쉬워 순서를 바꿈)
+ 8000472:	9202      	str	r2, [sp, #8]
+        
+        // 위의 flag에 따라 출력.
+        if (flagcnt){
+ 8000474:	2b00      	cmp	r3, #0
+ 8000476:	f000 80f8 	beq.w	800066a <printf+0x326>
+                if (flagcnt&0x01){        // flagcnt가 홀수 일때, upper를 무시, lower만 출력.
+ 800047a:	07da      	lsls	r2, r3, #31
+ 800047c:	f140 8128 	bpl.w	80006d0 <printf+0x38c>
+                        c = s[(8-(flagcnt+1))/2]; // 홀수 일때 그 위치를 포함하는 곳의 값을 가져 옵니다.
+ 8000480:	f1c3 0307 	rsb	r3, r3, #7
+ 8000484:	eb03 73d3 	add.w	r3, r3, r3, lsr #31
+ 8000488:	aa0a      	add	r2, sp, #40	; 0x28
+ 800048a:	eb02 0363 	add.w	r3, r2, r3, asr #1
+                        
+                        // lower 4 bits를 가져와서 ascii code로.
+                        lHex = ((c>>0)&0x0f);
+ 800048e:	f813 3c20 	ldrb.w	r3, [r3, #-32]
+                        if (lHex!=0) leading_zero=false;
+ 8000492:	f013 030f 	ands.w	r3, r3, #15
+ 8000496:	f000 8160 	beq.w	800075a <printf+0x416>
+                        if (lHex<10) lHex+='0';
+ 800049a:	2b09      	cmp	r3, #9
+ 800049c:	f240 8180 	bls.w	80007a0 <printf+0x45c>
+                        else         lHex+='A'-10;
+ 80004a0:	f103 0037 	add.w	r0, r3, #55	; 0x37
+                        // lower 4 bits 출력.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+                        }
+                        else print_byte(lHex);
+ 80004a4:	47a8      	blx	r5
+ 80004a6:	f04f 0900 	mov.w	r9, #0
+ 80004aa:	e15b      	b.n	8000764 <printf+0x420>
+                        }
+                        tol[j] = '\0';
+                        i--;
+                        DecToLong(tol, &flagcnt);
+                }
+                else if (c=='0') flag0=true;
+ 80004ac:	2b30      	cmp	r3, #48	; 0x30
+ 80004ae:	bf08      	it	eq
+ 80004b0:	2601      	moveq	r6, #1
+ 80004b2:	e7d2      	b.n	800045a <printf+0x116>
+                        s++;
+                        // s에서 "%08lx"형식을 가져와 format에 기록. 나중에 출력함수에 넘겨줌.
+                        format[0] = '%';
+                        for (i=1; i<10;){
+                                if (*s=='c' || *s=='d' || *s=='x' || *s=='s' || *s=='%'){
+                                        format[i++] = *s;
+ 80004b4:	a90a      	add	r1, sp, #40	; 0x28
+ 80004b6:	440a      	add	r2, r1
+                                        format[i] = '\0';
+ 80004b8:	2300      	movs	r3, #0
+                                        break;
+ 80004ba:	4634      	mov	r4, r6
+                                else {
+                                        format[i++] = *s++;
+                                }
+                        }
+                        // "%s", "%c", "%d", "%x"를 찾아 출력할 함수 호출.
+                        switch (*s++){
+ 80004bc:	2864      	cmp	r0, #100	; 0x64
+                        s++;
+                        // s에서 "%08lx"형식을 가져와 format에 기록. 나중에 출력함수에 넘겨줌.
+                        format[0] = '%';
+                        for (i=1; i<10;){
+                                if (*s=='c' || *s=='d' || *s=='x' || *s=='s' || *s=='%'){
+                                        format[i++] = *s;
+ 80004be:	f802 0c18 	strb.w	r0, [r2, #-24]
+                                        format[i] = '\0';
+ 80004c2:	f802 3c17 	strb.w	r3, [r2, #-23]
+                                else {
+                                        format[i++] = *s++;
+                                }
+                        }
+                        // "%s", "%c", "%d", "%x"를 찾아 출력할 함수 호출.
+                        switch (*s++){
+ 80004c6:	f104 0401 	add.w	r4, r4, #1
+ 80004ca:	f47f af6d 	bne.w	80003a8 <printf+0x64>
+        bool        leading_zero=true;                        // long형의 data를 출력하기 위한 변수.
+        long        divisor, result, remainder;
+
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+ 80004ce:	f89d 3010 	ldrb.w	r3, [sp, #16]
+void PrintDec(char *fmt, int l)
+{
+        int        i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // "%08lx"에서 '0', 'l'의 존재 여부.
+        long        flagcnt=0;                                        // "%08lx"에서 "8"을 찾아서 long형으로.
+ 80004d2:	2600      	movs	r6, #0
+                        switch (*s++){
+                                case 'c' :
+                                        PrintChar(format, va_arg(args, int));
+                                        break;
+                                case 'd' :
+                                        PrintDec(format, va_arg(args, int));
+ 80004d4:	f10a 0204 	add.w	r2, sl, #4
+void PrintDec(char *fmt, int l)
+{
+        int        i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // "%08lx"에서 '0', 'l'의 존재 여부.
+        long        flagcnt=0;                                        // "%08lx"에서 "8"을 찾아서 long형으로.
+ 80004d8:	9603      	str	r6, [sp, #12]
+                        switch (*s++){
+                                case 'c' :
+                                        PrintChar(format, va_arg(args, int));
+                                        break;
+                                case 'd' :
+                                        PrintDec(format, va_arg(args, int));
+ 80004da:	9201      	str	r2, [sp, #4]
+ 80004dc:	f8da b000 	ldr.w	fp, [sl]
+        bool        leading_zero=true;                        // long형의 data를 출력하기 위한 변수.
+        long        divisor, result, remainder;
+
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+ 80004e0:	2b00      	cmp	r3, #0
+ 80004e2:	f000 8097 	beq.w	8000614 <printf+0x2d0>
+                if (c=='d') break;
+ 80004e6:	2b64      	cmp	r3, #100	; 0x64
+ 80004e8:	f000 8094 	beq.w	8000614 <printf+0x2d0>
+        bool        leading_zero=true;                        // long형의 data를 출력하기 위한 변수.
+        long        divisor, result, remainder;
+
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+ 80004ec:	46b2      	mov	sl, r6
+                if (c=='d') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 80004ee:	46b0      	mov	r8, r6
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='d') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 80004f0:	f10d 0910 	add.w	r9, sp, #16
+
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='d') break;
+                else if (c>='1' && c<='9'){
+ 80004f4:	f1a3 0231 	sub.w	r2, r3, #49	; 0x31
+ 80004f8:	b2d2      	uxtb	r2, r2
+ 80004fa:	2a08      	cmp	r2, #8
+ 80004fc:	f200 8086 	bhi.w	800060c <printf+0x2c8>
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 8000500:	f819 200a 	ldrb.w	r2, [r9, sl]
+ 8000504:	eb09 010a 	add.w	r1, r9, sl
+ 8000508:	f1a2 0330 	sub.w	r3, r2, #48	; 0x30
+ 800050c:	b2db      	uxtb	r3, r3
+ 800050e:	2b09      	cmp	r3, #9
+ 8000510:	a807      	add	r0, sp, #28
+ 8000512:	f04f 0300 	mov.w	r3, #0
+ 8000516:	d80d      	bhi.n	8000534 <printf+0x1f0>
+                                tol[j] = s[i++];
+ 8000518:	54c2      	strb	r2, [r0, r3]
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='d') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 800051a:	f811 2f01 	ldrb.w	r2, [r1, #1]!
+                                tol[j] = s[i++];
+ 800051e:	f10a 0a01 	add.w	sl, sl, #1
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+                if (c=='d') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+ 8000522:	f1a2 0e30 	sub.w	lr, r2, #48	; 0x30
+ 8000526:	fa5f fe8e 	uxtb.w	lr, lr
+ 800052a:	f1be 0f09 	cmp.w	lr, #9
+ 800052e:	f103 0301 	add.w	r3, r3, #1
+ 8000532:	d9f1      	bls.n	8000518 <printf+0x1d4>
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 8000534:	f10d 0c28 	add.w	ip, sp, #40	; 0x28
+ 8000538:	4463      	add	r3, ip
+                        i--;
+                        DecToLong(tol, &flagcnt);
+ 800053a:	a903      	add	r1, sp, #12
+                if (c=='d') break;
+                else if (c>='1' && c<='9'){
+                        for (j=0; s[i]>='0' && s[i]<='9'; j++){
+                                tol[j] = s[i++];
+                        }
+                        tol[j] = '\0';
+ 800053c:	f803 8c0c 	strb.w	r8, [r3, #-12]
+                        i--;
+ 8000540:	f10a 3aff 	add.w	sl, sl, #4294967295
+                        DecToLong(tol, &flagcnt);
+ 8000544:	47b8      	blx	r7
+        bool        leading_zero=true;                        // long형의 data를 출력하기 위한 변수.
+        long        divisor, result, remainder;
+
+
+        // fmt의 "%08lx"에서 '0', '8', 'l'을 해석.
+        for (i=0; (c=s[i]) != 0; i++){
+ 8000546:	f10a 0a01 	add.w	sl, sl, #1
+ 800054a:	ab0a      	add	r3, sp, #40	; 0x28
+ 800054c:	4453      	add	r3, sl
+ 800054e:	f813 3c18 	ldrb.w	r3, [r3, #-24]
+ 8000552:	b10b      	cbz	r3, 8000558 <printf+0x214>
+                if (c=='d') break;
+ 8000554:	2b64      	cmp	r3, #100	; 0x64
+ 8000556:	d1cd      	bne.n	80004f4 <printf+0x1b0>
+                else continue;
+        }
+
+
+        // 위의 flag에 따라 출력.
+        if (flagcnt){
+ 8000558:	9903      	ldr	r1, [sp, #12]
+ 800055a:	2900      	cmp	r1, #0
+ 800055c:	d05a      	beq.n	8000614 <printf+0x2d0>
+                if (flagcnt>9) flagcnt=9;
+ 800055e:	2909      	cmp	r1, #9
+ 8000560:	f340 80b0 	ble.w	80006c4 <printf+0x380>
+ 8000564:	2109      	movs	r1, #9
+ 8000566:	9103      	str	r1, [sp, #12]
+ 8000568:	2006      	movs	r0, #6
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 800056a:	2207      	movs	r2, #7
+ 800056c:	230a      	movs	r3, #10
+ 800056e:	3a01      	subs	r2, #1
+                retval *= num;
+ 8000570:	eb03 0383 	add.w	r3, r3, r3, lsl #2
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 8000574:	f1b2 3fff 	cmp.w	r2, #4294967295
+                retval *= num;
+ 8000578:	ea4f 0343 	mov.w	r3, r3, lsl #1
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 800057c:	d1f7      	bne.n	800056e <printf+0x22a>
+
+
+        // 위의 flag에 따라 출력.
+        if (flagcnt){
+                if (flagcnt>9) flagcnt=9;
+                remainder = l%(Power(10, flagcnt));        // flagcnt보다 윗자리의 수는 걸러냄. 199에 flagcnt==2이면, 99만.
+ 800057e:	fb9b faf3 	sdiv	sl, fp, r3
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 8000582:	2902      	cmp	r1, #2
+
+
+        // 위의 flag에 따라 출력.
+        if (flagcnt){
+                if (flagcnt>9) flagcnt=9;
+                remainder = l%(Power(10, flagcnt));        // flagcnt보다 윗자리의 수는 걸러냄. 199에 flagcnt==2이면, 99만.
+ 8000584:	fb03 ba1a 	mls	sl, r3, sl, fp
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 8000588:	f000 8104 	beq.w	8000794 <printf+0x450>
+ 800058c:	4603      	mov	r3, r0
+        while (*s) print_byte(*s++);
+        return;
+}
+
+int Power(int num, int cnt){
+        long retval=num;
+ 800058e:	f04f 080a 	mov.w	r8, #10
+        cnt--;
+
+
+        while (cnt--){
+ 8000592:	3b01      	subs	r3, #1
+                retval *= num;
+ 8000594:	eb08 0888 	add.w	r8, r8, r8, lsl #2
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 8000598:	1c59      	adds	r1, r3, #1
+                retval *= num;
+ 800059a:	ea4f 0848 	mov.w	r8, r8, lsl #1
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 800059e:	d1f8      	bne.n	8000592 <printf+0x24e>
+        while (*s) print_byte(*s++);
+        return;
+}
+
+int Power(int num, int cnt){
+        long retval=num;
+ 80005a0:	f04f 0b01 	mov.w	fp, #1
+ 80005a4:	e013      	b.n	80005ce <printf+0x28a>
+                for (divisor=Power(10, flagcnt-1); divisor>0; divisor/=10){
+                        result = remainder/divisor;
+                        remainder %= divisor;
+
+
+                        if (result!=0 || divisor==1) leading_zero = false;
+ 80005a6:	f1b8 0f01 	cmp.w	r8, #1
+ 80005aa:	d018      	beq.n	80005de <printf+0x29a>
+
+
+                        if (leading_zero==true){
+ 80005ac:	f1bb 0f00 	cmp.w	fp, #0
+ 80005b0:	d015      	beq.n	80005de <printf+0x29a>
+                                if (flag0)        print_byte('0');
+ 80005b2:	2030      	movs	r0, #48	; 0x30
+ 80005b4:	b906      	cbnz	r6, 80005b8 <printf+0x274>
+                                else                print_byte(' ');
+ 80005b6:	2020      	movs	r0, #32
+ 80005b8:	47a8      	blx	r5
+        if (flagcnt){
+                if (flagcnt>9) flagcnt=9;
+                remainder = l%(Power(10, flagcnt));        // flagcnt보다 윗자리의 수는 걸러냄. 199에 flagcnt==2이면, 99만.
+
+
+                for (divisor=Power(10, flagcnt-1); divisor>0; divisor/=10){
+ 80005ba:	4a28      	ldr	r2, [pc, #160]	; (800065c <printf+0x318>)
+ 80005bc:	fb82 2308 	smull	r2, r3, r2, r8
+ 80005c0:	ea4f 78e8 	mov.w	r8, r8, asr #31
+ 80005c4:	ebc8 08a3 	rsb	r8, r8, r3, asr #2
+ 80005c8:	f1b8 0f00 	cmp.w	r8, #0
+ 80005cc:	dd6b      	ble.n	80006a6 <printf+0x362>
+                        result = remainder/divisor;
+ 80005ce:	fb9a f3f8 	sdiv	r3, sl, r8
+
+                        if (leading_zero==true){
+                                if (flag0)        print_byte('0');
+                                else                print_byte(' ');
+                        }
+                        else print_byte((char)(result)+'0');
+ 80005d2:	b2d8      	uxtb	r0, r3
+ 80005d4:	3030      	adds	r0, #48	; 0x30
+                remainder = l%(Power(10, flagcnt));        // flagcnt보다 윗자리의 수는 걸러냄. 199에 flagcnt==2이면, 99만.
+
+
+                for (divisor=Power(10, flagcnt-1); divisor>0; divisor/=10){
+                        result = remainder/divisor;
+                        remainder %= divisor;
+ 80005d6:	fb08 aa13 	mls	sl, r8, r3, sl
+
+
+                        if (result!=0 || divisor==1) leading_zero = false;
+ 80005da:	2b00      	cmp	r3, #0
+ 80005dc:	d0e3      	beq.n	80005a6 <printf+0x262>
+
+                        if (leading_zero==true){
+                                if (flag0)        print_byte('0');
+                                else                print_byte(' ');
+                        }
+                        else print_byte((char)(result)+'0');
+ 80005de:	47a8      	blx	r5
+ 80005e0:	f04f 0b00 	mov.w	fp, #0
+ 80005e4:	e7e9      	b.n	80005ba <printf+0x276>
+        return;
+}
+
+void PrintChar(char *fmt, char c)
+{
+        print_byte(c);
+ 80005e6:	47a8      	blx	r5
+ 80005e8:	e6b6      	b.n	8000358 <printf+0x14>
+                                        break;
+                                case 'x' :
+                                        PrintHex(format, va_arg(args, int));
+                                        break;
+                                case 's' :
+                                        PrintString(format, va_arg(args, char *));
+ 80005ea:	f8da 6000 	ldr.w	r6, [sl]
+ 80005ee:	f10a 0a04 	add.w	sl, sl, #4
+        }
+        return;
+}
+
+void PrintString(char *fmt, char *s){
+        if (!fmt || !s) return;
+ 80005f2:	2e00      	cmp	r6, #0
+ 80005f4:	f43f aeb0 	beq.w	8000358 <printf+0x14>
+        while (*s) print_byte(*s++);
+ 80005f8:	7830      	ldrb	r0, [r6, #0]
+ 80005fa:	2800      	cmp	r0, #0
+ 80005fc:	f43f aeac 	beq.w	8000358 <printf+0x14>
+ 8000600:	47a8      	blx	r5
+ 8000602:	f816 0f01 	ldrb.w	r0, [r6, #1]!
+ 8000606:	2800      	cmp	r0, #0
+ 8000608:	d1fa      	bne.n	8000600 <printf+0x2bc>
+ 800060a:	e6a5      	b.n	8000358 <printf+0x14>
+                        }
+                        tol[j] = '\0';
+                        i--;
+                        DecToLong(tol, &flagcnt);
+                }
+                else if (c=='0') flag0=true;
+ 800060c:	2b30      	cmp	r3, #48	; 0x30
+ 800060e:	bf08      	it	eq
+ 8000610:	2601      	moveq	r6, #1
+ 8000612:	e798      	b.n	8000546 <printf+0x202>
+
+                        if (leading_zero==true){
+                                if (flag0)        print_byte('0');
+                                else                print_byte(' ');
+                        }
+                        else print_byte((char)(result)+'0');
+ 8000614:	f04f 080a 	mov.w	r8, #10
+ 8000618:	2201      	movs	r2, #1
+ 800061a:	4e11      	ldr	r6, [pc, #68]	; (8000660 <printf+0x31c>)
+ 800061c:	e00c      	b.n	8000638 <printf+0x2f4>
+                        result = remainder/divisor;
+                        remainder %= divisor;
+
+
+                        if (result!=0 || divisor==1) leading_zero = false;
+                        if (leading_zero==false) print_byte((char)(result)+'0');
+ 800061e:	47a8      	blx	r5
+ 8000620:	2200      	movs	r2, #0
+                }
+        } else {
+                remainder = l;
+
+
+                for (divisor=1000000000; divisor>0; divisor/=10){
+ 8000622:	f8df c038 	ldr.w	ip, [pc, #56]	; 800065c <printf+0x318>
+ 8000626:	f1b8 0801 	subs.w	r8, r8, #1
+ 800062a:	fb8c c306 	smull	ip, r3, ip, r6
+ 800062e:	ea4f 76e6 	mov.w	r6, r6, asr #31
+ 8000632:	ebc6 06a3 	rsb	r6, r6, r3, asr #2
+ 8000636:	d036      	beq.n	80006a6 <printf+0x362>
+                        result = remainder/divisor;
+ 8000638:	fb9b f3f6 	sdiv	r3, fp, r6
+                        remainder %= divisor;
+
+
+                        if (result!=0 || divisor==1) leading_zero = false;
+                        if (leading_zero==false) print_byte((char)(result)+'0');
+ 800063c:	b2d8      	uxtb	r0, r3
+ 800063e:	3030      	adds	r0, #48	; 0x30
+                remainder = l;
+
+
+                for (divisor=1000000000; divisor>0; divisor/=10){
+                        result = remainder/divisor;
+                        remainder %= divisor;
+ 8000640:	fb06 bb13 	mls	fp, r6, r3, fp
+
+
+                        if (result!=0 || divisor==1) leading_zero = false;
+ 8000644:	2b00      	cmp	r3, #0
+ 8000646:	d1ea      	bne.n	800061e <printf+0x2da>
+ 8000648:	2e01      	cmp	r6, #1
+ 800064a:	d0e8      	beq.n	800061e <printf+0x2da>
+                        if (leading_zero==false) print_byte((char)(result)+'0');
+ 800064c:	2a00      	cmp	r2, #0
+ 800064e:	d0e6      	beq.n	800061e <printf+0x2da>
+ 8000650:	2201      	movs	r2, #1
+ 8000652:	e7e6      	b.n	8000622 <printf+0x2de>
+ 8000654:	080002d1 	.word	0x080002d1
+ 8000658:	080002f9 	.word	0x080002f9
+ 800065c:	66666667 	.word	0x66666667
+ 8000660:	3b9aca00 	.word	0x3b9aca00
+ 8000664:	fa99 f389 	rev.w	r3, r9
+                else if (c=='l') flagl=true;
+                else continue;
+        }
+
+        s = (char *)(&l);
+        l = SWAP32(l);                // little, big endian에 따라서.(big이 출력하기 쉬워 순서를 바꿈)
+ 8000668:	9302      	str	r3, [sp, #8]
+                        // lower 4 bits 출력.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+                        }
+                        else print_byte(lHex);
+ 800066a:	2201      	movs	r2, #1
+ 800066c:	2600      	movs	r6, #0
+ 800066e:	f10d 0808 	add.w	r8, sp, #8
+ 8000672:	46a1      	mov	r9, r4
+                }
+        }
+        else {
+                for (i=0; i<4; i++){
+                        c = s[i];
+ 8000674:	f818 3006 	ldrb.w	r3, [r8, r6]
+        
+                        // get upper 4 bits and lower 4 bits.
+                        uHex = ((c>>4)&0x0f);
+                        lHex = ((c>>0)&0x0f);
+ 8000678:	f003 040f 	and.w	r4, r3, #15
+
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        if (uHex!=0) leading_zero = false;
+ 800067c:	091b      	lsrs	r3, r3, #4
+ 800067e:	d01d      	beq.n	80006bc <printf+0x378>
+                        if (uHex<10) uHex+='0';
+ 8000680:	2b09      	cmp	r3, #9
+                        else         uHex+='A'-10;
+ 8000682:	bf88      	it	hi
+ 8000684:	f103 0037 	addhi.w	r0, r3, #55	; 0x37
+                        lHex = ((c>>0)&0x0f);
+
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        if (uHex!=0) leading_zero = false;
+                        if (uHex<10) uHex+='0';
+ 8000688:	f240 8093 	bls.w	80007b2 <printf+0x46e>
+                        else         uHex+='A'-10;
+                        if (!leading_zero) print_byte(uHex);
+ 800068c:	47a8      	blx	r5
+ 800068e:	2300      	movs	r3, #0
+                        
+                        if (lHex!=0 || i==3) leading_zero = false;
+ 8000690:	b964      	cbnz	r4, 80006ac <printf+0x368>
+ 8000692:	2e03      	cmp	r6, #3
+ 8000694:	f000 8081 	beq.w	800079a <printf+0x456>
+                        if (lHex<10) lHex+='0';
+                        else         lHex+='A'-10;
+                        if (!leading_zero) print_byte(lHex);
+ 8000698:	2201      	movs	r2, #1
+ 800069a:	2b00      	cmp	r3, #0
+ 800069c:	d07d      	beq.n	800079a <printf+0x456>
+                        }
+                        else print_byte(lHex);
+                }
+        }
+        else {
+                for (i=0; i<4; i++){
+ 800069e:	3601      	adds	r6, #1
+ 80006a0:	2e04      	cmp	r6, #4
+ 80006a2:	d1e7      	bne.n	8000674 <printf+0x330>
+ 80006a4:	464c      	mov	r4, r9
+                                        break;
+                                case 'd' :
+                                        PrintDec(format, va_arg(args, int));
+                                        break;
+                                case 'x' :
+                                        PrintHex(format, va_arg(args, int));
+ 80006a6:	f8dd a004 	ldr.w	sl, [sp, #4]
+ 80006aa:	e655      	b.n	8000358 <printf+0x14>
+                        if (uHex<10) uHex+='0';
+                        else         uHex+='A'-10;
+                        if (!leading_zero) print_byte(uHex);
+                        
+                        if (lHex!=0 || i==3) leading_zero = false;
+                        if (lHex<10) lHex+='0';
+ 80006ac:	2c09      	cmp	r4, #9
+                        else         lHex+='A'-10;
+ 80006ae:	bf88      	it	hi
+ 80006b0:	f104 0037 	addhi.w	r0, r4, #55	; 0x37
+                        if (uHex<10) uHex+='0';
+                        else         uHex+='A'-10;
+                        if (!leading_zero) print_byte(uHex);
+                        
+                        if (lHex!=0 || i==3) leading_zero = false;
+                        if (lHex<10) lHex+='0';
+ 80006b4:	d971      	bls.n	800079a <printf+0x456>
+                        else         lHex+='A'-10;
+                        if (!leading_zero) print_byte(lHex);
+ 80006b6:	47a8      	blx	r5
+ 80006b8:	2200      	movs	r2, #0
+ 80006ba:	e7f0      	b.n	800069e <printf+0x35a>
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        if (uHex!=0) leading_zero = false;
+                        if (uHex<10) uHex+='0';
+                        else         uHex+='A'-10;
+                        if (!leading_zero) print_byte(uHex);
+ 80006bc:	2a00      	cmp	r2, #0
+ 80006be:	d078      	beq.n	80007b2 <printf+0x46e>
+ 80006c0:	2301      	movs	r3, #1
+ 80006c2:	e7e5      	b.n	8000690 <printf+0x34c>
+int Power(int num, int cnt){
+        long retval=num;
+        cnt--;
+
+
+        while (cnt--){
+ 80006c4:	2901      	cmp	r1, #1
+ 80006c6:	f1a1 0202 	sub.w	r2, r1, #2
+ 80006ca:	d054      	beq.n	8000776 <printf+0x432>
+ 80006cc:	1ec8      	subs	r0, r1, #3
+ 80006ce:	e74d      	b.n	800056c <printf+0x228>
+void PrintHex(char *fmt, int l){
+        int                i, j;
+        char        c, *s=fmt, tol[10];
+        bool        flag0=false, flagl=false;        // flags.
+        long        flagcnt=0;
+        bool        leading_zero=true;
+ 80006d0:	f04f 0901 	mov.w	r9, #1
+                        
+                        flagcnt--;
+                }
+
+                // byte단위의 data를 Hex로 출력.
+                for (cnt=0, i=(8-flagcnt)/2; i<4; i++){
+ 80006d4:	f1c3 0308 	rsb	r3, r3, #8
+ 80006d8:	eb03 73d3 	add.w	r3, r3, r3, lsr #31
+ 80006dc:	105b      	asrs	r3, r3, #1
+ 80006de:	2b03      	cmp	r3, #3
+ 80006e0:	dce1      	bgt.n	80006a6 <printf+0x362>
+ 80006e2:	f10d 0808 	add.w	r8, sp, #8
+ 80006e6:	4498      	add	r8, r3
+ 80006e8:	4633      	mov	r3, r6
+ 80006ea:	464e      	mov	r6, r9
+ 80006ec:	46a1      	mov	r9, r4
+ 80006ee:	461c      	mov	r4, r3
+                        c = s[i];
+ 80006f0:	f818 3b01 	ldrb.w	r3, [r8], #1
+ 80006f4:	f10d 0b0c 	add.w	fp, sp, #12
+                                
+                        // get upper 4 bits and lower 4 bits.
+                        uHex = ((c>>4)&0x0f);
+                        lHex = ((c>>0)&0x0f);
+ 80006f8:	f003 0a0f 	and.w	sl, r3, #15
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        // upper 4 bits를 ascii code로.
+                        if (uHex!=0) leading_zero = false;
+ 80006fc:	091b      	lsrs	r3, r3, #4
+ 80006fe:	d019      	beq.n	8000734 <printf+0x3f0>
+                        if (uHex<10) uHex+='0';
+ 8000700:	2b09      	cmp	r3, #9
+                        else         uHex+='A'-10;
+ 8000702:	bf88      	it	hi
+ 8000704:	f103 0037 	addhi.w	r0, r3, #55	; 0x37
+                        lHex = ((c>>0)&0x0f);
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        // upper 4 bits를 ascii code로.
+                        if (uHex!=0) leading_zero = false;
+                        if (uHex<10) uHex+='0';
+ 8000708:	d950      	bls.n	80007ac <printf+0x468>
+                        // upper 4 bits 출력.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+                        }
+                        else print_byte(uHex);
+ 800070a:	47a8      	blx	r5
+ 800070c:	2600      	movs	r6, #0
+                        
+                        // lower 4 bits를 ascii code로.
+                        if (lHex!=0) leading_zero = false;
+ 800070e:	f1ba 0f00 	cmp.w	sl, #0
+ 8000712:	d017      	beq.n	8000744 <printf+0x400>
+                        if (lHex<10) lHex+='0';
+ 8000714:	f1ba 0f09 	cmp.w	sl, #9
+                        else         lHex+='A'-10;
+ 8000718:	bf88      	it	hi
+ 800071a:	f10a 0037 	addhi.w	r0, sl, #55	; 0x37
+                        }
+                        else print_byte(uHex);
+                        
+                        // lower 4 bits를 ascii code로.
+                        if (lHex!=0) leading_zero = false;
+                        if (lHex<10) lHex+='0';
+ 800071e:	d942      	bls.n	80007a6 <printf+0x462>
+                        // lower 4 bits 출력.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+                        }
+                        else print_byte(lHex);
+ 8000720:	47a8      	blx	r5
+ 8000722:	2600      	movs	r6, #0
+                        
+                        flagcnt--;
+                }
+
+                // byte단위의 data를 Hex로 출력.
+                for (cnt=0, i=(8-flagcnt)/2; i<4; i++){
+ 8000724:	45d8      	cmp	r8, fp
+ 8000726:	d0bd      	beq.n	80006a4 <printf+0x360>
+                        c = s[i];
+ 8000728:	f818 3b01 	ldrb.w	r3, [r8], #1
+                                
+                        // get upper 4 bits and lower 4 bits.
+                        uHex = ((c>>4)&0x0f);
+                        lHex = ((c>>0)&0x0f);
+ 800072c:	f003 0a0f 	and.w	sl, r3, #15
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        // upper 4 bits를 ascii code로.
+                        if (uHex!=0) leading_zero = false;
+ 8000730:	091b      	lsrs	r3, r3, #4
+ 8000732:	d1e5      	bne.n	8000700 <printf+0x3bc>
+                        if (uHex<10) uHex+='0';
+                        else         uHex+='A'-10;
+
+                        // upper 4 bits 출력.
+                        if (leading_zero){
+ 8000734:	2e00      	cmp	r6, #0
+ 8000736:	d039      	beq.n	80007ac <printf+0x468>
+                                if (flag0) print_byte('0');
+ 8000738:	b14c      	cbz	r4, 800074e <printf+0x40a>
+ 800073a:	2030      	movs	r0, #48	; 0x30
+ 800073c:	47a8      	blx	r5
+                                else       print_byte(' ');
+                        }
+                        else print_byte(uHex);
+                        
+                        // lower 4 bits를 ascii code로.
+                        if (lHex!=0) leading_zero = false;
+ 800073e:	f1ba 0f00 	cmp.w	sl, #0
+ 8000742:	d1e7      	bne.n	8000714 <printf+0x3d0>
+                        if (lHex<10) lHex+='0';
+                        else         lHex+='A'-10;
+
+                        // lower 4 bits 출력.
+                        if (leading_zero){
+ 8000744:	b37e      	cbz	r6, 80007a6 <printf+0x462>
+                                if (flag0) print_byte('0');
+ 8000746:	b12c      	cbz	r4, 8000754 <printf+0x410>
+ 8000748:	2030      	movs	r0, #48	; 0x30
+ 800074a:	47a8      	blx	r5
+ 800074c:	e7ea      	b.n	8000724 <printf+0x3e0>
+                        else         uHex+='A'-10;
+
+                        // upper 4 bits 출력.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+ 800074e:	2020      	movs	r0, #32
+ 8000750:	47a8      	blx	r5
+ 8000752:	e7dc      	b.n	800070e <printf+0x3ca>
+                        else         lHex+='A'-10;
+
+                        // lower 4 bits 출력.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+ 8000754:	2020      	movs	r0, #32
+ 8000756:	47a8      	blx	r5
+ 8000758:	e7e4      	b.n	8000724 <printf+0x3e0>
+                        if (lHex<10) lHex+='0';
+                        else         lHex+='A'-10;
+
+                        // lower 4 bits 출력.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+ 800075a:	b13e      	cbz	r6, 800076c <printf+0x428>
+ 800075c:	2030      	movs	r0, #48	; 0x30
+ 800075e:	47a8      	blx	r5
+ 8000760:	f04f 0901 	mov.w	r9, #1
+                                else       print_byte(' ');
+                        }
+                        else print_byte(lHex);
+                        
+                        flagcnt--;
+ 8000764:	9b03      	ldr	r3, [sp, #12]
+ 8000766:	3b01      	subs	r3, #1
+ 8000768:	9303      	str	r3, [sp, #12]
+ 800076a:	e7b3      	b.n	80006d4 <printf+0x390>
+                        else         lHex+='A'-10;
+
+                        // lower 4 bits 출력.
+                        if (leading_zero){
+                                if (flag0) print_byte('0');
+                                else       print_byte(' ');
+ 800076c:	2020      	movs	r0, #32
+ 800076e:	47a8      	blx	r5
+ 8000770:	f04f 0901 	mov.w	r9, #1
+ 8000774:	e7f6      	b.n	8000764 <printf+0x420>
+
+
+        // 위의 flag에 따라 출력.
+        if (flagcnt){
+                if (flagcnt>9) flagcnt=9;
+                remainder = l%(Power(10, flagcnt));        // flagcnt보다 윗자리의 수는 걸러냄. 199에 flagcnt==2이면, 99만.
+ 8000776:	f101 3166 	add.w	r1, r1, #1717986918	; 0x66666666
+ 800077a:	fb81 1a0b 	smull	r1, sl, r1, fp
+ 800077e:	ea4f 73eb 	mov.w	r3, fp, asr #31
+ 8000782:	ebc3 0aaa 	rsb	sl, r3, sl, asr #2
+ 8000786:	eb0a 0a8a 	add.w	sl, sl, sl, lsl #2
+ 800078a:	ebab 0a4a 	sub.w	sl, fp, sl, lsl #1
+ 800078e:	f06f 0301 	mvn.w	r3, #1
+ 8000792:	e6fc      	b.n	800058e <printf+0x24a>
+        while (*s) print_byte(*s++);
+        return;
+}
+
+int Power(int num, int cnt){
+        long retval=num;
+ 8000794:	f04f 080a 	mov.w	r8, #10
+ 8000798:	e702      	b.n	80005a0 <printf+0x25c>
+                        if (uHex<10) uHex+='0';
+                        else         uHex+='A'-10;
+                        if (!leading_zero) print_byte(uHex);
+                        
+                        if (lHex!=0 || i==3) leading_zero = false;
+                        if (lHex<10) lHex+='0';
+ 800079a:	f104 0030 	add.w	r0, r4, #48	; 0x30
+ 800079e:	e78a      	b.n	80006b6 <printf+0x372>
+                        c = s[(8-(flagcnt+1))/2]; // 홀수 일때 그 위치를 포함하는 곳의 값을 가져 옵니다.
+                        
+                        // lower 4 bits를 가져와서 ascii code로.
+                        lHex = ((c>>0)&0x0f);
+                        if (lHex!=0) leading_zero=false;
+                        if (lHex<10) lHex+='0';
+ 80007a0:	f103 0030 	add.w	r0, r3, #48	; 0x30
+ 80007a4:	e67e      	b.n	80004a4 <printf+0x160>
+                        }
+                        else print_byte(uHex);
+                        
+                        // lower 4 bits를 ascii code로.
+                        if (lHex!=0) leading_zero = false;
+                        if (lHex<10) lHex+='0';
+ 80007a6:	f10a 0030 	add.w	r0, sl, #48	; 0x30
+ 80007aa:	e7b9      	b.n	8000720 <printf+0x3dc>
+                        lHex = ((c>>0)&0x0f);
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        // upper 4 bits를 ascii code로.
+                        if (uHex!=0) leading_zero = false;
+                        if (uHex<10) uHex+='0';
+ 80007ac:	f103 0030 	add.w	r0, r3, #48	; 0x30
+ 80007b0:	e7ab      	b.n	800070a <printf+0x3c6>
+                        lHex = ((c>>0)&0x0f);
+
+
+                        // upper 4 bits and lower 4 bits to '0'~'9', 'A'~'F'.
+                        if (uHex!=0) leading_zero = false;
+                        if (uHex<10) uHex+='0';
+ 80007b2:	f103 0030 	add.w	r0, r3, #48	; 0x30
+ 80007b6:	e769      	b.n	800068c <printf+0x348>
+
+080007b8 <init_TIM3>:
+#define MAX 400
+#define MIN 260
+
+void init_TIM3(void)
+{								// CNF[1:0]=10(AF output), MODE[1:0]=11(Max output 50MHz) 1011
+	GPIOB_CRH	|= ( 0xb<<0)	// set PB8 as AF output (0xb = 1011)	TIM3_CH1
+ 80007b8:	4a14      	ldr	r2, [pc, #80]	; (800080c <init_TIM3+0x54>)
+
+#define MAX 400
+#define MIN 260
+
+void init_TIM3(void)
+{								// CNF[1:0]=10(AF output), MODE[1:0]=11(Max output 50MHz) 1011
+ 80007ba:	b470      	push	{r4, r5, r6}
+	GPIOB_CRH	|= ( 0xb<<0)	// set PB8 as AF output (0xb = 1011)	TIM3_CH1
+ 80007bc:	6816      	ldr	r6, [r2, #0]
+//				|  ( 0xb<< 4);	// set PB1 as AF output (0xb = 1011)	TIM3_CH4
+
+//	RCC_APB1ENR	|= ( 0x1<< 2);	// bit0 - TIM2 Clock Enable bit
+	
+//	TIM3_PSC	 = 8;			// 72000000 / (8+1) = 8000000 =  8MHz, T = 1/8000000 = 0.000000125 = 0.125us
+	TIM4_PSC	 = 8;			// 72000000 / (8+1) = 8000000 =  8MHz, T = 1/8000000 = 0.000000125 = 0.125us
+ 80007be:	4c14      	ldr	r4, [pc, #80]	; (8000810 <init_TIM3+0x58>)
+							
+//	TIM3_ARR	 = 400-1;		// 0.000000125 * 400 = 0.00005, F = 1 / 0.00005 = 20000Hz = 20KHz
+	TIM4_ARR	 = 400-1;		// 0.000000125 * 400 = 0.00005, F = 1 / 0.00005 = 20000Hz = 20KHz
+ 80007c0:	4914      	ldr	r1, [pc, #80]	; (8000814 <init_TIM3+0x5c>)
+	
+//	TIM3_CR1	|= ( 0x1<< 4);	// set DIR (Direction - down count)
+	TIM4_CR1	|= ( 0x1<< 4);	// set DIR (Direction - down count)
+ 80007c2:	4b15      	ldr	r3, [pc, #84]	; (8000818 <init_TIM3+0x60>)
+#define MAX 400
+#define MIN 260
+
+void init_TIM3(void)
+{								// CNF[1:0]=10(AF output), MODE[1:0]=11(Max output 50MHz) 1011
+	GPIOB_CRH	|= ( 0xb<<0)	// set PB8 as AF output (0xb = 1011)	TIM3_CH1
+ 80007c4:	f046 061f 	orr.w	r6, r6, #31
+//				|  ( 0xb<< 4);	// set PB1 as AF output (0xb = 1011)	TIM3_CH4
+
+//	RCC_APB1ENR	|= ( 0x1<< 2);	// bit0 - TIM2 Clock Enable bit
+	
+//	TIM3_PSC	 = 8;			// 72000000 / (8+1) = 8000000 =  8MHz, T = 1/8000000 = 0.000000125 = 0.125us
+	TIM4_PSC	 = 8;			// 72000000 / (8+1) = 8000000 =  8MHz, T = 1/8000000 = 0.000000125 = 0.125us
+ 80007c8:	2508      	movs	r5, #8
+							
+//	TIM3_ARR	 = 400-1;		// 0.000000125 * 400 = 0.00005, F = 1 / 0.00005 = 20000Hz = 20KHz
+	TIM4_ARR	 = 400-1;		// 0.000000125 * 400 = 0.00005, F = 1 / 0.00005 = 20000Hz = 20KHz
+ 80007ca:	f240 108f 	movw	r0, #399	; 0x18f
+#define MAX 400
+#define MIN 260
+
+void init_TIM3(void)
+{								// CNF[1:0]=10(AF output), MODE[1:0]=11(Max output 50MHz) 1011
+	GPIOB_CRH	|= ( 0xb<<0)	// set PB8 as AF output (0xb = 1011)	TIM3_CH1
+ 80007ce:	6016      	str	r6, [r2, #0]
+//				|  ( 0xb<< 4);	// set PB1 as AF output (0xb = 1011)	TIM3_CH4
+
+//	RCC_APB1ENR	|= ( 0x1<< 2);	// bit0 - TIM2 Clock Enable bit
+	
+//	TIM3_PSC	 = 8;			// 72000000 / (8+1) = 8000000 =  8MHz, T = 1/8000000 = 0.000000125 = 0.125us
+	TIM4_PSC	 = 8;			// 72000000 / (8+1) = 8000000 =  8MHz, T = 1/8000000 = 0.000000125 = 0.125us
+ 80007d0:	6025      	str	r5, [r4, #0]
+							
+//	TIM3_ARR	 = 400-1;		// 0.000000125 * 400 = 0.00005, F = 1 / 0.00005 = 20000Hz = 20KHz
+	TIM4_ARR	 = 400-1;		// 0.000000125 * 400 = 0.00005, F = 1 / 0.00005 = 20000Hz = 20KHz
+ 80007d2:	6008      	str	r0, [r1, #0]
+	
+//	TIM3_CR1	|= ( 0x1<< 4);	// set DIR (Direction - down count)
+	TIM4_CR1	|= ( 0x1<< 4);	// set DIR (Direction - down count)
+ 80007d4:	681a      	ldr	r2, [r3, #0]
+//				|  ( 0x6<< 4)	// ch3: OC Mode = PWM mode1 ( 110 )
+//				|  ( 0x1<<11)	// ch4: compare fast & preload enable(11)
+//				|  ( 0x6<<12);	// ch4: OC Mode = PWM mode1 ( 110 )
+
+
+	TIM4_CCMR2	|= ( 0x1<< 3)	// ch3: compare fast & preload enable(11)
+ 80007d6:	4811      	ldr	r0, [pc, #68]	; (800081c <init_TIM3+0x64>)
+							
+//	TIM3_ARR	 = 400-1;		// 0.000000125 * 400 = 0.00005, F = 1 / 0.00005 = 20000Hz = 20KHz
+	TIM4_ARR	 = 400-1;		// 0.000000125 * 400 = 0.00005, F = 1 / 0.00005 = 20000Hz = 20KHz
+	
+//	TIM3_CR1	|= ( 0x1<< 4);	// set DIR (Direction - down count)
+	TIM4_CR1	|= ( 0x1<< 4);	// set DIR (Direction - down count)
+ 80007d8:	f042 0210 	orr.w	r2, r2, #16
+ 80007dc:	601a      	str	r2, [r3, #0]
+//				|  ( 0x6<< 4)	// ch3: OC Mode = PWM mode1 ( 110 )
+//				|  ( 0x1<<11)	// ch4: compare fast & preload enable(11)
+//				|  ( 0x6<<12);	// ch4: OC Mode = PWM mode1 ( 110 )
+
+
+	TIM4_CCMR2	|= ( 0x1<< 3)	// ch3: compare fast & preload enable(11)
+ 80007de:	6802      	ldr	r2, [r0, #0]
+ 80007e0:	f442 42d0 	orr.w	r2, r2, #26624	; 0x6800
+ 80007e4:	f042 0268 	orr.w	r2, r2, #104	; 0x68
+ 80007e8:	6002      	str	r2, [r0, #0]
+//				|  ( 0x1<< 4);	// ch2: output enable
+//				|  ( 0x1<< 8)	// ch3: output enable
+//				|  ( 0x1<<12);	// ch4: output enable
+
+
+	TIM4_CCER	|= ( 0x1<< 8)	// ch3: output enable
+ 80007ea:	f851 5c0c 	ldr.w	r5, [r1, #-12]
+//	TIM3_CCR1	 = (280-1);		// ch1: 65% duty
+//	TIM3_CCR2	 = (280-1);		// ch2: 65% duty
+//	TIM3_CCR3	 = (280-1);		// ch3: 65% duty
+//	TIM3_CCR4	 = (280-1);		// ch4: 65% duty
+
+	TIM4_CCR3	 = (280-1);		// ch3: 65% duty
+ 80007ee:	f240 1217 	movw	r2, #279	; 0x117
+//				|  ( 0x1<< 4);	// ch2: output enable
+//				|  ( 0x1<< 8)	// ch3: output enable
+//				|  ( 0x1<<12);	// ch4: output enable
+
+
+	TIM4_CCER	|= ( 0x1<< 8)	// ch3: output enable
+ 80007f2:	f445 5588 	orr.w	r5, r5, #4352	; 0x1100
+ 80007f6:	f841 5c0c 	str.w	r5, [r1, #-12]
+//	TIM3_CCR1	 = (280-1);		// ch1: 65% duty
+//	TIM3_CCR2	 = (280-1);		// ch2: 65% duty
+//	TIM3_CCR3	 = (280-1);		// ch3: 65% duty
+//	TIM3_CCR4	 = (280-1);		// ch4: 65% duty
+
+	TIM4_CCR3	 = (280-1);		// ch3: 65% duty
+ 80007fa:	6162      	str	r2, [r4, #20]
+	TIM4_CCR4	 = (280-1);		// ch4: 65% duty
+ 80007fc:	6142      	str	r2, [r0, #20]
+
+	
+//	TIM3_CR1	|= ( 0x1<< 7)	// set APRE(Auto Reload Preload Enable)
+//				|  ( 0x1<< 0);	// TIM3 Counter Enable
+	TIM4_CR1	|= ( 0x1<< 7)	// set APRE(Auto Reload Preload Enable)
+ 80007fe:	681a      	ldr	r2, [r3, #0]
+				|  ( 0x1<< 0);	// TIM3 Counter Enable
+}
+ 8000800:	bc70      	pop	{r4, r5, r6}
+	TIM4_CCR4	 = (280-1);		// ch4: 65% duty
+
+	
+//	TIM3_CR1	|= ( 0x1<< 7)	// set APRE(Auto Reload Preload Enable)
+//				|  ( 0x1<< 0);	// TIM3 Counter Enable
+	TIM4_CR1	|= ( 0x1<< 7)	// set APRE(Auto Reload Preload Enable)
+ 8000802:	f042 0281 	orr.w	r2, r2, #129	; 0x81
+ 8000806:	601a      	str	r2, [r3, #0]
+				|  ( 0x1<< 0);	// TIM3 Counter Enable
+}
+ 8000808:	4770      	bx	lr
+ 800080a:	bf00      	nop
+ 800080c:	40010c04 	.word	0x40010c04
+ 8000810:	40000828 	.word	0x40000828
+ 8000814:	4000082c 	.word	0x4000082c
+ 8000818:	40000800 	.word	0x40000800
+ 800081c:	4000081c 	.word	0x4000081c
+
+08000820 <main>:
+}
+#endif
+
+
+int main(void)
+{
+ 8000820:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+	unsigned short duty = MAX;
+	printf("Moror_Ctrl\n");
+ 8000822:	482c      	ldr	r0, [pc, #176]	; (80008d4 <main+0xb4>)
+ 8000824:	4f2c      	ldr	r7, [pc, #176]	; (80008d8 <main+0xb8>)
+ 8000826:	47b8      	blx	r7
+
+	init_TIM3();
+ 8000828:	4b2c      	ldr	r3, [pc, #176]	; (80008dc <main+0xbc>)
+ 800082a:	4798      	blx	r3
+    *(volatile unsigned long *) 0x40013804 = c;
+}
+
+char get_byte(void)
+{
+    while( !((*(volatile unsigned long *) 0x40013800) & 0x20) ) ;
+ 800082c:	4c2c      	ldr	r4, [pc, #176]	; (80008e0 <main+0xc0>)
+    return (char) (*(volatile unsigned long *) 0x40013804 & 0xff);
+ 800082e:	4e2d      	ldr	r6, [pc, #180]	; (80008e4 <main+0xc4>)
+				break;
+				
+			case('i'):
+				printf("stop\n");
+//				GPIOA_ODR	|= ( 0xf << 2 );	// PA5,4,3,2 = 1111 = 0xf
+				GPIOB_ODR	|= ( 0xf << 4 );	// PA5,4,3,2 = 1111 = 0xf
+ 8000830:	4d2d      	ldr	r5, [pc, #180]	; (80008e8 <main+0xc8>)
+    *(volatile unsigned long *) 0x40013804 = c;
+}
+
+char get_byte(void)
+{
+    while( !((*(volatile unsigned long *) 0x40013800) & 0x20) ) ;
+ 8000832:	6823      	ldr	r3, [r4, #0]
+ 8000834:	069b      	lsls	r3, r3, #26
+ 8000836:	d5fc      	bpl.n	8000832 <main+0x12>
+    return (char) (*(volatile unsigned long *) 0x40013804 & 0xff);
+ 8000838:	6833      	ldr	r3, [r6, #0]
+
+	init_TIM3();
+
+	while(1)
+	{
+		switch(get_byte())
+ 800083a:	b2db      	uxtb	r3, r3
+ 800083c:	3b61      	subs	r3, #97	; 0x61
+ 800083e:	2b08      	cmp	r3, #8
+ 8000840:	d8f7      	bhi.n	8000832 <main+0x12>
+ 8000842:	a201      	add	r2, pc, #4	; (adr r2, 8000848 <main+0x28>)
+ 8000844:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+ 8000848:	080008bd 	.word	0x080008bd
+ 800084c:	080008a7 	.word	0x080008a7
+ 8000850:	08000891 	.word	0x08000891
+ 8000854:	0800087b 	.word	0x0800087b
+ 8000858:	08000833 	.word	0x08000833
+ 800085c:	08000833 	.word	0x08000833
+ 8000860:	08000833 	.word	0x08000833
+ 8000864:	08000833 	.word	0x08000833
+ 8000868:	0800086d 	.word	0x0800086d
+				GPIOB_ODR	&= (~0xf << 4 );	// PA5,4,3,2 = 0000 = 0x0
+				GPIOB_ODR	|= ( 0x9 << 4 );	// PA5,4,3,2 = 0110 = 0x6				
+				break;
+				
+			case('i'):
+				printf("stop\n");
+ 800086c:	481f      	ldr	r0, [pc, #124]	; (80008ec <main+0xcc>)
+ 800086e:	47b8      	blx	r7
+//				GPIOA_ODR	|= ( 0xf << 2 );	// PA5,4,3,2 = 1111 = 0xf
+				GPIOB_ODR	|= ( 0xf << 4 );	// PA5,4,3,2 = 1111 = 0xf
+ 8000870:	682b      	ldr	r3, [r5, #0]
+ 8000872:	f043 03f0 	orr.w	r3, r3, #240	; 0xf0
+ 8000876:	602b      	str	r3, [r5, #0]
+				
+				break;
+ 8000878:	e7db      	b.n	8000832 <main+0x12>
+				GPIOB_ODR	&= (~0xf << 4 );	// PA5,4,3,2 = 0000 = 0x0
+				GPIOB_ODR	|= ( 0x5 << 4 );	// PA5,4,3,2 = 0101 = 0x5
+				break;
+
+			case('d'):
+				printf("back\n");
+ 800087a:	481d      	ldr	r0, [pc, #116]	; (80008f0 <main+0xd0>)
+ 800087c:	47b8      	blx	r7
+//				GPIOA_ODR	&= (~0xf << 2 );	// PA5,4,3,2 = 0000 = 0x0
+//				GPIOA_ODR	|= ( 0xa << 2 );	// PA5,4,3,2 = 1010 = 0xa
+				GPIOB_ODR	&= (~0xf << 4 );	// PA5,4,3,2 = 0000 = 0x0
+ 800087e:	682b      	ldr	r3, [r5, #0]
+ 8000880:	f023 03ff 	bic.w	r3, r3, #255	; 0xff
+ 8000884:	602b      	str	r3, [r5, #0]
+				GPIOB_ODR	|= ( 0xa << 4 );	// PA5,4,3,2 = 1010 = 0xa
+ 8000886:	682b      	ldr	r3, [r5, #0]
+ 8000888:	f043 03a0 	orr.w	r3, r3, #160	; 0xa0
+ 800088c:	602b      	str	r3, [r5, #0]
+				break;
+ 800088e:	e7d0      	b.n	8000832 <main+0x12>
+	while(1)
+	{
+		switch(get_byte())
+		{
+			case('c'):
+				printf("forward\n");
+ 8000890:	4818      	ldr	r0, [pc, #96]	; (80008f4 <main+0xd4>)
+ 8000892:	47b8      	blx	r7
+//				GPIOA_ODR	&= (~0xf << 2 );	// PA5,4,3,2 = 0000 = 0x0
+//				GPIOA_ODR	|= ( 0x5 << 2 );	// PA5,4,3,2 = 0101 = 0x5
+				GPIOB_ODR	&= (~0xf << 4 );	// PA5,4,3,2 = 0000 = 0x0
+ 8000894:	682b      	ldr	r3, [r5, #0]
+ 8000896:	f023 03ff 	bic.w	r3, r3, #255	; 0xff
+ 800089a:	602b      	str	r3, [r5, #0]
+				GPIOB_ODR	|= ( 0x5 << 4 );	// PA5,4,3,2 = 0101 = 0x5
+ 800089c:	682b      	ldr	r3, [r5, #0]
+ 800089e:	f043 0350 	orr.w	r3, r3, #80	; 0x50
+ 80008a2:	602b      	str	r3, [r5, #0]
+				break;
+ 80008a4:	e7c5      	b.n	8000832 <main+0x12>
+				GPIOB_ODR	&= (~0xf << 4 );	// PA5,4,3,2 = 0000 = 0x0
+				GPIOB_ODR	|= ( 0x6 << 4 );	// PA5,4,3,2 = 1001 = 0x9
+				break;
+
+			case('b'):
+				printf("turn right\n");
+ 80008a6:	4814      	ldr	r0, [pc, #80]	; (80008f8 <main+0xd8>)
+ 80008a8:	47b8      	blx	r7
+//				GPIOA_ODR	&= (~0xf << 2 );	// PA5,4,3,2 = 0000 = 0x0
+//				GPIOA_ODR	|= ( 0x9 << 2 );	// PA5,4,3,2 = 0110 = 0x6				
+				GPIOB_ODR	&= (~0xf << 4 );	// PA5,4,3,2 = 0000 = 0x0
+ 80008aa:	682b      	ldr	r3, [r5, #0]
+ 80008ac:	f023 03ff 	bic.w	r3, r3, #255	; 0xff
+ 80008b0:	602b      	str	r3, [r5, #0]
+				GPIOB_ODR	|= ( 0x9 << 4 );	// PA5,4,3,2 = 0110 = 0x6				
+ 80008b2:	682b      	ldr	r3, [r5, #0]
+ 80008b4:	f043 0390 	orr.w	r3, r3, #144	; 0x90
+ 80008b8:	602b      	str	r3, [r5, #0]
+				break;
+ 80008ba:	e7ba      	b.n	8000832 <main+0x12>
+				GPIOB_ODR	&= (~0xf << 4 );	// PA5,4,3,2 = 0000 = 0x0
+				GPIOB_ODR	|= ( 0xa << 4 );	// PA5,4,3,2 = 1010 = 0xa
+				break;
+
+			case('a'):
+				printf("turn left\n");
+ 80008bc:	480f      	ldr	r0, [pc, #60]	; (80008fc <main+0xdc>)
+ 80008be:	47b8      	blx	r7
+//				GPIOA_ODR	&= (~0xf << 2 );	// PA5,4,3,2 = 0000 = 0x0
+//				GPIOA_ODR	|= ( 0x6 << 2 );	// PA5,4,3,2 = 1001 = 0x9
+				GPIOB_ODR	&= (~0xf << 4 );	// PA5,4,3,2 = 0000 = 0x0
+ 80008c0:	682b      	ldr	r3, [r5, #0]
+ 80008c2:	f023 03ff 	bic.w	r3, r3, #255	; 0xff
+ 80008c6:	602b      	str	r3, [r5, #0]
+				GPIOB_ODR	|= ( 0x6 << 4 );	// PA5,4,3,2 = 1001 = 0x9
+ 80008c8:	682b      	ldr	r3, [r5, #0]
+ 80008ca:	f043 0360 	orr.w	r3, r3, #96	; 0x60
+ 80008ce:	602b      	str	r3, [r5, #0]
+				break;
+ 80008d0:	e7af      	b.n	8000832 <main+0x12>
+ 80008d2:	bf00      	nop
+ 80008d4:	08000900 	.word	0x08000900
+ 80008d8:	08000345 	.word	0x08000345
+ 80008dc:	080007b9 	.word	0x080007b9
+ 80008e0:	40013800 	.word	0x40013800
+ 80008e4:	40013804 	.word	0x40013804
+ 80008e8:	40010c0c 	.word	0x40010c0c
+ 80008ec:	08000938 	.word	0x08000938
+ 80008f0:	08000918 	.word	0x08000918
+ 80008f4:	0800090c 	.word	0x0800090c
+ 80008f8:	0800092c 	.word	0x0800092c
+ 80008fc:	08000920 	.word	0x08000920
+ 8000900:	6f726f4d 	.word	0x6f726f4d
+ 8000904:	74435f72 	.word	0x74435f72
+ 8000908:	000a6c72 	.word	0x000a6c72
+ 800090c:	77726f66 	.word	0x77726f66
+ 8000910:	0a647261 	.word	0x0a647261
+ 8000914:	00000000 	.word	0x00000000
+ 8000918:	6b636162 	.word	0x6b636162
+ 800091c:	0000000a 	.word	0x0000000a
+ 8000920:	6e727574 	.word	0x6e727574
+ 8000924:	66656c20 	.word	0x66656c20
+ 8000928:	00000a74 	.word	0x00000a74
+ 800092c:	6e727574 	.word	0x6e727574
+ 8000930:	67697220 	.word	0x67697220
+ 8000934:	000a7468 	.word	0x000a7468
+ 8000938:	706f7473 	.word	0x706f7473
+ 800093c:	0000000a 	.word	0x0000000a
