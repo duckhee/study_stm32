@@ -12,7 +12,7 @@ MIDDLE_MENU_DEF int Middle_Main(void)
 {
     int key;
 
-    while((Key = Middle_Main_Menu()) != 0)
+    while((key = Middle_Main_Menu()) != 0)
     {
         switch(key)
         {
@@ -88,5 +88,4 @@ MIDDLE_MENU_DEF int Middle_Main_Menu()
     key=get_byte();
     
     return key;
-}
 }
