@@ -2,7 +2,7 @@
 PREFIX = arm-none-eabi-
 REMOVE_CMD = rm
 #start file
-STARTUP_C = Hw_StartUp.c
+STARTUP_C = Hw_regStartUp.c
 #target file (output file name)
 TARGET = main
 #build folder

@@ -171,6 +171,71 @@ typedef struct
 
 typedef struct
 {
+  __IO uint32_t TIR;
+  __IO uint32_t TDTR;
+  __IO uint32_t TDLR;
+  __IO uint32_t TDHR;
+} CAN_TxMailBox_TypeDef;
+
+/**
+  * @brief Controller Area Network FIFOMailBox
+  */
+
+typedef struct
+{
+  __IO uint32_t RIR;
+  __IO uint32_t RDTR;
+  __IO uint32_t RDLR;
+  __IO uint32_t RDHR;
+} CAN_FIFOMailBox_TypeDef;
+
+/**
+  * @brief Controller Area Network FilterRegister
+  */
+
+typedef struct
+{
+  __IO uint32_t FR1;
+  __IO uint32_t FR2;
+} CAN_FilterRegister_TypeDef;
+
+/**
+  * @brief Controller Area Network
+  */
+
+typedef struct
+{
+  __IO uint32_t MCR;
+  __IO uint32_t MSR;
+  __IO uint32_t TSR;
+  __IO uint32_t RF0R;
+  __IO uint32_t RF1R;
+  __IO uint32_t IER;
+  __IO uint32_t ESR;
+  __IO uint32_t BTR;
+  uint32_t  RESERVED0[88];
+  CAN_TxMailBox_TypeDef sTxMailBox[3];
+  CAN_FIFOMailBox_TypeDef sFIFOMailBox[2];
+  uint32_t  RESERVED1[12];
+  __IO uint32_t FMR;
+  __IO uint32_t FM1R;
+  uint32_t  RESERVED2;
+  __IO uint32_t FS1R;
+  uint32_t  RESERVED3;
+  __IO uint32_t FFA1R;
+  uint32_t  RESERVED4;
+  __IO uint32_t FA1R;
+  uint32_t  RESERVED5[8];
+#ifndef STM32F10X_CL
+  CAN_FilterRegister_TypeDef sFilterRegister[14];
+#else
+  CAN_FilterRegister_TypeDef sFilterRegister[28];
+#endif /* STM32F10X_CL */
+} CAN_TypeDef;
+
+
+typedef struct
+{
   __IO uint32_t CR;
   __IO uint32_t CFGR;
   __IO uint32_t CIR;
@@ -272,6 +337,80 @@ typedef struct
 } I2C_TypeDef;
 /* I2C set end */
 
+
+typedef struct
+{
+  __IO uint32_t KR;
+  __IO uint32_t PR;
+  __IO uint32_t RLR;
+  __IO uint32_t SR;
+} IWDG_TypeDef;
+
+
+typedef struct
+{
+  __IO uint32_t CR;
+  __IO uint32_t CSR;
+} PWR_TypeDef;
+
+
+/**
+  * @brief Real-Time Clock
+  */
+
+typedef struct
+{
+  __IO uint16_t CRH;
+  uint16_t  RESERVED0;
+  __IO uint16_t CRL;
+  uint16_t  RESERVED1;
+  __IO uint16_t PRLH;
+  uint16_t  RESERVED2;
+  __IO uint16_t PRLL;
+  uint16_t  RESERVED3;
+  __IO uint16_t DIVH;
+  uint16_t  RESERVED4;
+  __IO uint16_t DIVL;
+  uint16_t  RESERVED5;
+  __IO uint16_t CNTH;
+  uint16_t  RESERVED6;
+  __IO uint16_t CNTL;
+  uint16_t  RESERVED7;
+  __IO uint16_t ALRH;
+  uint16_t  RESERVED8;
+  __IO uint16_t ALRL;
+  uint16_t  RESERVED9;
+} RTC_TypeDef;
+
+
+/**
+  * @brief SD host Interface
+  */
+
+typedef struct
+{
+  __IO uint32_t POWER;
+  __IO uint32_t CLKCR;
+  __IO uint32_t ARG;
+  __IO uint32_t CMD;
+  __I uint32_t RESPCMD;
+  __I uint32_t RESP1;
+  __I uint32_t RESP2;
+  __I uint32_t RESP3;
+  __I uint32_t RESP4;
+  __IO uint32_t DTIMER;
+  __IO uint32_t DLEN;
+  __IO uint32_t DCTRL;
+  __I uint32_t DCOUNT;
+  __I uint32_t STA;
+  __IO uint32_t ICR;
+  __IO uint32_t MASK;
+  uint32_t  RESERVED0[2];
+  __I uint32_t FIFOCNT;
+  uint32_t  RESERVED1[13];
+  __IO uint32_t FIFO;
+} SDIO_TypeDef;
+
 /** 
   * @brief Serial Peripheral Interface
   */
@@ -344,6 +483,8 @@ typedef struct
   __IO uint32_t EVCR;
   __IO uint32_t MAPR;
   __IO uint32_t EXTICR[4];
+  uint32_t RESERVED0;
+  __IO uint32_t MAPR2;
 } AFIO_TypeDef;
 
 typedef struct
@@ -455,6 +596,18 @@ typedef struct
 } TIM_TypeDef;
 
 
+/**
+  * @brief Window WATCHDOG
+  */
+
+typedef struct
+{
+  __IO uint32_t CR;
+  __IO uint32_t CFR;
+  __IO uint32_t SR;
+} WWDG_TypeDef;
+
+
 
 #define __NVIC_PRIO_BITS          4 /*!< STM32 uses 4 Bits for the Priority Levels    */
 
@@ -467,7 +620,14 @@ typedef struct
 #define USART_FLAG_TXE                       ((uint16_t)0x0080)
 #define USART_FLAG_RXNE                      ((uint16_t)0x0020)
 
+#define FLASH_BASE            ((uint32_t)0x08000000) /*!< FLASH base address in the alias region */
+#define SRAM_BASE             ((uint32_t)0x20000000) /*!< SRAM base address in the alias region */
 #define PERIPH_BASE           ((uint32_t)0x40000000) /*!< SRAM base address in the bit-band region */
+
+#define SRAM_BB_BASE          ((uint32_t)0x22000000) /*!< SRAM base address in the bit-band region */
+#define PERIPH_BB_BASE        ((uint32_t)0x42000000) /*!< Peripheral base address in the bit-band region */
+
+#define FSMC_R_BASE           ((uint32_t)0xA0000000) /*!< FSMC registers base address */
 
 /*!< Peripheral memory map */
 #define APB1PERIPH_BASE       PERIPH_BASE
@@ -477,20 +637,6 @@ typedef struct
 #define AFIO_BASE             (APB2PERIPH_BASE + 0x0000)
 #define EXTI_BASE             (APB2PERIPH_BASE + 0x0400)
 
-#define GPIOA_BASE            (APB2PERIPH_BASE + 0x0800)
-#define GPIOB_BASE            (APB2PERIPH_BASE + 0x0C00)
-#define GPIOC_BASE            (APB2PERIPH_BASE + 0x1000)
-#define GPIOD_BASE            (APB2PERIPH_BASE + 0x1400)
-#define GPIOE_BASE            (APB2PERIPH_BASE + 0x1800)
-#define GPIOF_BASE            (APB2PERIPH_BASE + 0x1C00)
-#define GPIOG_BASE            (APB2PERIPH_BASE + 0x2000)
-#define USART1_BASE           (APB2PERIPH_BASE + 0x3800)
-
-/* ADD FUNCTION BASE */
-#define I2C1_BASE             (APB1PERIPH_BASE + 0x5400)
-#define I2C2_BASE             (APB1PERIPH_BASE + 0x5800)
-#define SPI2_BASE             (APB1PERIPH_BASE + 0x3800)
-#define SPI3_BASE             (APB1PERIPH_BASE + 0x3C00)
 #define TIM2_BASE             (APB1PERIPH_BASE + 0x0000)
 #define TIM3_BASE             (APB1PERIPH_BASE + 0x0400)
 #define TIM4_BASE             (APB1PERIPH_BASE + 0x0800)
@@ -501,11 +647,38 @@ typedef struct
 #define TIM13_BASE            (APB1PERIPH_BASE + 0x1C00)
 #define TIM14_BASE            (APB1PERIPH_BASE + 0x2000)
 #define RTC_BASE              (APB1PERIPH_BASE + 0x2800)
+#define WWDG_BASE             (APB1PERIPH_BASE + 0x2C00)
+#define IWDG_BASE             (APB1PERIPH_BASE + 0x3000)
+#define SPI2_BASE             (APB1PERIPH_BASE + 0x3800)
+#define SPI3_BASE             (APB1PERIPH_BASE + 0x3C00)
+#define USART2_BASE           (APB1PERIPH_BASE + 0x4400)
+#define USART3_BASE           (APB1PERIPH_BASE + 0x4800)
+#define UART4_BASE            (APB1PERIPH_BASE + 0x4C00)
+#define UART5_BASE            (APB1PERIPH_BASE + 0x5000)
+#define I2C1_BASE             (APB1PERIPH_BASE + 0x5400)
+#define I2C2_BASE             (APB1PERIPH_BASE + 0x5800)
+#define CAN1_BASE             (APB1PERIPH_BASE + 0x6400)
+#define CAN2_BASE             (APB1PERIPH_BASE + 0x6800)
+#define BKP_BASE              (APB1PERIPH_BASE + 0x6C00)
+#define PWR_BASE              (APB1PERIPH_BASE + 0x7000)
+#define DAC_BASE              (APB1PERIPH_BASE + 0x7400)
+#define CEC_BASE              (APB1PERIPH_BASE + 0x7800)
+
+#define AFIO_BASE             (APB2PERIPH_BASE + 0x0000)
+#define EXTI_BASE             (APB2PERIPH_BASE + 0x0400)
+#define GPIOA_BASE            (APB2PERIPH_BASE + 0x0800)
+#define GPIOB_BASE            (APB2PERIPH_BASE + 0x0C00)
+#define GPIOC_BASE            (APB2PERIPH_BASE + 0x1000)
+#define GPIOD_BASE            (APB2PERIPH_BASE + 0x1400)
+#define GPIOE_BASE            (APB2PERIPH_BASE + 0x1800)
+#define GPIOF_BASE            (APB2PERIPH_BASE + 0x1C00)
+#define GPIOG_BASE            (APB2PERIPH_BASE + 0x2000)
 #define ADC1_BASE             (APB2PERIPH_BASE + 0x2400)
 #define ADC2_BASE             (APB2PERIPH_BASE + 0x2800)
 #define TIM1_BASE             (APB2PERIPH_BASE + 0x2C00)
 #define SPI1_BASE             (APB2PERIPH_BASE + 0x3000)
 #define TIM8_BASE             (APB2PERIPH_BASE + 0x3400)
+#define USART1_BASE           (APB2PERIPH_BASE + 0x3800)
 #define ADC3_BASE             (APB2PERIPH_BASE + 0x3C00)
 #define TIM15_BASE            (APB2PERIPH_BASE + 0x4000)
 #define TIM16_BASE            (APB2PERIPH_BASE + 0x4400)
@@ -513,6 +686,8 @@ typedef struct
 #define TIM9_BASE             (APB2PERIPH_BASE + 0x4C00)
 #define TIM10_BASE            (APB2PERIPH_BASE + 0x5000)
 #define TIM11_BASE            (APB2PERIPH_BASE + 0x5400)
+
+#define SDIO_BASE             (PERIPH_BASE + 0x18000)
 
 #define DMA1_BASE             (AHBPERIPH_BASE + 0x0000)
 #define DMA1_Channel1_BASE    (AHBPERIPH_BASE + 0x0008)
@@ -529,8 +704,52 @@ typedef struct
 #define DMA2_Channel4_BASE    (AHBPERIPH_BASE + 0x0444)
 #define DMA2_Channel5_BASE    (AHBPERIPH_BASE + 0x0458)
 #define RCC_BASE              (AHBPERIPH_BASE + 0x1000)
-#define FLASH_R_BASE          (AHBPERIPH_BASE + 0x2000) /*!< Flash registers base address */
 #define CRC_BASE              (AHBPERIPH_BASE + 0x3000)
+
+#define FLASH_R_BASE          (AHBPERIPH_BASE + 0x2000) /*!< Flash registers base address */
+#define OB_BASE               ((uint32_t)0x1FFFF800)    /*!< Flash Option Bytes base address */
+
+#define ETH_BASE              (AHBPERIPH_BASE + 0x8000)
+#define ETH_MAC_BASE          (ETH_BASE)
+#define ETH_MMC_BASE          (ETH_BASE + 0x0100)
+#define ETH_PTP_BASE          (ETH_BASE + 0x0700)
+#define ETH_DMA_BASE          (ETH_BASE + 0x1000)
+
+#define FSMC_Bank1_R_BASE     (FSMC_R_BASE + 0x0000) /*!< FSMC Bank1 registers base address */
+#define FSMC_Bank1E_R_BASE    (FSMC_R_BASE + 0x0104) /*!< FSMC Bank1E registers base address */
+#define FSMC_Bank2_R_BASE     (FSMC_R_BASE + 0x0060) /*!< FSMC Bank2 registers base address */
+#define FSMC_Bank3_R_BASE     (FSMC_R_BASE + 0x0080) /*!< FSMC Bank3 registers base address */
+#define FSMC_Bank4_R_BASE     (FSMC_R_BASE + 0x00A0) /*!< FSMC Bank4 registers base address */
+
+#define DBGMCU_BASE          ((uint32_t)0xE0042000) /*!< Debug MCU registers base address */
+
+
+#define TIM2                ((TIM_TypeDef *) TIM2_BASE)
+#define TIM3                ((TIM_TypeDef *) TIM3_BASE)
+#define TIM4                ((TIM_TypeDef *) TIM4_BASE)
+#define TIM5                ((TIM_TypeDef *) TIM5_BASE)
+#define TIM6                ((TIM_TypeDef *) TIM6_BASE)
+#define TIM7                ((TIM_TypeDef *) TIM7_BASE)
+#define TIM12               ((TIM_TypeDef *) TIM12_BASE)
+#define TIM13               ((TIM_TypeDef *) TIM13_BASE)
+#define TIM14               ((TIM_TypeDef *) TIM14_BASE)
+#define RTC                 ((RTC_TypeDef *) RTC_BASE)
+#define WWDG                ((WWDG_TypeDef *) WWDG_BASE)
+#define IWDG                ((IWDG_TypeDef *) IWDG_BASE)
+#define SPI2                ((SPI_TypeDef *) SPI2_BASE)
+#define SPI3                ((SPI_TypeDef *) SPI3_BASE)
+#define USART2              ((USART_TypeDef *) USART2_BASE)
+#define USART3              ((USART_TypeDef *) USART3_BASE)
+#define UART4               ((USART_TypeDef *) UART4_BASE)
+#define UART5               ((USART_TypeDef *) UART5_BASE)
+#define I2C1                ((I2C_TypeDef *) I2C1_BASE)
+#define I2C2                ((I2C_TypeDef *) I2C2_BASE)
+#define CAN1                ((CAN_TypeDef *) CAN1_BASE)
+#define CAN2                ((CAN_TypeDef *) CAN2_BASE)
+#define BKP                 ((BKP_TypeDef *) BKP_BASE)
+#define PWR                 ((PWR_TypeDef *) PWR_BASE)
+#define DAC                 ((DAC_TypeDef *) DAC_BASE)
+#define CEC                 ((CEC_TypeDef *) CEC_BASE)
 
 #define RCC                 ((RCC_TypeDef *) RCC_BASE)
 #define FLASH               ((FLASH_TypeDef *) FLASH_R_BASE)
@@ -543,7 +762,36 @@ typedef struct
 #define GPIOF               ((GPIO_TypeDef *) GPIOF_BASE)
 #define GPIOG               ((GPIO_TypeDef *) GPIOG_BASE)
 
+#define ADC1                ((ADC_TypeDef *) ADC1_BASE)
+#define ADC2                ((ADC_TypeDef *) ADC2_BASE)
+#define TIM1                ((TIM_TypeDef *) TIM1_BASE)
+#define SPI1                ((SPI_TypeDef *) SPI1_BASE)
+#define TIM8                ((TIM_TypeDef *) TIM8_BASE)
 #define USART1              ((USART_TypeDef *) USART1_BASE)
+
+
+#define ADC3                ((ADC_TypeDef *) ADC3_BASE)
+#define TIM15               ((TIM_TypeDef *) TIM15_BASE)
+#define TIM16               ((TIM_TypeDef *) TIM16_BASE)
+#define TIM17               ((TIM_TypeDef *) TIM17_BASE)
+#define TIM9                ((TIM_TypeDef *) TIM9_BASE)
+#define TIM10               ((TIM_TypeDef *) TIM10_BASE)
+#define TIM11               ((TIM_TypeDef *) TIM11_BASE)
+#define SDIO                ((SDIO_TypeDef *) SDIO_BASE)
+#define DMA1                ((DMA_TypeDef *) DMA1_BASE)
+#define DMA2                ((DMA_TypeDef *) DMA2_BASE)
+#define DMA1_Channel1       ((DMA_Channel_TypeDef *) DMA1_Channel1_BASE)
+#define DMA1_Channel2       ((DMA_Channel_TypeDef *) DMA1_Channel2_BASE)
+#define DMA1_Channel3       ((DMA_Channel_TypeDef *) DMA1_Channel3_BASE)
+#define DMA1_Channel4       ((DMA_Channel_TypeDef *) DMA1_Channel4_BASE)
+#define DMA1_Channel5       ((DMA_Channel_TypeDef *) DMA1_Channel5_BASE)
+#define DMA1_Channel6       ((DMA_Channel_TypeDef *) DMA1_Channel6_BASE)
+#define DMA1_Channel7       ((DMA_Channel_TypeDef *) DMA1_Channel7_BASE)
+#define DMA2_Channel1       ((DMA_Channel_TypeDef *) DMA2_Channel1_BASE)
+#define DMA2_Channel2       ((DMA_Channel_TypeDef *) DMA2_Channel2_BASE)
+#define DMA2_Channel3       ((DMA_Channel_TypeDef *) DMA2_Channel3_BASE)
+#define DMA2_Channel4       ((DMA_Channel_TypeDef *) DMA2_Channel4_BASE)
+#define DMA2_Channel5       ((DMA_Channel_TypeDef *) DMA2_Channel5_BASE)
 
 #define SCB                 ((SCB_Type *)           SCB_BASE)         /*!< SCB configuration struct             */
 #define SysTick             ((SysTick_Type *)       SysTick_BASE)     /*!< SysTick configuration struct         */
@@ -598,9 +846,19 @@ typedef struct
 #define HSEStartUp_TimeOut                   ((uint16_t)0x0500)
 #define HSIStartUp_TimeOut                   ((uint16_t)0x0500)
 
-#define  FLASH_ACR_PRFTBE                    ((uint8_t)0x10)               /*!<Prefetch Buffer Enable */
-#define  FLASH_ACR_LATENCY                   ((uint8_t)0x03)               /*!<LATENCY[2:0] bits (Latency) */
-#define  FLASH_ACR_LATENCY_2                 ((uint8_t)0x02)               /*!<Bit 1 */
+/*******************  Bit definition for FLASH_ACR register  ******************/
+#define  FLASH_ACR_LATENCY                   ((uint8_t)0x03)               /*!< LATENCY[2:0] bits (Latency) */
+#define  FLASH_ACR_LATENCY_0                 ((uint8_t)0x00)               /*!< Bit 0 */
+#define  FLASH_ACR_LATENCY_1                 ((uint8_t)0x01)               /*!< Bit 0 */
+#define  FLASH_ACR_LATENCY_2                 ((uint8_t)0x02)               /*!< Bit 1 */
+
+/******************  Bit definition for FLASH_KEYR register  ******************/
+#define  FLASH_KEYR_FKEYR                    ((uint32_t)0xFFFFFFFF)        /*!< FPEC Key */
+
+
+#define  FLASH_ACR_HLFCYA                    ((uint8_t)0x08)               /*!< Flash Half Cycle Access Enable */
+#define  FLASH_ACR_PRFTBE                    ((uint8_t)0x10)               /*!< Prefetch Buffer Enable */
+#define  FLASH_ACR_PRFTBS                    ((uint8_t)0x20)               /*!< Prefetch Buffer Status */
 
 #define  RCC_CFGR_HPRE_DIV1                  ((uint32_t)0x00000000)        /*!< SYSCLK not divided */
 #define  RCC_CFGR_PPRE2_DIV1                 ((uint32_t)0x00000000)        /*!< HCLK not divided */
@@ -610,8 +868,16 @@ typedef struct
 #define  RCC_CFGR_PLLXTPRE                   ((uint32_t)0x00020000)        /*!< HSE divider for PLL entry */
 #define  RCC_CFGR_PLLMULL                    ((uint32_t)0x003C0000)        /*!< PLLMUL[3:0] bits (PLL multiplication factor) */
 
-#define  RCC_CFGR_PLLSRC_HSE                ((uint32_t)0x00010000)        /*!< HSE clock selected as PLL entry clock source */
-#define  RCC_CFGR_PLLMULL6                  ((uint32_t)0x00100000)        /*!< PLL input clock*6 */
+#define   RCC_CFGR_PLLSRC_HSI                ((uint32_t)0x00000000)        /*!< HSI clock selected as PLL entry clock source */
+#define   RCC_CFGR_PLLSRC_HSE                ((uint32_t)0x00010000)        /*!< HSE clock selected as PLL entry clock source */
+#define  RCC_CFGR_PLLMULL4                   ((uint32_t)0x00080000)        /*!< PLL input clock * 4 */
+#define  RCC_CFGR_PLLMULL5                   ((uint32_t)0x000C0000)        /*!< PLL input clock * 5 */
+#define  RCC_CFGR_PLLMULL6                   ((uint32_t)0x00100000)        /*!< PLL input clock * 6 */
+#define  RCC_CFGR_PLLMULL7                   ((uint32_t)0x00140000)        /*!< PLL input clock * 7 */
+#define  RCC_CFGR_PLLMULL8                   ((uint32_t)0x00180000)        /*!< PLL input clock * 8 */
+#define  RCC_CFGR_PLLMULL9                   ((uint32_t)0x001C0000)        /*!< PLL input clock * 9 */
+#define  RCC_CFGR_PLLMULL6_5                 ((uint32_t)0x00340000)        /*!< PLL input clock * 6.5 */
+#define  RCC_CFGR_USBPRE                     ((uint32_t)0x00400000)        /*!< USB Device prescaler */
 
 #define  RCC_CR_PLLON                        ((uint32_t)0x01000000)        /*!< PLL enable */
 #define  RCC_CR_PLLRDY                       ((uint32_t)0x02000000)        /*!< PLL clock ready flag */

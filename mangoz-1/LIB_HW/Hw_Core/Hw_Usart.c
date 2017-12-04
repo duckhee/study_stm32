@@ -1,14 +1,15 @@
 #define USART_LOCAL
 
 #include "Hw_Usart.h"
+#include "Get_clock.h"
 
 
-USART_DEF void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStructure, uint32_t apbclock)
+USART_DEF void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStructure)
 {
     uint32_t tmpreg = 0x00;
 
-    //uint32_t apbclock HSI_Value;
-    //uint32_t apbclock HSE_Value;
+    uint32_t apbclock = HSI_Value;
+    //uint32_t apbclock = HSE_Value;
     
     uint32_t integerdivider = 0x00;
     uint32_t fractionaldivider = 0x00;
@@ -61,7 +62,7 @@ USART_DEF void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitSt
     
 }
 
-USART_DEF void USART1_Init(uint32_t apbclock)
+USART_DEF void USART1_Init(void)
 {
     USART_InitTypeDef USART_InitStructure;
     /* USARTx configuration */
@@ -80,8 +81,44 @@ USART_DEF void USART1_Init(uint32_t apbclock)
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
-    USART_Init(USART1, &USART_InitStructure, apbclock);
+    USART_Init(USART1, &USART_InitStructure);
 
     USART1->CR1 |= CR1_UE_Set;
 
+}
+
+USART_DEF void USART1_Config(void)
+{
+  RCC_ClocksTypeDef rcc_clock;
+  Rcc_GetClocksFreq(&rcc_clock);
+
+  if(rcc_clock.SYSCLK_Frequency == 36000000)
+  {
+    
+    *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
+    *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
+    *(volatile unsigned long *) 0x40013814 = 0x0;
+    *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; //OSC 32MHz 115200bps Setting
+    *(volatile unsigned long *) 0x4001380C |= 0x2000;
+
+    printf("HSI SYSTEM CLOCK\n");
+
+  }else if(rcc_clock.SYSCLK_Frequency == 72000000)
+  {
+    
+    *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
+    *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
+    *(volatile unsigned long *) 0x40013814 = 0x0;
+    *(volatile unsigned long *) 0x40013808 = 39 << 4 | 1; //OSC 32MHz 115200bps Setting
+    *(volatile unsigned long *) 0x4001380C |= 0x2000;
+    
+    printf("HSE SYSTEM CLOCK\n");
+
+  }else
+  {
+    while(1)
+    {
+      ;
+    }
+  }
 }

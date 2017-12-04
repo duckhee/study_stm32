@@ -79,7 +79,7 @@ GET_CLOCK_DEF void Rcc_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
     presc = ADCPrescTable[tmp];
     /* ADCCLK clock frequency */
     RCC_Clocks->ADCCLK_Frequency = RCC_Clocks->PCLK2_Frequency /presc;
-  
+
 
 }
 

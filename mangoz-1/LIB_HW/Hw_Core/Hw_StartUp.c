@@ -4,18 +4,8 @@ typedef void (*const intfunc)(void);
 // Private define ----------------------------------------------------------------------------------------
 #define WEAK __attribute__ ((weak))
 
-// //link pointer get LINKERSCRIPT
-// extern unsigned long _ld_stack_address;
-// extern unsigned long _ld_ram_start;
-// extern unsigned long _ld_text_start;
-// extern unsigned long _ld_text_end;
-// extern unsigned long _ld_data_start;
-// extern unsigned long _ld_data_end;
-// extern unsigned long _ld_bss_start;
-// extern unsigned long _ld_bss_end;
 
 //-- init value for the stack pointer. defined in linker script 
-//
 extern unsigned long _estack;
 extern unsigned long _sidata;    /*!< Start address for the initialization 
                                       values of the .data section.            */
@@ -233,7 +223,7 @@ void Reset_Handler(void)
     
     ///////////////// FLASH Memory Latency move code RAM sections ////////////////////////////////////
 	*(volatile unsigned long *)0x40022000 |= (1<<4);     //prefetch buffer enable
-    *(volatile unsigned long *)0x40022000 |= 0x10; //bit PRETBE = 1 Set
+    *(volatile unsigned long *)0x40022000 |= 0x10; //bit latency = 1 bit Set 010 48<sysclock<72
     *(volatile unsigned long *)0x40022000 &= ~(0x7); //bit 2, 1, 0 clear 0, 0, 0
     *(volatile unsigned long *)0x40022000 |= 0x2; //bit 2, 1, 0 = 0, 1, 0
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,29 +286,6 @@ void Reset_Handler(void)
 
 }
 
-
-// void Init_Data()
-// {
-//     unsigned long *pulSrc, *pulDest;
-
-//     pulSrc = &_ld_data_start;
-//     pulDest = &_ld_ram_start;
-
-//     if(pulSrc != pulDest)
-//     {
-//         for(;pulDest < &_ld_data_end; )
-//         {
-//             *(pulDest++) = *(pulSrc++);
-
-//         }
-//     }
-
-//     for(pulDest = &_ld_bss_start; pulDest <  &_ld_bss_end; )
-//     {
-//         *(pulDest++) = 0;
-//     }
-// }
-//code move ram section 
 
 
 // =======================================================================================================
