@@ -1,2 +1,2 @@
-SET MYMAKE=cs-make
+SET MYMAKE=make
 %MYMAKE% clean

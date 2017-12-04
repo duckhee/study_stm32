@@ -102,7 +102,7 @@ LDFLAGS +=-Tarch/$(MODEL)/$(SUBMDL)-ROM.ld
 endif
 
 # Default target.
-all: gccversion createdirs build sizeinfo
+all: createdirs build sizeinfo gccversion
 
 ifeq ($(FORMAT),ihex)
 build: elf hex lss sym
