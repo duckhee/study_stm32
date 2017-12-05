@@ -80,7 +80,7 @@ int StrNCmp(char *s1, char *s2, int len){
 
 // ���ڿ� s1, s2�� ��.
 // return : 0 : equil                ret : s1 > s2                -ret : s1 < s2
-int StrCmp(char *s1, char *s2){
+LDSTRING_DEF int StrCmp(char *s1, char *s2){
         for (; *s1 && *s2; s1++, s2++){
                 if (*s1 != *s2) return ((int)(*s1) - (int)(*s2));
         }

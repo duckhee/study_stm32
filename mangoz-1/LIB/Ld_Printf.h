@@ -21,8 +21,11 @@
 
 
 
- LDSTRING_DEF void printf(char *fmt, ...);
- LDSTRING_DEF char check_byte(char *key);
- LDSTRING_DEF char get_byte(void);
+LDSTRING_DEF void printf(char *fmt, ...);
+LDSTRING_DEF char check_byte(char *key);
+LDSTRING_DEF char get_byte(void);
+LDSTRING_DEF int StrCmp(char *s1, char *s2);
+
+
 
 #endif
