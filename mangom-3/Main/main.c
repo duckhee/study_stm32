@@ -24,6 +24,6 @@ int main()
     //     while (1);
     // }
     //Key_Main();
-    Seg_Main();
+    command_main();
     
 }
