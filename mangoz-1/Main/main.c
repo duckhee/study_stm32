@@ -10,5 +10,5 @@ int main()
     
     System_Information();
 
-    test_main();
+    command_main();
 }

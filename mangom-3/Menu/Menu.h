@@ -4,6 +4,15 @@
 // application header
 #include "Ap.h"
 
+//command menu
+#include "command.h"
+#include "commnad_testing_menu.h"
+#include "command_led_menu.h"
+#include "command_key_menu.h"
+#include "command_seg_menu.h"
+//command function menu
+
+
 // Menu header
 #include "Led_Menu.h"
 #include "Key_Menu.h"

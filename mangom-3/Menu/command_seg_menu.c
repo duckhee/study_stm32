@@ -1,21 +1,67 @@
+#define COMMAND_SEG_LOCAL
 
-#define SEG_MENU_LOCAL
-
-#include "Segment_Menu.h"
+#include "command_seg_menu.h"
 
 
-SEG_MENU_DEF int Seg_Main(void);
-SEG_MENU_DEF int Seg_main_menu(void);
+COMMAND_SEG_DEF int command_seg_main(int argc, char **argv);
+COMMAND_SEG_DEF int command_seg_main_menu(void);
+static unsigned short flags;
 
-static unsigned short flag;
 
-SEG_MENU_DEF int Seg_Main(void)
+COMMAND_SEG_DEF int command_seg_main(int argc, char **argv)
 {
-    int key;
+      int key;
 
-    while((key = Seg_main_menu()) != 0)
+    if(argc > 1)
     {
-        printf("key : %d\n", key);
+        if(!StrCmp(argv[0], "ch1"))
+        {
+            printf("testing command menu ch1\n");
+        }
+        else if(!StrCmp(argv[1], "ch2"))
+        {
+            printf("testing command menu ch2\n");
+        }
+        else if(!StrCmp(argv[1], "on"))
+        {
+            printf("\nON %s\n", argv[1]);
+            if(!StrCmp(argv[2], "ch1"))
+            {
+                printf("\non argv[2] : %s ch1\n", argv[2]);
+            }
+            else if(!StrCmp(argv[2], "ch2"))
+            {
+                printf("\non argv[2] : %s ch2\n", argv[2]);
+            }
+        }
+        else if(!StrCmp(argv[1], "off"))
+        {
+            printf("\nOFF %s\n", argv[1]);
+            if(!StrCmp(argv[2], "ch1"))
+            {
+                printf("\noff argv[2] : %s ch1\n", argv[2]);
+            }
+            else if(!StrCmp(argv[2], "ch2"))
+            {
+                printf("\noff argv[2] : %s ch2\n", argv[2]);
+            }
+        }
+        else if(!StrCmp(argv[1], "state"))
+        {
+                printf("\nSTATE %s\n", argv[1]);
+            if(!StrCmp(argv[2], "ch1"))
+            {
+                printf("\nstate argv[2] : %s ch1\n", argv[2]);
+            }
+            else if(!StrCmp(argv[2], "ch2"))
+            {
+                printf("\nstate argv[2] : %s ch2\n", argv[2]);
+            }
+        }
+        return 0;
+    }
+    while((key = command_seg_main_menu()) != 0)
+    {
             switch(key)
             {
                 case '1':
@@ -131,9 +177,12 @@ SEG_MENU_DEF int Seg_Main(void)
     }
     return 0;
 }
-SEG_MENU_DEF int Seg_main_menu(void)
+
+
+
+COMMAND_SEG_DEF int command_seg_main_menu(void)
 {
-    int key;
+        int key;
     
         printf("\n\n");
         printf("-------------------------------------------------\n");
