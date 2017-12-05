@@ -33,9 +33,11 @@ struct _CMD_TBL{
 };
 
 //초기화
-#define CMD_TBL_TEST                  {"test", do_test, 0, 0, 0}
+#define CMD_TBL_TEST                  {"test",      do_test, 0, 0, 0}
+//메뉴 정의 
+#define CMD_TBL_TEST_MENU             {"test_menu", do_test_menu, 0, 0, 0}
 
-#define CMD_TBL_END                   {0,      0,       0, 0, 0}
+#define CMD_TBL_END                   {0,           0,       0, 0, 0}
 
 
 //함수 프로토 타입 선언
@@ -47,13 +49,14 @@ COMMAND_DEF void commnad_main(void);
 
 //대상이 되는 함수 원형, 구조체 내의 함수의 대상의 원형 선언
 bool do_test (struct _CMD_TBL *cptr, int argc, char **argv);
-
+//함수 대상 원형
+bool do_test_menu (struct _CMD_TBL *cptr, int argc, char **argv);
 //구조체를 배열로 할당(구조체 배열)
-struct _CMD_TBL cmd_tb1[] =
+struct _CMD_TBL cmd_tbl[] =
 {
     CMD_TBL_TEST,
     //추가 시작
-
+    CMD_TBL_TEST_MENU,
     //end는 0으로 되어있고 command에서 cptr이 0이면, for문은 빠져나오게 되어 있다.
     //end 밑에 추가하면 동작이 안된다.
     //추가 끝
@@ -95,7 +98,7 @@ COMMAND_DEF void command_main(void)
                 //입력된 명령어와 예약된 명령어가 같으면 해당 명령어를 호출한다.
                 if(cptr->run != 0)
                 {
-                    (cptr->run)(cptr, argc, argv)
+                    (cptr->run)(cptr, argc, argv);
                     break;
                 }
             }
@@ -132,10 +135,10 @@ int get_command(char *cmd, int len, int timeout)
     int i, rd_cnt, rd_max;
     rd_max = len-1;
 
-    for(rd_cnt = 0; i = 0; rd_cnt < rd_max; )
+    for (rd_cnt = 0, i = 0; rd_cnt < rd_max; )
     {
         key = get_byte();
-        if((key = '\r') || (key = '\n'))
+        if((key == '\r') || (key == '\n'))
         {
             cmd[i++] = '\0';
             printf("\n");
@@ -160,7 +163,7 @@ int get_command(char *cmd, int len, int timeout)
         {
             cmd[i++] = key;
             rd_cnt++;
-            printf("%c\n", key);
+            printf("%c", key);
         }
 
     }
@@ -175,7 +178,7 @@ int get_args(char *s, char **argv)
     }
      while (args < MAX_ARGS)
     {
-        while ((*s ==' ') || (*s == '\t'))
+        while ((*s == ' ') || (*s == '\t'))
         {
             s++;
         }
@@ -192,7 +195,7 @@ int get_args(char *s, char **argv)
         }
         if (*s == '\0')
         {
-            argv[args]=0;
+            argv[args] = 0;
             return args;
         }
         *s++='\0';
@@ -209,7 +212,7 @@ bool do_print_help(int argc, char **argv)
         printf("\nThe following command are supported : \n");
         printf("Help : Help for commands. \n");
 
-        for(cptr = cmd_tb1; cptr->cmd; cptr++)
+        for(cptr = cmd_tbl; cptr->cmd; cptr++)
         {
             if(cptr->help_more)
             {
@@ -229,5 +232,12 @@ bool do_print_help(int argc, char **argv)
 bool do_test(struct _CMD_TBL *cptr, int argc, char **argv)
 {
     printf("\nThis is test\n");
+    return true;
+}
+
+bool do_test_menu(struct _CMD_TBL *cptr, int argc, char **argv)
+{
+    printf("\nThis is menu test\n");
+    command_test(argc, argv);
     return true;
 }
