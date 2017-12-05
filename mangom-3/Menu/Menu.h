@@ -6,7 +6,7 @@
 
 //command menu
 #include "command.h"
-#include "commnad_testing_menu.h"
+#include "command_testing_menu.h"
 #include "command_led_menu.h"
 #include "command_key_menu.h"
 #include "command_seg_menu.h"

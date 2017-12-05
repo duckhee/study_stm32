@@ -246,7 +246,7 @@ bool do_test(struct _CMD_TBL *cptr, int argc, char **argv)
 bool do_test_menu(struct _CMD_TBL *cptr, int argc, char **argv)
 {
     printf("\nThis is menu test\n");
-   // command_test_main(argc, argv);
+    command_testing_main_menu(argc, argv);
     return true;
 }
 

@@ -45,6 +45,7 @@ SRC_MENU = ../Menu/Key_Menu.c              \
 		   ../Menu/Segment_Menu.c          \
 		   ../Menu/Middle_Menu.c           \
 		   ../Menu/command.c               \
+		   ../Menu/command_testing_menu.c  \
 		   ../Menu/command_led_menu.c      \
 		   ../Menu/command_key_menu.c      \
 		   ../Menu/command_seg_menu.c      \
