@@ -112,6 +112,27 @@ ADC_DEF void ADC_StructInit(ADC_InitTypeDef* ADC_InitStruct)
   ADC_InitStruct->ADC_NbrOfChannel = 1;
 }
 
+/**
+  * @brief  Enables or disables the specified ADC peripheral.
+  * @param  ADCx: where x can be 1, 2 or 3 to select the ADC peripheral.
+  * @param  NewState: new state of the ADCx peripheral.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+ADC_DEF void ADC_Cmd(ADC_TypeDef* ADCx, FunctionalState NewState)
+{
+
+  if (NewState != DISABLE)
+  {
+    /* Set the ADON bit to wake up the ADC from power down mode */
+    ADCx->CR2 |= CR2_ADON_Set;
+  }
+  else
+  {
+    /* Disable the selected ADC peripheral */
+    ADCx->CR2 &= CR2_ADON_Reset;
+  }
+}
 
 
 /**

@@ -154,5 +154,6 @@
 ADC_DEF void ADC_Init(ADC_TypeDef* ADCx, ADC_InitTypeDef* ADC_InitStruct);
 ADC_DEF void ADC_StructInit(ADC_InitTypeDef* ADC_InitStruct);
 ADC_DEF void ADC_ClearITPendingBit(ADC_TypeDef* ADCx, uint16_t ADC_IT);
+ADC_DEF void ADC_Cmd(ADC_TypeDef* ADCx, FunctionalState NewState);
 
 #endif

@@ -25,6 +25,7 @@ HW_EXT_DEF void EXTI_Configuration(void)
     EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
+    
 }
 
 HW_EXT_DEF ITStatus EXTI_GetITStatus(uint32_t EXTI_Line)
