@@ -4,5 +4,6 @@
         "hw.h": "c",
         "stm32_reg.h": "c",
         "hw_led.h": "c"
-    }
+    },
+    "git.ignoreLimitWarning": true
 }
