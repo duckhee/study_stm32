@@ -8,3 +8,7 @@ ADC_DEF void ADC_Init()
     
 }
 
+ADC_DEF uint16_t ADC_GetData(uint8_t channel)
+{
+    
+}
