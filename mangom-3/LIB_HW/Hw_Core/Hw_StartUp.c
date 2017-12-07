@@ -216,70 +216,57 @@ void Reset_Handler(void)
           "    it      lt\n"
           "    strlt   r2, [r0], #4\n"
           "    blt     zero_loop");
-        	
-	/*
+
 	
-	__asm("  ldr     r0, =_ld_bss_start\n"
-          "  ldr     r1, =_ld_bss_end\n"
-          "  mov     r2, #0\n"
-          "  .thumb_func\n"
-          "zero_loop:\n"
-          "    cmp     r0, r1\n"
-          "    it      lt\n"
-          "    strlt   r2, [r0], #4\n"
-          "    blt     zero_loop");
-        	
-	
-	*/
-	
-    //HSI On 
-    *(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
-    //HSE ON
-    //*(volatile unsigned long *)0x40021000 |= 0x1 << 16;
+    // //HSI On 
+    // *(volatile unsigned long *)0x40021000 |= 0x1 << 0; 
+    // //HSE ON
+    // //*(volatile unsigned long *)0x40021000 |= 0x1 << 16;
     
-    //check HSI Or HSE READY
-    do
-    {
-        //HSI check
-        HSIStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 1); //HSI RDY check bit
-        //HSE check
-        //HSEStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 17); //HSE RDY check bit
-        StartUpCounter++;
-    }while((HSIStatus == 0) && (StartUpCounter != 0x0500));
+    // //check HSI Or HSE READY
+    // do
+    // {
+    //     //HSI check
+    //     HSIStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 1); //HSI RDY check bit
+    //     //HSE check
+    //     //HSEStatus = (*(volatile unsigned long *)0x40021000 & 0x1 << 17); //HSE RDY check bit
+    //     StartUpCounter++;
+    // }while((HSIStatus == 0) && (StartUpCounter != 0x0500));
     
-    ///////////////// FLASH Memory Latency move code RAM sections ////////////////////////////////////
-	*(volatile unsigned long *)0x40022000 |= (1<<4);     //prefetch buffer enable
-    *(volatile unsigned long *)0x40022000 |= 0x10; //bit PRETBE = 1 Set
-    *(volatile unsigned long *)0x40022000 &= ~(0x7); //bit 2, 1, 0 clear 0, 0, 0
-    *(volatile unsigned long *)0x40022000 |= 0x2; //bit 2, 1, 0 = 0, 1, 0
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+    // ///////////////// FLASH Memory Latency move code RAM sections ////////////////////////////////////
+	// *(volatile unsigned long *)0x40022000 |= (1<<4);     //prefetch buffer enable
+    // *(volatile unsigned long *)0x40022000 |= 0x10; //bit PRETBE = 1 Set
+    // *(volatile unsigned long *)0x40022000 &= ~(0x7); //bit 2, 1, 0 clear 0, 0, 0
+    // *(volatile unsigned long *)0x40022000 |= 0x2; //bit 2, 1, 0 = 0, 1, 0
+    // //////////////////////////////////////////////////////////////////////////////////////////////////
     
-    // reset setting PLL 
-    *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16); //18 bit set 0, 17 bit set 0, 16 bit set 0
-    *(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
-    // *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ??
-    // *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
-    *(volatile unsigned long *) 0x40021000 |= 0x01 << 24/*0x1000000*/;                       //PLLON
-    while( ((*(volatile unsigned long *) 0x40021000) & 0x01 << 25/*0x2000000*/) == 0);       //PLLRDY
-    /////////// PLL Seting System clock ///////////////////////////////
-    /*
-        Bit 1:0 SW : System Clock
-        00: HSI selected as system clock(PLL)
-        01: HSE selected as system clock(PLL)
-        10: PLL selected as system clock <------------- use this
-        11: not allowed (not use system clock PLL)
-    */
-    *(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
-    *(volatile unsigned long *)0x40021004 |= 0x2; //set system clcok PLL
-	//////////////////////////////////////////////////////////////////
-	//APB1 PCLK1 36hz
-	//*(volatile unsigned long *)0x40021004 &= ~(0x7<<8);
-	//*(volatile unsigned long *)0x40021004 |= (0x4<<8);
-	//APB2 PLCK2 72hz
-	//*(volatile unsigned long *)0x40021004 &= ~(0x7<<11);
-	//*(volatile unsigned long *)0x40021004 |= (0x0<<11);
-	//////////////////////////////////////////////////////////////////
-    while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+    // // reset setting PLL 
+    // *(volatile unsigned long *)0x40021004 &= ~(0xF << 18 | 0x1 << 17 | 0x1 << 16); //18 bit set 0, 17 bit set 0, 16 bit set 0
+    // *(volatile unsigned long *)0x40021004 |= (0x7 << 18); //0111: PLL input clock x 9 4MHz ?? HSI = 8MHz
+    // // *(volatile unsigned long *)0x40021004 |= (0x7 << 18 | 0x1 << 16); //0111 : PLL input clock x 9 HSE Set 8MHz ??
+    // // *(volatile unsigned long *)0x40021004 |= (0x4 << 18 | 0x1 << 16); //0x100 : PLL input clock x 6 HSE set 12MHz
+    // *(volatile unsigned long *) 0x40021000 |= 0x01 << 24/*0x1000000*/;                       //PLLON
+    // while( ((*(volatile unsigned long *) 0x40021000) & 0x01 << 25/*0x2000000*/) == 0);       //PLLRDY
+    // /////////// PLL Seting System clock ///////////////////////////////
+    // /*
+    //     Bit 1:0 SW : System Clock
+    //     00: HSI selected as system clock(PLL)
+    //     01: HSE selected as system clock(PLL)
+    //     10: PLL selected as system clock <------------- use this
+    //     11: not allowed (not use system clock PLL)
+    // */
+    // *(volatile unsigned long *)0x40021004 &= ~(0x3); //reset PLL 
+    // *(volatile unsigned long *)0x40021004 |= 0x2; //set system clcok PLL
+	// //////////////////////////////////////////////////////////////////
+	// //APB1 PCLK1 36hz
+	// //*(volatile unsigned long *)0x40021004 &= ~(0x7<<8);
+	// //*(volatile unsigned long *)0x40021004 |= (0x4<<8);
+	// //APB2 PLCK2 72hz
+	// //*(volatile unsigned long *)0x40021004 &= ~(0x7<<11);
+	// //*(volatile unsigned long *)0x40021004 |= (0x0<<11);
+	// //////////////////////////////////////////////////////////////////
+    // while(((*(volatile unsigned long *)0x40021004) & 0xC) != 0x08); // CLOCK PLL check
+	HSE_Init();
 	//AHBENR enable
 	*(volatile unsigned long *)0x40021014 |= 0x1 << 0 | 0x1 << 1; //DMA1 clock enable
     *(volatile unsigned long *) 0x40021018 |= 0x1 << 14 | 0x1 << 2 | 0x1 << 0 | 0x1 << 9;            // uart/ IOPA EN / AFIO EN    APB2ENR
@@ -298,8 +285,8 @@ void Reset_Handler(void)
     *(volatile unsigned long *) 0x40013810 = 0x0;           // 1 stop bit
     *(volatile unsigned long *) 0x4001380C = 0x200C;        // 8bit no parity
     *(volatile unsigned long *) 0x40013814 = 0x0;
-    *(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; //OSC 32MHz 115200bps Setting
-    //*(volatile unsigned long *)0x40013808 = 39 << 4 | 1; //OSC 72MHz 115200bps Setting
+    //*(volatile unsigned long *) 0x40013808 = 19 << 4 | 8; //OSC 32MHz 115200bps Setting
+    *(volatile unsigned long *)0x40013808 = 39 << 4 | 1; //OSC 72MHz 115200bps Setting
     *(volatile unsigned long *) 0x4001380C |= 0x2000;
 
     main(); //jump main function

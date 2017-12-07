@@ -21,6 +21,8 @@
 #include "Hw_DMA.h"
 #include "Hw_ADC.h"
 #include "Hw_DAC.h"
+#include "Hw_rcc.h"
+
 
 
 //HW LIB
@@ -44,6 +46,7 @@
 
 HW_DEF void Hw_Init();
 HW_DEF void RCC_Configuration(void);
+HW_DEF void ADC_Print(void);
 
 
 #endif

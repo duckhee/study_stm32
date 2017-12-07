@@ -65,7 +65,7 @@ COMMAND_TESTING_DEF int command_testing_main_menu(int argc, char **argv)
             {
                 case '1':
                     printf("No.1\n");
-    
+                    ADC_Print();
                 break;
                 case '2':
                     printf("No.2\n");

@@ -79,6 +79,33 @@ typedef struct
                                            This parameter can be a value of @ref USART_Hardware_Flow_Control */
 } USART_InitTypeDef;
 
+
+typedef struct
+{
+  uint32_t ADC_Mode;                      /*!< Configures the ADC to operate in independent or
+                                               dual mode. 
+                                               This parameter can be a value of @ref ADC_mode */
+
+  FunctionalState ADC_ScanConvMode;       /*!< Specifies whether the conversion is performed in
+                                               Scan (multichannels) or Single (one channel) mode.
+                                               This parameter can be set to ENABLE or DISABLE */
+
+  FunctionalState ADC_ContinuousConvMode; /*!< Specifies whether the conversion is performed in
+                                               Continuous or Single mode.
+                                               This parameter can be set to ENABLE or DISABLE. */
+
+  uint32_t ADC_ExternalTrigConv;          /*!< Defines the external trigger used to start the analog
+                                               to digital conversion of regular channels. This parameter
+                                               can be a value of @ref ADC_external_trigger_sources_for_regular_channels_conversion */
+
+  uint32_t ADC_DataAlign;                 /*!< Specifies whether the ADC data alignment is left or right.
+                                               This parameter can be a value of @ref ADC_data_align */
+
+  uint8_t ADC_NbrOfChannel;               /*!< Specifies the number of ADC channels that will be converted
+                                               using the sequencer for regular channel group.
+                                               This parameter must range from 1 to 16. */
+}ADC_InitTypeDef;
+
 #define GPIO_Pin_0                 ((uint16_t)0x0001)  /*!< Pin 0 selected */
 #define GPIO_Pin_1                 ((uint16_t)0x0002)  /*!< Pin 1 selected */
 #define GPIO_Pin_2                 ((uint16_t)0x0004)  /*!< Pin 2 selected */
@@ -197,6 +224,42 @@ typedef struct
   __IO uint32_t LCKR;
 } GPIO_TypeDef;
 
+typedef struct
+{
+  uint32_t DMA_PeripheralBaseAddr; /*!< Specifies the peripheral base address for DMAy Channelx. */
+
+  uint32_t DMA_MemoryBaseAddr;     /*!< Specifies the memory base address for DMAy Channelx. */
+
+  uint32_t DMA_DIR;                /*!< Specifies if the peripheral is the source or destination.
+                                        This parameter can be a value of @ref DMA_data_transfer_direction */
+
+  uint32_t DMA_BufferSize;         /*!< Specifies the buffer size, in data unit, of the specified Channel.
+                                        The data unit is equal to the configuration set in DMA_PeripheralDataSize
+                                        or DMA_MemoryDataSize members depending in the transfer direction. */
+
+  uint32_t DMA_PeripheralInc;      /*!< Specifies whether the Peripheral address register is incremented or not.
+                                        This parameter can be a value of @ref DMA_peripheral_incremented_mode */
+
+  uint32_t DMA_MemoryInc;          /*!< Specifies whether the memory address register is incremented or not.
+                                        This parameter can be a value of @ref DMA_memory_incremented_mode */
+
+  uint32_t DMA_PeripheralDataSize; /*!< Specifies the Peripheral data width.
+                                        This parameter can be a value of @ref DMA_peripheral_data_size */
+
+  uint32_t DMA_MemoryDataSize;     /*!< Specifies the Memory data width.
+                                        This parameter can be a value of @ref DMA_memory_data_size */
+
+  uint32_t DMA_Mode;               /*!< Specifies the operation mode of the DMAy Channelx.
+                                        This parameter can be a value of @ref DMA_circular_normal_mode.
+                                        @note: The circular buffer mode cannot be used if the memory-to-memory
+                                              data transfer is configured on the selected Channel */
+
+  uint32_t DMA_Priority;           /*!< Specifies the software priority for the DMAy Channelx.
+                                        This parameter can be a value of @ref DMA_priority_level */
+
+  uint32_t DMA_M2M;                /*!< Specifies if the DMAy Channelx will be used in memory-to-memory transfer.
+                                        This parameter can be a value of @ref DMA_memory_to_memory */
+}DMA_InitTypeDef;
 
 typedef struct
 {
@@ -329,6 +392,39 @@ typedef struct
   __IO uint32_t WRPR;
 } FLASH_TypeDef;
 
+
+#define  RCC_CFGR_PPRE2_DIV1                 ((uint32_t)0x00000000)        /*!< HCLK not divided */
+#define  RCC_CFGR_PPRE2_DIV2                 ((uint32_t)0x00002000)        /*!< HCLK divided by 2 */
+#define  RCC_CFGR_PPRE2_DIV4                 ((uint32_t)0x00002800)        /*!< HCLK divided by 4 */
+#define  RCC_CFGR_PPRE2_DIV8                 ((uint32_t)0x00003000)        /*!< HCLK divided by 8 */
+#define  RCC_CFGR_PPRE2_DIV16                ((uint32_t)0x00003800)        /*!< HCLK divided by 16 */
+
+
+
+#define RCC_APB2Periph_AFIO              ((uint32_t)0x00000001)
+#define RCC_APB2Periph_GPIOA             ((uint32_t)0x00000004)
+#define RCC_APB2Periph_GPIOB             ((uint32_t)0x00000008)
+#define RCC_APB2Periph_GPIOC             ((uint32_t)0x00000010)
+#define RCC_APB2Periph_GPIOD             ((uint32_t)0x00000020)
+#define RCC_APB2Periph_GPIOE             ((uint32_t)0x00000040)
+#define RCC_APB2Periph_GPIOF             ((uint32_t)0x00000080)
+#define RCC_APB2Periph_GPIOG             ((uint32_t)0x00000100)
+#define RCC_APB2Periph_ADC1              ((uint32_t)0x00000200)
+#define RCC_APB2Periph_ADC2              ((uint32_t)0x00000400)
+#define RCC_APB2Periph_TIM1              ((uint32_t)0x00000800)
+#define RCC_APB2Periph_SPI1              ((uint32_t)0x00001000)
+#define RCC_APB2Periph_TIM8              ((uint32_t)0x00002000)
+#define RCC_APB2Periph_USART1            ((uint32_t)0x00004000)
+#define RCC_APB2Periph_ADC3              ((uint32_t)0x00008000)
+
+
+#define RCC_AHBPeriph_DMA1               ((uint32_t)0x00000001)
+#define RCC_AHBPeriph_DMA2               ((uint32_t)0x00000002)
+#define RCC_AHBPeriph_SRAM               ((uint32_t)0x00000004)
+#define RCC_AHBPeriph_FLITF              ((uint32_t)0x00000010)
+#define RCC_AHBPeriph_CRC                ((uint32_t)0x00000040)
+
+
 typedef struct
 {
   uint32_t SYSCLK_Frequency;  /*!< returns SYSCLK clock frequency expressed in Hz */
@@ -454,6 +550,41 @@ typedef struct
 } TIM_TypeDef;
 
 
+/******************************************************************************/
+/*                                                                            */
+/*                             DMA Controller                                 */
+/*                                                                            */
+/******************************************************************************/
+
+/*******************  Bit definition for DMA_ISR register  ********************/
+#define  DMA_ISR_GIF1                        ((uint32_t)0x00000001)        /*!< Channel 1 Global interrupt flag */
+#define  DMA_ISR_TCIF1                       ((uint32_t)0x00000002)        /*!< Channel 1 Transfer Complete flag */
+#define  DMA_ISR_HTIF1                       ((uint32_t)0x00000004)        /*!< Channel 1 Half Transfer flag */
+#define  DMA_ISR_TEIF1                       ((uint32_t)0x00000008)        /*!< Channel 1 Transfer Error flag */
+#define  DMA_ISR_GIF2                        ((uint32_t)0x00000010)        /*!< Channel 2 Global interrupt flag */
+#define  DMA_ISR_TCIF2                       ((uint32_t)0x00000020)        /*!< Channel 2 Transfer Complete flag */
+#define  DMA_ISR_HTIF2                       ((uint32_t)0x00000040)        /*!< Channel 2 Half Transfer flag */
+#define  DMA_ISR_TEIF2                       ((uint32_t)0x00000080)        /*!< Channel 2 Transfer Error flag */
+#define  DMA_ISR_GIF3                        ((uint32_t)0x00000100)        /*!< Channel 3 Global interrupt flag */
+#define  DMA_ISR_TCIF3                       ((uint32_t)0x00000200)        /*!< Channel 3 Transfer Complete flag */
+#define  DMA_ISR_HTIF3                       ((uint32_t)0x00000400)        /*!< Channel 3 Half Transfer flag */
+#define  DMA_ISR_TEIF3                       ((uint32_t)0x00000800)        /*!< Channel 3 Transfer Error flag */
+#define  DMA_ISR_GIF4                        ((uint32_t)0x00001000)        /*!< Channel 4 Global interrupt flag */
+#define  DMA_ISR_TCIF4                       ((uint32_t)0x00002000)        /*!< Channel 4 Transfer Complete flag */
+#define  DMA_ISR_HTIF4                       ((uint32_t)0x00004000)        /*!< Channel 4 Half Transfer flag */
+#define  DMA_ISR_TEIF4                       ((uint32_t)0x00008000)        /*!< Channel 4 Transfer Error flag */
+#define  DMA_ISR_GIF5                        ((uint32_t)0x00010000)        /*!< Channel 5 Global interrupt flag */
+#define  DMA_ISR_TCIF5                       ((uint32_t)0x00020000)        /*!< Channel 5 Transfer Complete flag */
+#define  DMA_ISR_HTIF5                       ((uint32_t)0x00040000)        /*!< Channel 5 Half Transfer flag */
+#define  DMA_ISR_TEIF5                       ((uint32_t)0x00080000)        /*!< Channel 5 Transfer Error flag */
+#define  DMA_ISR_GIF6                        ((uint32_t)0x00100000)        /*!< Channel 6 Global interrupt flag */
+#define  DMA_ISR_TCIF6                       ((uint32_t)0x00200000)        /*!< Channel 6 Transfer Complete flag */
+#define  DMA_ISR_HTIF6                       ((uint32_t)0x00400000)        /*!< Channel 6 Half Transfer flag */
+#define  DMA_ISR_TEIF6                       ((uint32_t)0x00800000)        /*!< Channel 6 Transfer Error flag */
+#define  DMA_ISR_GIF7                        ((uint32_t)0x01000000)        /*!< Channel 7 Global interrupt flag */
+#define  DMA_ISR_TCIF7                       ((uint32_t)0x02000000)        /*!< Channel 7 Transfer Complete flag */
+#define  DMA_ISR_HTIF7                       ((uint32_t)0x04000000)        /*!< Channel 7 Half Transfer flag */
+#define  DMA_ISR_TEIF7                       ((uint32_t)0x08000000)        /*!< Channel 7 Transfer Error flag */
 
 #define __NVIC_PRIO_BITS          4 /*!< STM32 uses 4 Bits for the Priority Levels    */
 
@@ -542,7 +673,25 @@ typedef struct
 #define GPIOF               ((GPIO_TypeDef *) GPIOF_BASE)
 #define GPIOG               ((GPIO_TypeDef *) GPIOG_BASE)
 
+#define DMA1                ((DMA_TypeDef *) DMA1_BASE)
+#define DMA2                ((DMA_TypeDef *) DMA2_BASE)
+#define DMA1_Channel1       ((DMA_Channel_TypeDef *) DMA1_Channel1_BASE)
+#define DMA1_Channel2       ((DMA_Channel_TypeDef *) DMA1_Channel2_BASE)
+#define DMA1_Channel3       ((DMA_Channel_TypeDef *) DMA1_Channel3_BASE)
+#define DMA1_Channel4       ((DMA_Channel_TypeDef *) DMA1_Channel4_BASE)
+#define DMA1_Channel5       ((DMA_Channel_TypeDef *) DMA1_Channel5_BASE)
+#define DMA1_Channel6       ((DMA_Channel_TypeDef *) DMA1_Channel6_BASE)
+#define DMA1_Channel7       ((DMA_Channel_TypeDef *) DMA1_Channel7_BASE)
+#define DMA2_Channel1       ((DMA_Channel_TypeDef *) DMA2_Channel1_BASE)
+#define DMA2_Channel2       ((DMA_Channel_TypeDef *) DMA2_Channel2_BASE)
+#define DMA2_Channel3       ((DMA_Channel_TypeDef *) DMA2_Channel3_BASE)
+#define DMA2_Channel4       ((DMA_Channel_TypeDef *) DMA2_Channel4_BASE)
+#define DMA2_Channel5       ((DMA_Channel_TypeDef *) DMA2_Channel5_BASE)
+
 #define USART1              ((USART_TypeDef *) USART1_BASE)
+
+#define DMA1_Channel1       ((DMA_Channel_TypeDef *) DMA1_Channel1_BASE)
+#define ADC1                ((ADC_TypeDef *) ADC1_BASE)
 
 #define SCB                 ((SCB_Type *)           SCB_BASE)         /*!< SCB configuration struct             */
 #define SysTick             ((SysTick_Type *)       SysTick_BASE)     /*!< SysTick configuration struct         */
@@ -580,8 +729,31 @@ typedef struct
 #define CR2_STOP_CLEAR_Mask       ((uint16_t)0xCFFF)  /*!< USART CR2 STOP Bits Mask */
 #define CR3_CLEAR_Mask            ((uint16_t)0xFCFF)  /*!< USART CR3 Mask */
 
+/******************************************************************************/
+/*                                                                            */
+/*                         Reset and Clock Control                            */
+/*                                                                            */
+/******************************************************************************/
+
+/********************  Bit definition for RCC_CR register  ********************/
+#define  RCC_CR_HSION                        ((uint32_t)0x00000001)        /*!< Internal High Speed clock enable */
+#define  RCC_CR_HSIRDY                       ((uint32_t)0x00000002)        /*!< Internal High Speed clock ready flag */
+#define  RCC_CR_HSITRIM                      ((uint32_t)0x000000F8)        /*!< Internal High Speed clock trimming */
+#define  RCC_CR_HSICAL                       ((uint32_t)0x0000FF00)        /*!< Internal High Speed clock Calibration */
 #define  RCC_CR_HSEON                        ((uint32_t)0x00010000)        /*!< External High Speed clock enable */
 #define  RCC_CR_HSERDY                       ((uint32_t)0x00020000)        /*!< External High Speed clock ready flag */
+#define  RCC_CR_HSEBYP                       ((uint32_t)0x00040000)        /*!< External High Speed clock Bypass */
+#define  RCC_CR_CSSON                        ((uint32_t)0x00080000)        /*!< Clock Security System enable */
+#define  RCC_CR_PLLON                        ((uint32_t)0x01000000)        /*!< PLL enable */
+#define  RCC_CR_PLLRDY                       ((uint32_t)0x02000000)        /*!< PLL clock ready flag */
+
+#ifdef STM32F10X_CL
+ #define  RCC_CR_PLL2ON                       ((uint32_t)0x04000000)        /*!< PLL2 enable */
+ #define  RCC_CR_PLL2RDY                      ((uint32_t)0x08000000)        /*!< PLL2 clock ready flag */
+ #define  RCC_CR_PLL3ON                       ((uint32_t)0x10000000)        /*!< PLL3 enable */
+ #define  RCC_CR_PLL3RDY                      ((uint32_t)0x20000000)        /*!< PLL3 clock ready flag */
+#endif /* STM32F10X_CL */
+
 
 #define HSEStartUp_TimeOut        ((uint16_t)0x0500)
 
@@ -598,7 +770,13 @@ typedef struct
 #define  RCC_CFGR_PLLMULL                    ((uint32_t)0x003C0000)        /*!< PLLMUL[3:0] bits (PLL multiplication factor) */
 
 #define  RCC_CFGR_PLLSRC_HSE                ((uint32_t)0x00010000)        /*!< HSE clock selected as PLL entry clock source */
-#define  RCC_CFGR_PLLMULL6                  ((uint32_t)0x00100000)        /*!< PLL input clock*6 */
+ #define  RCC_CFGR_PLLMULL4                  ((uint32_t)0x00080000)        /*!< PLL input clock * 4 */
+ #define  RCC_CFGR_PLLMULL5                  ((uint32_t)0x000C0000)        /*!< PLL input clock * 5 */
+ #define  RCC_CFGR_PLLMULL6                  ((uint32_t)0x00100000)        /*!< PLL input clock * 6 */
+ #define  RCC_CFGR_PLLMULL7                  ((uint32_t)0x00140000)        /*!< PLL input clock * 7 */
+ #define  RCC_CFGR_PLLMULL8                  ((uint32_t)0x00180000)        /*!< PLL input clock * 8 */
+ #define  RCC_CFGR_PLLMULL9                  ((uint32_t)0x001C0000)        /*!< PLL input clock * 9 */
+ #define  RCC_CFGR_PLLMULL6_5                ((uint32_t)0x00340000)        /*!< PLL input clock * 6.5 */
 
 #define  RCC_CR_PLLON                        ((uint32_t)0x01000000)        /*!< PLL enable */
 #define  RCC_CR_PLLRDY                       ((uint32_t)0x02000000)        /*!< PLL clock ready flag */
@@ -607,6 +785,15 @@ typedef struct
 #define  RCC_CFGR_SW_PLL                     ((uint32_t)0x00000002)        /*!< PLL selected as system clock */
 #define  RCC_CFGR_SWS                        ((uint32_t)0x0000000C)        /*!< SWS[1:0] bits (System Clock Switch Status) */
 
+/*!< ADCPPRE configuration */
+#define  RCC_CFGR_ADCPRE                     ((uint32_t)0x0000C000)        /*!< ADCPRE[1:0] bits (ADC prescaler) */
+#define  RCC_CFGR_ADCPRE_0                   ((uint32_t)0x00004000)        /*!< Bit 0 */
+#define  RCC_CFGR_ADCPRE_1                   ((uint32_t)0x00008000)        /*!< Bit 1 */
+
+#define  RCC_CFGR_ADCPRE_DIV2                ((uint32_t)0x00000000)        /*!< PCLK2 divided by 2 */
+#define  RCC_CFGR_ADCPRE_DIV4                ((uint32_t)0x00004000)        /*!< PCLK2 divided by 4 */
+#define  RCC_CFGR_ADCPRE_DIV6                ((uint32_t)0x00008000)        /*!< PCLK2 divided by 6 */
+#define  RCC_CFGR_ADCPRE_DIV8                ((uint32_t)0x0000C000)        /*!< PCLK2 divided by 8 */
 
 /* interrupt handler functions */
 

@@ -37,6 +37,7 @@ void __attribute__((weak)) delay_us(unsigned int usec)
 
 void setup(void)
 {
+	RCC_HSEConfig();
 }
 
 void loop(void)

@@ -5,6 +5,7 @@
 int main()
 {
     
+    Hw_Init();
     RCC_ClocksTypeDef  rcc_clocks;
 
     NVIC_Configuration();
@@ -13,7 +14,6 @@ int main()
     /* EXTI configuration */
     EXTI_Configuration();
 
-    Hw_Init();
 
     // /* Setup SysTick Timer for 1 msec interrupts  */
     // if (SysTick_Config(rcc_clocks.SYSCLK_Frequency / 1000))

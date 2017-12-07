@@ -140,4 +140,9 @@ GPIO_DEF void GPIO_Configuration(void)
     //segment all off setting
     Off_7_SEG_AllPin();
 
+    //analog signal input
+    GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_4;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+    
 }

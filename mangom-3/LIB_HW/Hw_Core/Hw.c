@@ -6,57 +6,80 @@
 
 __IO uint32_t StartUpCounter = 0;
 RCC_ClocksTypeDef  rcc_clocks;
+__IO uint16_t ADCConvertedValue;
+static volatile uint32_t TimingDelay;
 
-HW_DEF void RCC_Configuration(void)
+void Delay(__IO uint32_t nTime)
+{ 
+  TimingDelay = nTime;
+
+  while(TimingDelay != 0);
+}
+
+
+void DMA_Configuration(void)
 {
-    __IO uint32_t  HSEStatus = 0;
+    DMA_InitTypeDef DMA_InitStructure;
 
-    /* SYSCLK, HCLK, PCLK2 and PCLK1 configuration ---------------------------*/    
-    /* Enable HSE */    
-    RCC->CR |= ((uint32_t)RCC_CR_HSEON);
+    /* DMA1 channel1 configuration */
+    DMA_DeInit(DMA1_Channel1);
+    DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
+    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&ADCConvertedValue;
+    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+    DMA_InitStructure.DMA_BufferSize = 1;
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+    DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+    DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+    DMA_Init(DMA1_Channel1, &DMA_InitStructure);
 
-    /* Wait till HSE is ready and if Time out is reached exit */
-    do
-    {
-        HSEStatus = RCC->CR & RCC_CR_HSERDY;
-        StartUpCounter++;  
-    } while((HSEStatus == 0) && (StartUpCounter != HSEStartUp_TimeOut));
-
-    /* Flash 2 wait state */
-    FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_2;    
-
-    /* HCLK = SYSCLK */
-    RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
-
-    /* PCLK2 = HCLK */
-    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
-
-    /* PCLK1 = HCLK */
-    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;
-
-    /*  PLL configuration: PLLCLK = HSE * 9 = 72 MHz */
-    RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMULL6);
-
-    /* Enable PLL */
-    RCC->CR |= RCC_CR_PLLON;
-
-    /* Wait till PLL is ready */
-    while((RCC->CR & RCC_CR_PLLRDY) == 0){;}
-
-    /* Select PLL as system clock source */
-    RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;
-
-    /* Wait till PLL is used as system clock source */
-    while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x08){;}
+    /* Enable DMA1 Channel1 */
+    DMA_Enable(DMA1_Channel1, ENABLE);
 }
 
 HW_DEF void Hw_Init()
 {
-    //RCC_Configuration();
+    
+    RCC_APB2function(RCC_APB2Periph_GPIOA, ENABLE);
+    RCC_APB2function(RCC_APB2Periph_GPIOB, ENABLE);
+    RCC_APB2function(RCC_APB2Periph_AFIO, ENABLE);
+    RCC_APBfunction(RCC_AHBPeriph_DMA1, ENABLE);
+    RCC_APB2function(RCC_APB2Periph_ADC1, ENABLE);
     RCC->APB2ENR |= RCC_APB2Periph_GPIOA;
     RCC->APB2ENR |= RCC_APB2Periph_GPIOB;
     RCC->APB2ENR |= RCC_APB2Periph_GPIOC;
     RCC->APB2ENR |= RCC_APB2Periph_USART1;
     GPIO_Configuration();
+    System_Information();
+    ADC_Print();
+    printf("end\n");
     //LED, KEY, USART, SEGMENT config
+}
+
+HW_DEF void ADC_Print(void)
+{
+    DMA_Configuration();
+    ADC_Configuration();
+
+    float volt = 0.0;
+
+    while (1)
+    {
+            if(!ADCConvertedValue)
+            {
+                printf("ADCConvertedValue %d\n", ADCConvertedValue);
+                printf("failed...\n");
+            }else
+            {   
+                printf("ADCConvertedValue %d\n", ADCConvertedValue);
+                volt = (float) ADCConvertedValue*3.3/(float)4095;
+                printf("ADCConvertedValue: 0x%x, %d, Volt: %f V\n", ADCConvertedValue, ADCConvertedValue, volt);
+                Hw_1_second();
+            }
+
+    }
+
 }

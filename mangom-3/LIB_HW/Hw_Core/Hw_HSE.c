@@ -26,7 +26,11 @@ HSE_DEF void HSE_Init()
     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
     /* PCLK1 = HCLK */
     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;
+    /* ADCCLK = PCLK2/6 */
+    RCC->CFGR |= (uint32_t)RCC_CFGR_ADCPRE_DIV6;
     /* PLL configuration : PLLCLK = HSE * 6 = 72MHz */
+    RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE |
+                                        RCC_CFGR_PLLMULL));
     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMULL6);
     /* Enable PLL */
     RCC->CR |= RCC_CR_PLLON;
