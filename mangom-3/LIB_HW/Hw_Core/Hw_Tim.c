@@ -2,3 +2,7 @@
 
 #include "Hw_Tim.h"
 
+void Tim_Init(void)
+{
+    
+}

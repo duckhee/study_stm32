@@ -10,6 +10,7 @@
 #endif
 
 
+TIM_DEF void Tim_Init(void);
 
 
 #endif

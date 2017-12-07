@@ -10,4 +10,13 @@
 #define DMA_DEF                extern
 #endif
 
+
+
+
+
+DMA_DEF void DMA_Init(void);
+DMA_DEF void DMA_ADC_Init(void);
+
+
+
 #endif

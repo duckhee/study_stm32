@@ -18,7 +18,6 @@ NVIC_DEF void NVIC_SetVectorTable(uint32_t NVIC_VectTab, uint32_t Offset)
 
 NVIC_DEF void NVIC_Configuration(void)
 {   
-    printf("NVIC function start");
     NVIC_InitTypeDef NVIC_InitStructure;
     
         /* Set the Vector Table base location at 0x08000000 */ 

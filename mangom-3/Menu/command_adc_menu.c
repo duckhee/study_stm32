@@ -1,12 +1,14 @@
-#define COMMAND_KEY_LOCAL
+#define ADC_MENU_LOCAL
 
-#include "command_key_menu.h"
+#include "command_adc_menu.h"
 
-COMMAND_KEY_DEF int command_key_main(int argc, char **argv);
-COMMAND_KEY_DEF int command_key_main_menu(void);
+ADC_MENU_DEF int command_adc_main(int argc, char **argv);
+ADC_MENU_DEF int command_adc_main_menu(void);
 static unsigned short flags;
 
-COMMAND_KEY_DEF int command_key_main(int argc, char **argv)
+
+
+ADC_MENU_DEF int command_adc_main(int argc, char **argv)
 {
  int key;
 
@@ -14,11 +16,11 @@ COMMAND_KEY_DEF int command_key_main(int argc, char **argv)
     {
         if(!StrCmp(argv[0], "ch1"))
         {
-            printf("KEY command menu ch1\n");
+            printf("ADC command menu ch1\n");
         }
         else if(!StrCmp(argv[1], "ch2"))
         {
-            printf("KEY command menu ch2\n");
+            printf("ADC command menu ch2\n");
         }
         else if(!StrCmp(argv[1], "on"))
         {
@@ -64,17 +66,17 @@ COMMAND_KEY_DEF int command_key_main(int argc, char **argv)
             {
                 case '1':
                     printf("No.1\n");
-                    Key_Test();
+                    
                 break;
     
                 case '2':
                     printf("No.2\n");
-                    Led_Test();
+                    
                 break;
                 
                 case '3':
                     printf("No.3\n");
-                    System_Information();
+                    
                 break;
     
                 case '4':
@@ -174,32 +176,31 @@ COMMAND_KEY_DEF int command_key_main(int argc, char **argv)
     return 0;
 }
 
-
-COMMAND_KEY_DEF int command_key_main_menu(void)
+ADC_MENU_DEF int command_adc_main_menu(void)
 {
-   int key;
+    int key;
+
+    printf("\n\n");
+    printf("-------------------------------------------------\n");
+    printf("                 ADC MAIN MENU\n");
+    printf("-------------------------------------------------\n");
+    printf(" 1. Red On                                         \n");
+    printf(" 2. Red Off                                         \n");
+    printf(" 3. Yellow On                                         \n");
+    printf(" 4. Yellow Off                                         \n");
+    printf(" 5. Blue On                                         \n");
+    printf(" 6. Blue Off                                         \n");
+    printf(" 7. Led Test                                         \n");
+    printf(" 8. System_Information                                         \n");
+    printf(" 9. Test                                         \n");
+    printf(" 0. Test                                         \n");
+    printf("-------------------------------------------------\n");
+    printf(" q. ADC Menu QUIT\n");
+    printf("-------------------------------------------------\n");
+    printf("\n\n");
+
+    printf("SELECT THE COMMAND NUMBER : ");
+    key=get_byte();
     
-        printf("\n\n");
-        printf("-------------------------------------------------\n");
-        printf("                 KEY MAIN MENU\n");
-        printf("-------------------------------------------------\n");
-        printf(" 1. Key Test                                         \n");
-        printf(" 2. Led Test                                         \n");
-        printf(" 3. System_Information                                         \n");
-        printf(" 4. Test                                         \n");
-        printf(" 5. Test                                         \n");
-        printf(" 6. Test                                         \n");
-        printf(" 7. Test                                         \n");
-        printf(" 8. Test                                         \n");
-        printf(" 9. Test                                         \n");
-        printf(" 0. Test                                         \n");
-        printf("-------------------------------------------------\n");
-        printf(" q. KEY Menu QUIT\n");
-        printf("-------------------------------------------------\n");
-        printf("\n\n");
-    
-        printf("SELECT THE COMMAND NUMBER : ");
-        key=get_byte();
-        
-        return key;
+    return key;
 }

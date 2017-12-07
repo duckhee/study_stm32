@@ -16,11 +16,11 @@ COMMAND_LED_DEF int command_led_main(int argc, char **argv)
     {
         if(!StrCmp(argv[0], "ch1"))
         {
-            printf("testing command menu ch1\n");
+            printf("LED command menu ch1\n");
         }
         else if(!StrCmp(argv[1], "ch2"))
         {
-            printf("testing command menu ch2\n");
+            printf("LED command menu ch2\n");
         }
         else if(!StrCmp(argv[1], "on"))
         {

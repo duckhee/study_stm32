@@ -49,6 +49,7 @@ SRC_MENU = ../Menu/Key_Menu.c              \
 		   ../Menu/command_led_menu.c      \
 		   ../Menu/command_key_menu.c      \
 		   ../Menu/command_seg_menu.c      \
+		   ../Menu/command_adc_menu.c      \
 
 #source file 
 SRC =$(SRC_HW) $(SRC_LB) $(SRC_MENU) $(SRC_AP)
